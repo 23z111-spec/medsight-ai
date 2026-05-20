@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>PneumoScan AI · Chest X-Ray Screening Dashboard</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{height:100%;background:#0a0c10;color:#e2e8f0;font-family:'DM Sans',sans-serif;overflow:hidden;}
+
+  /* ── TOP NAV ── */
+  .topnav{background:#0d1017;border-bottom:1px solid #1e2530;display:flex;align-items:center;justify-content:space-between;padding:0 20px;height:48px;flex-shrink:0;}
+  .logo{display:flex;align-items:center;gap:8px;font-family:'Space Mono',monospace;font-size:12px;color:#60c8f5;letter-spacing:.5px;}
+  .logo-dot{width:7px;height:7px;border-radius:50%;background:#60c8f5;}
+  .nav-pills{display:flex;gap:4px;}
+  .nav-pill{padding:4px 14px;border-radius:6px;font-size:11px;color:#64748b;cursor:pointer;transition:all .15s;}
+  .nav-pill:hover{color:#94a3b8;}
+  .nav-pill.active{background:#1a2235;color:#60c8f5;}
+  .badge{background:#1a2235;border:1px solid #1e2d45;border-radius:20px;padding:3px 10px;font-size:10px;color:#60c8f5;font-family:'Space Mono',monospace;}
+  .avatar{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#2563eb,#7c3aed);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#fff;}
+  .nav-right{display:flex;align-items:center;gap:12px;}
+
+  /* ── LAYOUT ── */
+  .app{display:flex;flex-direction:column;height:100vh;}
+  .main{display:grid;grid-template-columns:210px 1fr 290px;flex:1;overflow:hidden;}
+
+  /* ── SIDEBAR ── */
+  .sidebar{background:#0d1017;border-right:1px solid #1e2530;padding:14px 10px;display:flex;flex-direction:column;gap:18px;overflow-y:auto;}
+  .section-label{font-size:9px;font-weight:500;color:#334155;letter-spacing:1.2px;text-transform:uppercase;padding:0 6px;margin-bottom:6px;}
+  .patient-card{background:#131822;border:1px solid #1e2530;border-radius:10px;padding:12px;}
+  .patient-name{font-size:13px;font-weight:600;color:#e2e8f0;margin-bottom:2px;}
+  .patient-meta{font-size:10px;color:#475569;margin-bottom:10px;}
+  .prow{display:flex;justify-content:space-between;font-size:10px;color:#64748b;margin-bottom:3px;}
+  .prow span:last-child{color:#94a3b8;}
+  .scan-list{display:flex;flex-direction:column;gap:5px;}
+  .scan-item{display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:8px;cursor:pointer;border:1px solid transparent;transition:all .15s;}
+  .scan-item:hover{background:#131822;}
+  .scan-item.active{background:#0f1e35;border-color:#1e3a5f;}
+  .scan-thumb{width:34px;height:34px;background:radial-gradient(ellipse at 40% 40%,#2a3a4a,#0d1520);border-radius:5px;flex-shrink:0;}
+  .scan-info{flex:1;}
+  .scan-date{font-size:11px;color:#94a3b8;font-weight:500;}
+  .scan-type{font-size:9px;color:#475569;}
+  .dot{width:6px;height:6px;border-radius:50%;}
+  .upload-btn{background:#131822;border:1px solid #1e2530;border-radius:8px;padding:9px;font-size:11px;color:#64748b;cursor:pointer;text-align:center;display:flex;align-items:center;justify-content:center;gap:6px;transition:all .15s;}
+  .upload-btn:hover{background:#1a2235;color:#94a3b8;}
+  .model-card{background:#131822;border:1px solid #1e2530;border-radius:8px;padding:10px 12px;margin-top:auto;}
+  .model-row{font-size:10px;color:#64748b;margin-bottom:2px;}
+  .model-val{font-size:11px;color:#94a3b8;margin-bottom:8px;}
+
+  /* ── CENTER ── */
+  .center{background:#080b0f;padding:16px;display:flex;flex-direction:column;gap:12px;overflow-y:auto;}
+  .toolbar{display:flex;align-items:center;gap:6px;flex-shrink:0;}
+  .tool-btn{background:#131822;border:1px solid #1e2530;border-radius:6px;padding:5px 11px;font-size:10px;color:#64748b;cursor:pointer;display:flex;align-items:center;gap:4px;transition:all .15s;}
+  .tool-btn:hover{background:#1a2235;color:#94a3b8;}
+  .tool-btn.active{background:#0f1e35;border-color:#1e3a5f;color:#60c8f5;}
+  .tool-sep{flex:1;}
+  .toggle-row{display:flex;align-items:center;gap:6px;font-size:10px;color:#64748b;}
+  .toggle{width:30px;height:16px;background:#1e2530;border-radius:8px;position:relative;cursor:pointer;border:1px solid #2d3a4a;transition:background .2s;}
+  .toggle.on{background:#1a4a7a;border-color:#2563eb;}
+  .toggle::after{content:'';position:absolute;width:10px;height:10px;background:#475569;border-radius:50%;top:2px;left:2px;transition:all .2s;}
+  .toggle.on::after{left:16px;background:#60c8f5;}
+
+  /* ── XRAY VIEWER ── */
+  .xray-box{width:100%;position:relative;border:1px solid #1e2530;border-radius:12px;overflow:hidden;background:#080b0f;flex-shrink:0;}
+  .heatmap-overlay{position:absolute;top:0;left:0;right:0;bottom:0;opacity:0;transition:opacity .4s;pointer-events:none;}
+  .heatmap-overlay.visible{opacity:.55;}
+  .zoom-tag{position:absolute;bottom:10px;right:10px;background:rgba(13,16,23,.9);border:1px solid #1e2530;border-radius:5px;padding:3px 7px;font-size:9px;color:#475569;font-family:'Space Mono',monospace;}
+  .ann-tag{position:absolute;top:10px;left:10px;background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.4);border-radius:5px;padding:3px 8px;font-size:9px;color:#f87171;font-family:'Space Mono',monospace;}
+
+  /* ── METRIC CARDS ── */
+  .metrics-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;flex-shrink:0;}
+  .metric-card{background:#0d1017;border:1px solid #1e2530;border-radius:8px;padding:10px 14px;}
+  .metric-label{font-size:9px;color:#334155;margin-bottom:4px;}
+  .metric-val{font-size:20px;font-weight:700;font-family:'Space Mono',monospace;}
+  .metric-sub{font-size:9px;color:#475569;margin-top:2px;}
+
+  /* ── RIGHT PANEL ── */
+  .panel{background:#0d1017;border-left:1px solid #1e2530;display:flex;flex-direction:column;overflow-y:auto;}
+  .psec{padding:14px;border-bottom:1px solid #1e2530;flex-shrink:0;}
+  .ptitle{font-size:9px;font-weight:500;color:#334155;letter-spacing:1.2px;text-transform:uppercase;margin-bottom:12px;}
+  .status-banner{background:#1a0f0f;border:1px solid #3f1515;border-radius:10px;padding:12px;display:flex;align-items:flex-start;gap:10px;}
+  .status-icon{width:30px;height:30px;border-radius:7px;background:#2d1010;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
+  .status-label{font-size:12px;font-weight:600;color:#f87171;margin-bottom:3px;}
+  .status-sub{font-size:10px;color:#475569;line-height:1.55;}
+  .triage-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-size:10px;font-weight:600;font-family:'Space Mono',monospace;background:#2d1010;border:1px solid #5a1f1f;color:#f87171;}
+  .finding-item{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #131822;}
+  .finding-item:last-child{border-bottom:none;}
+  .fdot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+  .fname{font-size:11px;color:#94a3b8;flex:1;}
+  .fconf{font-size:10px;font-family:'Space Mono',monospace;font-weight:700;}
+  .conf-row{margin-bottom:9px;}
+  .conf-label-row{display:flex;justify-content:space-between;margin-bottom:3px;}
+  .conf-label{font-size:10px;color:#64748b;}
+  .conf-val{font-size:10px;font-family:'Space Mono',monospace;font-weight:700;}
+  .conf-bar{height:4px;background:#131822;border-radius:2px;overflow:hidden;}
+  .conf-fill{height:100%;border-radius:2px;}
+  .ece-box{margin-top:7px;padding:8px;background:#131822;border-radius:6px;}
+  .action-btn{width:100%;padding:9px;border-radius:7px;font-size:11px;font-weight:500;cursor:pointer;text-align:center;font-family:'DM Sans',sans-serif;margin-bottom:6px;transition:all .15s;}
+  .action-primary{background:#1a3a6a;border:1px solid #2563eb;color:#60c8f5;}
+  .action-primary:hover{background:#1e4480;}
+  .action-secondary{background:transparent;border:1px solid #1e2530;color:#64748b;}
+  .action-secondary:hover{background:#131822;color:#94a3b8;}
+  .override-row{display:flex;gap:6px;}
+  .override-row .action-btn{margin-bottom:0;font-size:10px;}
+  .disclaimer{background:#131822;border-radius:7px;padding:9px 11px;font-size:9px;color:#334155;line-height:1.6;border-left:2px solid #1e2530;}
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar{width:4px;}
+  ::-webkit-scrollbar-track{background:transparent;}
+  ::-webkit-scrollbar-thumb{background:#1e2530;border-radius:2px;}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ── TOP NAV ── -->
+  <div class="topnav">
+    <div class="logo">
+      <div class="logo-dot"></div>
+      PNEUMOSCAN · AI
+    </div>
+    <div class="nav-pills">
+      <div class="nav-pill active">Screening</div>
+      <div class="nav-pill">Patient Records</div>
+      <div class="nav-pill">Analytics</div>
+      <div class="nav-pill">Settings</div>
+    </div>
+    <div class="nav-right">
+      <div class="badge">Model v2.4.1</div>
+      <div class="avatar">DR</div>
+    </div>
+  </div>
+
+  <!-- ── MAIN GRID ── -->
+  <div class="main">
+
+    <!-- ── LEFT SIDEBAR ── -->
+    <div class="sidebar">
+
+      <div>
+        <div class="section-label">Patient</div>
+        <div class="patient-card">
+          <div class="patient-name">Rajan Mehta</div>
+          <div class="patient-meta">Male · 54 yrs · #PT-00421</div>
+          <div class="prow"><span>Referred by</span><span>Dr. S. Anand</span></div>
+          <div class="prow"><span>Ward</span><span>Pulmonology</span></div>
+          <div class="prow"><span>Last visit</span><span>12 May 2026</span></div>
+        </div>
+      </div>
+
+      <div>
+        <div class="section-label">Scan History</div>
+        <div class="scan-list">
+          <div class="scan-item active">
+            <div class="scan-thumb"></div>
+            <div class="scan-info">
+              <div class="scan-date">20 May 2026</div>
+              <div class="scan-type">PA · Chest</div>
+            </div>
+            <div class="dot" style="background:#ef4444;"></div>
+          </div>
+          <div class="scan-item">
+            <div class="scan-thumb"></div>
+            <div class="scan-info">
+              <div class="scan-date">02 Mar 2026</div>
+              <div class="scan-type">PA · Chest</div>
+            </div>
+            <div class="dot" style="background:#f59e0b;"></div>
+          </div>
+          <div class="scan-item">
+            <div class="scan-thumb"></div>
+            <div class="scan-info">
+              <div class="scan-date">14 Oct 2025</div>
+              <div class="scan-type">PA · Chest</div>
+            </div>
+            <div class="dot" style="background:#22c55e;"></div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="section-label">Upload</div>
+        <div class="upload-btn" onclick="document.getElementById('fileInput').click()">
+          <i class="ti ti-upload"></i> Upload New Scan
+        </div>
+        <input type="file" id="fileInput" accept="image/*,.dcm" style="display:none;" onchange="handleUpload(event)"/>
+      </div>
+
+      <div class="model-card">
+        <div class="section-label" style="padding:0;margin-bottom:8px;">Model Info</div>
+        <div class="model-row">Architecture</div>
+        <div class="model-val">EfficientNet-B3</div>
+        <div class="model-row">Dataset</div>
+        <div class="model-val">NIH ChestXray14</div>
+        <div class="model-row">Validation AUC</div>
+        <div style="font-size:15px;color:#60c8f5;font-family:'Space Mono',monospace;font-weight:700;">0.924</div>
+      </div>
+
+    </div>
+
+    <!-- ── CENTER VIEWER ── -->
+    <div class="center">
+
+      <!-- Toolbar -->
+      <div class="toolbar">
+        <div class="tool-btn active"><i class="ti ti-zoom-in"></i> Zoom</div>
+        <div class="tool-btn"><i class="ti ti-brightness"></i> Contrast</div>
+        <div class="tool-btn"><i class="ti ti-ruler"></i> Measure</div>
+        <div class="tool-btn"><i class="ti ti-flip-horizontal"></i> Flip</div>
+        <div class="tool-btn"><i class="ti ti-rotate"></i> Rotate</div>
+        <div class="tool-sep"></div>
+        <div class="toggle-row">
+          <div class="toggle on" id="hmToggle" onclick="toggleHeatmap()"></div>
+          <span>Grad-CAM Heatmap</span>
+        </div>
+      </div>
+
+      <!-- X-Ray Viewer -->
+      <div class="xray-box">
+        <svg width="100%" viewBox="0 0 520 480" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <radialGradient id="bg" cx="50%" cy="40%" r="65%">
+              <stop offset="0%" stop-color="#1a2535"/>
+              <stop offset="100%" stop-color="#080c14"/>
+            </radialGradient>
+            <radialGradient id="ll" cx="38%" cy="46%" r="50%">
+              <stop offset="0%" stop-color="#3a5a7a" stop-opacity=".65"/>
+              <stop offset="100%" stop-color="#0d1520" stop-opacity="0"/>
+            </radialGradient>
+            <radialGradient id="rl" cx="62%" cy="46%" r="50%">
+              <stop offset="0%" stop-color="#2a4a6a" stop-opacity=".55"/>
+              <stop offset="100%" stop-color="#0d1520" stop-opacity="0"/>
+            </radialGradient>
+            <filter id="sf"><feGaussianBlur stdDeviation="3"/></filter>
+          </defs>
+          <!-- background -->
+          <rect width="520" height="480" fill="url(#bg)"/>
+          <!-- ribs -->
+          <g opacity=".12" stroke="#7ab8d4" fill="none" stroke-width=".9">
+            <path d="M260,85 Q190,97 155,122 Q130,148 136,172"/>
+            <path d="M260,108 Q186,122 150,150 Q122,178 130,205"/>
+            <path d="M260,131 Q183,147 146,178 Q116,210 126,238"/>
+            <path d="M260,154 Q181,172 143,206 Q111,242 122,272"/>
+            <path d="M260,177 Q179,197 141,234 Q108,274 120,306"/>
+            <path d="M260,85 Q330,97 365,122 Q390,148 384,172"/>
+            <path d="M260,108 Q334,122 370,150 Q398,178 390,205"/>
+            <path d="M260,131 Q337,147 374,178 Q404,210 394,238"/>
+            <path d="M260,154 Q339,172 377,206 Q409,242 398,272"/>
+            <path d="M260,177 Q341,197 379,234 Q412,274 400,306"/>
+          </g>
+          <!-- spine -->
+          <rect x="253" y="62" width="14" height="340" rx="3" fill="#1e3045" opacity=".5"/>
+          <!-- lungs -->
+          <ellipse cx="185" cy="225" rx="78" ry="118" fill="url(#ll)" opacity=".8"/>
+          <ellipse cx="335" cy="225" rx="72" ry="112" fill="url(#rl)" opacity=".8"/>
+          <!-- clavicles -->
+          <path d="M260,85 Q215,74 168,88" stroke="#4a7a9a" stroke-width="3.5" fill="none" opacity=".45" stroke-linecap="round"/>
+          <path d="M260,85 Q305,74 352,88" stroke="#4a7a9a" stroke-width="3.5" fill="none" opacity=".45" stroke-linecap="round"/>
+          <!-- heart -->
+          <ellipse cx="242" cy="252" rx="44" ry="56" fill="#0d1e30" opacity=".85"/>
+          <ellipse cx="242" cy="252" rx="38" ry="50" fill="#152030" opacity=".5"/>
+          <!-- abnormality RUL -->
+          <ellipse cx="338" cy="162" rx="34" ry="26" fill="#3a5a2a" opacity=".4" filter="url(#sf)"/>
+          <ellipse cx="344" cy="156" rx="20" ry="16" fill="#4a7a35" opacity=".35" filter="url(#sf)"/>
+          <!-- annotation -->
+          <circle cx="342" cy="160" r="26" stroke="#ef4444" stroke-width="1.8" fill="none" stroke-dasharray="4,3" opacity=".9"/>
+          <line x1="364" y1="140" x2="390" y2="118" stroke="#ef4444" stroke-width="1.2" opacity=".8"/>
+          <text x="393" y="115" fill="#ef4444" font-size="10" font-family="monospace" font-weight="bold">RUL</text>
+          <!-- trachea -->
+          <rect x="254" y="42" width="12" height="50" rx="3" fill="#1e3a5a" opacity=".55"/>
+          <line x1="260" y1="90" x2="210" y2="115" stroke="#2a5a7a" stroke-width="2" opacity=".4"/>
+          <line x1="260" y1="90" x2="310" y2="115" stroke="#2a5a7a" stroke-width="2" opacity=".4"/>
+          <!-- diaphragm -->
+          <path d="M118,368 Q190,350 260,356 Q330,350 402,368" stroke="#3a6a8a" stroke-width="2.2" fill="none" opacity=".45"/>
+          <!-- left lower haze -->
+          <ellipse cx="178" cy="318" rx="28" ry="22" fill="#2a4a2a" opacity=".22" filter="url(#sf)"/>
+          <!-- scale bar -->
+          <line x1="420" y1="440" x2="480" y2="440" stroke="#2a4a6a" stroke-width="1.5"/>
+          <line x1="420" y1="435" x2="420" y2="445" stroke="#2a4a6a" stroke-width="1.5"/>
+          <line x1="480" y1="435" x2="480" y2="445" stroke="#2a4a6a" stroke-width="1.5"/>
+          <text x="450" y="458" text-anchor="middle" fill="#2a4a6a" font-size="9" font-family="monospace">5 cm</text>
+          <!-- scan metadata -->
+          <text x="18" y="28" fill="#2a4a6a" font-size="9" font-family="monospace">PA CHEST · 20.05.2026</text>
+          <text x="18" y="41" fill="#1e3a5a" font-size="8" font-family="monospace">120kVp · 4mAs · DIGITAL</text>
+        </svg>
+
+        <!-- Grad-CAM Heatmap Overlay -->
+        <div class="heatmap-overlay visible" id="hmOverlay">
+          <svg width="100%" height="100%" viewBox="0 0 520 480" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+            <defs>
+              <radialGradient id="h1" cx="66%" cy="33%" r="16%">
+                <stop offset="0%" stop-color="#ef4444" stop-opacity=".95"/>
+                <stop offset="50%" stop-color="#f97316" stop-opacity=".55"/>
+                <stop offset="100%" stop-color="#eab308" stop-opacity="0"/>
+              </radialGradient>
+              <radialGradient id="h2" cx="34%" cy="66%" r="12%">
+                <stop offset="0%" stop-color="#f97316" stop-opacity=".7"/>
+                <stop offset="100%" stop-color="#eab308" stop-opacity="0"/>
+              </radialGradient>
+              <radialGradient id="h3" cx="50%" cy="52%" r="38%">
+                <stop offset="0%" stop-color="#eab308" stop-opacity=".18"/>
+                <stop offset="100%" stop-color="#eab308" stop-opacity="0"/>
+              </radialGradient>
+            </defs>
+            <rect width="520" height="480" fill="url(#h1)"/>
+            <rect width="520" height="480" fill="url(#h2)"/>
+            <rect width="520" height="480" fill="url(#h3)"/>
+          </svg>
+        </div>
+
+        <div class="ann-tag">⚠ Abnormality detected · RUL</div>
+        <div class="zoom-tag">1.0× · PA View</div>
+      </div>
+
+      <!-- Metric Cards -->
+      <div class="metrics-row">
+        <div class="metric-card">
+          <div class="metric-label">Model confidence</div>
+          <div class="metric-val" style="color:#f87171;" id="confVal">91.3%</div>
+          <div class="metric-sub">Abnormal · High risk</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Primary finding</div>
+          <div class="metric-val" style="font-size:15px;color:#fbbf24;margin-top:4px;">Pneumonia</div>
+          <div class="metric-sub">Right upper lobe · RUL</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Val AUC-ROC</div>
+          <div class="metric-val" style="color:#60c8f5;">0.924</div>
+          <div class="metric-sub">EfficientNet-B3</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── RIGHT PANEL ── -->
+    <div class="panel">
+
+      <!-- AI Assessment -->
+      <div class="psec">
+        <div class="ptitle">AI Assessment</div>
+        <div class="status-banner">
+          <div class="status-icon">⚠</div>
+          <div>
+            <div class="status-label">Abnormal · High Risk</div>
+            <div class="status-sub">Consolidation in right upper lobe consistent with pneumonia. Immediate clinical review recommended.</div>
+          </div>
+        </div>
+        <div style="margin-top:10px;display:flex;align-items:center;justify-content:space-between;">
+          <div class="triage-badge">● HIGH PRIORITY</div>
+          <div style="font-size:9px;color:#334155;font-family:'Space Mono',monospace;" id="timer">T+00:00:00</div>
+        </div>
+      </div>
+
+      <!-- Detected Findings -->
+      <div class="psec">
+        <div class="ptitle">Detected Findings</div>
+        <div class="finding-item">
+          <div class="fdot" style="background:#ef4444;"></div>
+          <div class="fname">Pneumonia (RUL)</div>
+          <div class="fconf" style="color:#ef4444;">91.3%</div>
+        </div>
+        <div class="finding-item">
+          <div class="fdot" style="background:#f59e0b;"></div>
+          <div class="fname">Pleural effusion</div>
+          <div class="fconf" style="color:#f59e0b;">34.7%</div>
+        </div>
+        <div class="finding-item">
+          <div class="fdot" style="background:#22c55e;"></div>
+          <div class="fname">Cardiomegaly</div>
+          <div class="fconf" style="color:#22c55e;">8.2%</div>
+        </div>
+        <div class="finding-item">
+          <div class="fdot" style="background:#22c55e;"></div>
+          <div class="fname">Tuberculosis</div>
+          <div class="fconf" style="color:#22c55e;">5.1%</div>
+        </div>
+        <div class="finding-item">
+          <div class="fdot" style="background:#22c55e;"></div>
+          <div class="fname">Pneumothorax</div>
+          <div class="fconf" style="color:#22c55e;">2.4%</div>
+        </div>
+      </div>
+
+      <!-- Classification Confidence -->
+      <div class="psec">
+        <div class="ptitle">Classification Confidence</div>
+        <div class="conf-row">
+          <div class="conf-label-row">
+            <span class="conf-label">Abnormal</span>
+            <span class="conf-val" style="color:#ef4444;">91.3%</span>
+          </div>
+          <div class="conf-bar"><div class="conf-fill" style="width:91.3%;background:#ef4444;"></div></div>
+        </div>
+        <div class="conf-row">
+          <div class="conf-label-row">
+            <span class="conf-label">Normal</span>
+            <span class="conf-val" style="color:#22c55e;">8.7%</span>
+          </div>
+          <div class="conf-bar"><div class="conf-fill" style="width:8.7%;background:#22c55e;"></div></div>
+        </div>
+        <div class="ece-box">
+          <div style="font-size:9px;color:#334155;margin-bottom:3px;">Expected calibration error</div>
+          <div style="font-size:11px;color:#60c8f5;font-family:'Space Mono',monospace;">ECE: 0.032</div>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="psec">
+        <div class="ptitle">Actions</div>
+        <button class="action-btn action-primary" onclick="alert('Generating clinical report...')">
+          <i class="ti ti-file-text"></i> Generate Clinical Report
+        </button>
+        <button class="action-btn action-secondary" onclick="alert('Loading comparison view...')">
+          <i class="ti ti-git-compare"></i> Compare with Previous
+        </button>
+        <button class="action-btn action-secondary" onclick="alert('Case flagged for radiologist review.')">
+          <i class="ti ti-flag"></i> Flag for Radiologist Review
+        </button>
+      </div>
+
+      <!-- Doctor Override -->
+      <div class="psec">
+        <div class="ptitle">Doctor Override</div>
+        <div class="override-row">
+          <button class="action-btn action-secondary" onclick="handleOverride('confirm')">✓ Confirm Finding</button>
+          <button class="action-btn action-secondary" onclick="handleOverride('reject')">✗ Reject Finding</button>
+        </div>
+        <div id="overrideMsg" style="font-size:10px;color:#475569;margin-top:8px;display:none;"></div>
+      </div>
+
+      <!-- Disclaimer -->
+      <div class="psec">
+        <div class="disclaimer">
+          <i class="ti ti-shield" style="font-size:11px;margin-right:4px;"></i>
+          AI screening tool only. All findings must be confirmed by a qualified radiologist before any clinical decision is made. This system is not a substitute for professional medical judgment.
+        </div>
+      </div>
+
+    </div><!-- end panel -->
+  </div><!-- end main -->
+</div><!-- end app -->
+
+<script>
+  /* ── Grad-CAM toggle ── */
+  function toggleHeatmap() {
+    document.getElementById('hmToggle').classList.toggle('on');
+    document.getElementById('hmOverlay').classList.toggle('visible');
+  }
+
+  /* ── Live timer ── */
+  const start = Date.now();
+  setInterval(() => {
+    const s = Math.floor((Date.now() - start) / 1000);
+    const h = String(Math.floor(s / 3600)).padStart(2,'0');
+    const m = String(Math.floor((s % 3600) / 60)).padStart(2,'0');
+    const sc = String(s % 60).padStart(2,'0');
+    document.getElementById('timer').textContent = `T+${h}:${m}:${sc}`;
+  }, 1000);
+
+  /* ── Doctor override ── */
+  function handleOverride(action) {
+    const msg = document.getElementById('overrideMsg');
+    msg.style.display = 'block';
+    if (action === 'confirm') {
+      msg.style.color = '#4ade80';
+      msg.textContent = '✓ Finding confirmed and logged by physician.';
+    } else {
+      msg.style.color = '#f87171';
+      msg.textContent = '✗ Finding rejected. Case marked for re-review.';
+    }
+  }
+
+  /* ── Upload handler (placeholder) ── */
+  function handleUpload(event) {
+    const file = event.target.files[0];
+    if (file) {
+      alert(`Scan "${file.name}" uploaded. Connect to FastAPI /predict endpoint to run inference.`);
+    }
+  }
+
+  /* ── Nav pill switcher ── */
+  document.querySelectorAll('.nav-pill').forEach(pill => {
+    pill.addEventListener('click', () => {
+      document.querySelectorAll('.nav-pill').forEach(p => p.classList.remove('active'));
+      pill.classList.add('active');
+    });
+  });
+
+  /* ── Scan item switcher ── */
+  document.querySelectorAll('.scan-item').forEach(item => {
+    item.addEventListener('click', () => {
+      document.querySelectorAll('.scan-item').forEach(i => i.classList.remove('active'));
+      item.classList.add('active');
+    });
+  });
+
+  /* ── Tool button switcher ── */
+  document.querySelectorAll('.tool-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>
