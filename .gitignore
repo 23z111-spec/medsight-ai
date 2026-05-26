@@ -1,0 +1,6 @@
+backend/models/*.pth
+backend/venv/
+__pycache__/
+*.pyc
+.env
+*.zip

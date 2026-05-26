@@ -1,0 +1,17 @@
+# PneumoScan AI — Python dependencies
+# Install with: pip install -r requirements.txt
+
+fastapi==0.111.0
+uvicorn[standard]==0.29.0
+python-multipart==0.0.9      # needed for file uploads
+
+# ML
+torch==2.3.0
+torchvision==0.18.0
+Pillow==10.3.0
+numpy==1.26.4
+opencv-python-headless==4.9.0.80   # headless = no GUI deps (server safe)
+
+# Data / DB (for patient records later)
+sqlalchemy==2.0.30
+pydantic==2.7.1
