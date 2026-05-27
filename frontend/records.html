@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>PneumoScan AI · Patient Records</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{height:100%;background:#0a0c10;color:#e2e8f0;font-family:'DM Sans',sans-serif;overflow:hidden;}
+
+  /* NAV */
+  .topnav{background:#0d1017;border-bottom:1px solid #1e2530;display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:48px;flex-shrink:0;}
+  .logo{display:flex;align-items:center;gap:8px;font-family:'Space Mono',monospace;font-size:12px;color:#60c8f5;letter-spacing:.5px;}
+  .logo-dot{width:7px;height:7px;border-radius:50%;background:#60c8f5;}
+  .nav-pills{display:flex;gap:4px;}
+  .nav-pill{padding:4px 14px;border-radius:6px;font-size:11px;color:#64748b;cursor:pointer;transition:all .15s;}
+  .nav-pill:hover{color:#94a3b8;}
+  .nav-pill.active{background:#1a2235;color:#60c8f5;}
+  .badge{background:#1a2235;border:1px solid #1e2d45;border-radius:20px;padding:3px 10px;font-size:10px;color:#60c8f5;font-family:'Space Mono',monospace;}
+  .avatar{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#2563eb,#7c3aed);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#fff;}
+  .nav-right{display:flex;align-items:center;gap:12px;}
+
+  /* LAYOUT */
+  .app{display:flex;flex-direction:column;height:100vh;}
+  .body{flex:1;display:flex;flex-direction:column;overflow:hidden;padding:20px;gap:16px;background:#080b0f;}
+
+  /* STAT CARDS */
+  .stat-row{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;flex-shrink:0;}
+  .stat-card{background:#0d1017;border:1px solid #1e2530;border-radius:10px;padding:12px 14px;}
+  .stat-label{font-size:9px;color:#334155;margin-bottom:4px;letter-spacing:.8px;text-transform:uppercase;}
+  .stat-val{font-size:20px;font-weight:700;font-family:'Space Mono',monospace;}
+  .stat-sub{font-size:9px;color:#475569;margin-top:2px;}
+
+  /* TOOLBAR */
+  .toolbar{display:flex;align-items:center;gap:10px;flex-shrink:0;}
+  .search-wrap{flex:1;position:relative;}
+  .search-wrap i{position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:15px;color:#334155;}
+  .search-input{width:100%;background:#0d1017;border:1px solid #1e2530;border-radius:8px;padding:8px 12px 8px 34px;font-size:12px;color:#94a3b8;outline:none;font-family:'DM Sans',sans-serif;transition:border .15s;}
+  .search-input::placeholder{color:#334155;}
+  .search-input:focus{border-color:#1e3a5f;}
+  .filter-btn{background:#0d1017;border:1px solid #1e2530;border-radius:8px;padding:7px 14px;font-size:11px;color:#64748b;cursor:pointer;display:flex;align-items:center;gap:5px;transition:all .15s;font-family:'DM Sans',sans-serif;}
+  .filter-btn:hover{background:#131822;color:#94a3b8;}
+  .filter-btn.active{background:#0f1e35;border-color:#1e3a5f;color:#60c8f5;}
+  .add-btn{background:#1a3a6a;border:1px solid #2563eb;border-radius:8px;padding:7px 16px;font-size:11px;color:#60c8f5;cursor:pointer;display:flex;align-items:center;gap:6px;font-family:'DM Sans',sans-serif;transition:all .15s;}
+  .add-btn:hover{background:#1e4480;}
+
+  /* TABLE */
+  .table-wrap{flex:1;overflow-y:auto;background:#0d1017;border:1px solid #1e2530;border-radius:12px;}
+  table{width:100%;border-collapse:collapse;}
+  thead{position:sticky;top:0;z-index:2;}
+  thead tr{background:#0d1017;border-bottom:1px solid #1e2530;}
+  th{font-size:9px;color:#334155;letter-spacing:1px;text-transform:uppercase;padding:11px 14px;text-align:left;font-weight:500;white-space:nowrap;}
+  th.sortable{cursor:pointer;user-select:none;}
+  th.sortable:hover{color:#64748b;}
+  td{font-size:11px;color:#64748b;padding:11px 14px;border-bottom:1px solid #131822;vertical-align:middle;}
+  tbody tr{cursor:pointer;transition:background .12s;}
+  tbody tr:hover td{background:#0f1017;}
+  tbody tr:last-child td{border-bottom:none;}
+  tbody tr.highlighted td{background:#0a1525;}
+
+  /* CELLS */
+  .patient-cell{display:flex;align-items:center;gap:10px;}
+  .initials{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;flex-shrink:0;}
+  .patient-name-cell{font-size:12px;color:#94a3b8;font-weight:500;}
+  .patient-id-cell{font-size:9px;color:#334155;font-family:'Space Mono',monospace;margin-top:1px;}
+
+  .triage-pill{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:4px;font-size:9px;font-family:'Space Mono',monospace;font-weight:700;}
+  .triage-high{background:#2d1010;border:1px solid #5a1f1f;color:#f87171;}
+  .triage-med{background:#2d1f08;border:1px solid #5a3f10;color:#fbbf24;}
+  .triage-low{background:#0d2a14;border:1px solid #1a5228;color:#4ade80;}
+
+  .finding-cell{display:flex;align-items:center;gap:6px;}
+  .finding-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+  .conf-cell{font-family:'Space Mono',monospace;font-size:10px;font-weight:700;}
+  .date-cell{font-family:'Space Mono',monospace;font-size:10px;color:#475569;}
+  .ward-cell{font-size:10px;color:#475569;}
+
+  .action-cell{display:flex;align-items:center;gap:6px;}
+  .icon-btn{background:transparent;border:1px solid #1e2530;border-radius:6px;padding:4px 8px;font-size:12px;color:#475569;cursor:pointer;transition:all .15s;}
+  .icon-btn:hover{background:#131822;color:#94a3b8;border-color:#2d3a4a;}
+
+  /* EMPTY STATE */
+  .empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px;gap:10px;}
+  .empty-icon{font-size:36px;color:#1e2530;}
+  .empty-title{font-size:13px;color:#475569;}
+  .empty-sub{font-size:11px;color:#334155;}
+
+  /* PAGINATION */
+  .pagination{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-top:1px solid #1e2530;flex-shrink:0;}
+  .page-info{font-size:10px;color:#334155;font-family:'Space Mono',monospace;}
+  .page-btns{display:flex;gap:4px;}
+  .page-btn{background:#0d1017;border:1px solid #1e2530;border-radius:5px;padding:4px 10px;font-size:10px;color:#475569;cursor:pointer;transition:all .15s;}
+  .page-btn:hover{background:#131822;color:#94a3b8;}
+  .page-btn.active{background:#0f1e35;border-color:#1e3a5f;color:#60c8f5;}
+  .page-btn:disabled{opacity:.3;cursor:not-allowed;}
+
+  ::-webkit-scrollbar{width:4px;}
+  ::-webkit-scrollbar-track{background:transparent;}
+  ::-webkit-scrollbar-thumb{background:#1e2530;border-radius:2px;}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- NAV -->
+<div class="topnav">
+  <div class="logo"><div class="logo-dot"></div>PNEUMOSCAN · AI</div>
+  <div class="nav-pills">
+    <div class="nav-pill" onclick="window.location.href='dashboard.html'">Screening</div>
+    <div class="nav-pill active">Patient Records</div>
+    <div class="nav-pill" onclick="window.location.href='analytics.html'">Analytics</div>
+    <div class="nav-pill">Settings</div>
+  </div>
+  <div class="nav-right">
+    <div class="badge">Model v2.4.1</div>
+    <div class="avatar">DR</div>
+  </div>
+</div>
+
+<div class="body">
+
+  <!-- STAT CARDS -->
+  <div class="stat-row">
+    <div class="stat-card">
+      <div class="stat-label">Total patients</div>
+      <div class="stat-val" style="color:#60c8f5;">248</div>
+      <div class="stat-sub">All time</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Scans this week</div>
+      <div class="stat-val" style="color:#94a3b8;">64</div>
+      <div class="stat-sub">↑ 12 from last week</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">High priority</div>
+      <div class="stat-val" style="color:#f87171;">12</div>
+      <div class="stat-sub">Needs review</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Awaiting review</div>
+      <div class="stat-val" style="color:#fbbf24;">7</div>
+      <div class="stat-sub">Flagged by AI</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Normal today</div>
+      <div class="stat-val" style="color:#4ade80;">29</div>
+      <div class="stat-sub">No action needed</div>
+    </div>
+  </div>
+
+  <!-- TOOLBAR -->
+  <div class="toolbar">
+    <div class="search-wrap">
+      <i class="ti ti-search" aria-hidden="true"></i>
+      <input class="search-input" type="text" placeholder="Search by name, ID, ward, or finding…" id="searchInput" oninput="filterTable()"/>
+    </div>
+    <button class="filter-btn active" id="filterAll" onclick="setFilter('all')">All</button>
+    <button class="filter-btn" id="filterHigh" onclick="setFilter('HIGH')"><span style="width:6px;height:6px;border-radius:50%;background:#ef4444;display:inline-block;"></span> High</button>
+    <button class="filter-btn" id="filterMed" onclick="setFilter('MED')"><span style="width:6px;height:6px;border-radius:50%;background:#f59e0b;display:inline-block;"></span> Medium</button>
+    <button class="filter-btn" id="filterLow" onclick="setFilter('LOW')"><span style="width:6px;height:6px;border-radius:50%;background:#22c55e;display:inline-block;"></span> Low</button>
+    <button class="add-btn"><i class="ti ti-user-plus" aria-hidden="true"></i> Add Patient</button>
+  </div>
+
+  <!-- TABLE -->
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th class="sortable" onclick="sortTable('name')">Patient <i class="ti ti-selector" style="font-size:10px;"></i></th>
+          <th class="sortable" onclick="sortTable('ward')">Ward</th>
+          <th class="sortable" onclick="sortTable('finding')">Latest Finding</th>
+          <th class="sortable" onclick="sortTable('conf')">Confidence <i class="ti ti-selector" style="font-size:10px;"></i></th>
+          <th class="sortable" onclick="sortTable('triage')">Triage <i class="ti ti-selector" style="font-size:10px;"></i></th>
+          <th class="sortable" onclick="sortTable('date')">Last Scan <i class="ti ti-selector" style="font-size:10px;"></i></th>
+          <th>Referred by</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+    <div class="empty-state" id="emptyState" style="display:none;">
+      <i class="ti ti-user-search empty-icon" aria-hidden="true"></i>
+      <div class="empty-title">No patients found</div>
+      <div class="empty-sub">Try a different search or filter</div>
+    </div>
+  </div>
+
+  <!-- PAGINATION -->
+  <div class="pagination">
+    <div class="page-info" id="pageInfo">Showing 1–10 of 20</div>
+    <div class="page-btns">
+      <button class="page-btn" id="prevBtn" onclick="changePage(-1)"><i class="ti ti-chevron-left" style="font-size:12px;"></i></button>
+      <button class="page-btn active" id="page1" onclick="goPage(1)">1</button>
+      <button class="page-btn" id="page2" onclick="goPage(2)">2</button>
+      <button class="page-btn" id="nextBtn" onclick="changePage(1)"><i class="ti ti-chevron-right" style="font-size:12px;"></i></button>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<script>
+  /* ── PATIENT DATA ── */
+  const PATIENTS = [
+    { id:'PT-00421', name:'Rajan Mehta',      age:54, gender:'M', ward:'Pulmonology',   finding:'Pneumonia',        conf:91.3, triage:'HIGH', date:'20 May 2026', ref:'Dr. S. Anand',   color:'#1a3a6a', text:'#60c8f5' },
+    { id:'PT-00398', name:'Priya Sharma',     age:42, gender:'F', ward:'General',       finding:'Pleural Effusion', conf:61.2, triage:'MED',  date:'19 May 2026', ref:'Dr. R. Kapoor',  color:'#1a2a4a', text:'#94a3b8' },
+    { id:'PT-00415', name:'Arun Krishnan',    age:67, gender:'M', ward:'ICU',           finding:'Cardiomegaly',     conf:78.4, triage:'HIGH', date:'19 May 2026', ref:'Dr. M. Iyer',    color:'#2a1a1a', text:'#f87171' },
+    { id:'PT-00402', name:'Sunita Patel',     age:38, gender:'F', ward:'Pulmonology',   finding:'Normal',           conf:89.1, triage:'LOW',  date:'18 May 2026', ref:'Dr. S. Anand',   color:'#0d2a14', text:'#4ade80' },
+    { id:'PT-00388', name:'Vikram Nair',      age:59, gender:'M', ward:'Emergency',     finding:'Tuberculosis',     conf:72.6, triage:'HIGH', date:'18 May 2026', ref:'Dr. P. Menon',   color:'#2a1a1a', text:'#f87171' },
+    { id:'PT-00376', name:'Kavitha Reddy',    age:45, gender:'F', ward:'General',       finding:'Normal',           conf:94.2, triage:'LOW',  date:'17 May 2026', ref:'Dr. R. Kapoor',  color:'#0d2a14', text:'#4ade80' },
+    { id:'PT-00361', name:'Mohan Das',        age:71, gender:'M', ward:'Pulmonology',   finding:'Pneumonia',        conf:85.7, triage:'HIGH', date:'17 May 2026', ref:'Dr. S. Anand',   color:'#2a1a1a', text:'#f87171' },
+    { id:'PT-00349', name:'Ananya Singh',     age:29, gender:'F', ward:'General',       finding:'Normal',           conf:91.8, triage:'LOW',  date:'16 May 2026', ref:'Dr. M. Iyer',    color:'#0d2a14', text:'#4ade80' },
+    { id:'PT-00334', name:'Ramesh Gupta',     age:63, gender:'M', ward:'Cardiology',    finding:'Cardiomegaly',     conf:66.3, triage:'MED',  date:'16 May 2026', ref:'Dr. A. Verma',   color:'#1a2a4a', text:'#94a3b8' },
+    { id:'PT-00312', name:'Deepa Menon',      age:51, gender:'F', ward:'ICU',           finding:'Pleural Effusion', conf:74.9, triage:'MED',  date:'15 May 2026', ref:'Dr. P. Menon',   color:'#1a2a4a', text:'#94a3b8' },
+    { id:'PT-00298', name:'Suresh Babu',      age:48, gender:'M', ward:'Pulmonology',   finding:'Tuberculosis',     conf:81.2, triage:'HIGH', date:'15 May 2026', ref:'Dr. S. Anand',   color:'#2a1a1a', text:'#f87171' },
+    { id:'PT-00287', name:'Lakshmi Iyer',     age:34, gender:'F', ward:'General',       finding:'Normal',           conf:96.4, triage:'LOW',  date:'14 May 2026', ref:'Dr. R. Kapoor',  color:'#0d2a14', text:'#4ade80' },
+    { id:'PT-00274', name:'Arjun Pillai',     age:55, gender:'M', ward:'Emergency',     finding:'Pneumothorax',     conf:69.8, triage:'HIGH', date:'14 May 2026', ref:'Dr. A. Verma',   color:'#2a1a1a', text:'#f87171' },
+    { id:'PT-00261', name:'Meera Nambiar',    age:40, gender:'F', ward:'Cardiology',    finding:'Normal',           conf:88.3, triage:'LOW',  date:'13 May 2026', ref:'Dr. M. Iyer',    color:'#0d2a14', text:'#4ade80' },
+    { id:'PT-00248', name:'Ganesh Rao',       age:77, gender:'M', ward:'ICU',           finding:'Cardiomegaly',     conf:83.1, triage:'HIGH', date:'13 May 2026', ref:'Dr. P. Menon',   color:'#2a1a1a', text:'#f87171' },
+    { id:'PT-00235', name:'Pooja Krishnan',   age:27, gender:'F', ward:'General',       finding:'Normal',           conf:93.7, triage:'LOW',  date:'12 May 2026', ref:'Dr. S. Anand',   color:'#0d2a14', text:'#4ade80' },
+    { id:'PT-00221', name:'Rajesh Kumar',     age:60, gender:'M', ward:'Pulmonology',   finding:'Pleural Effusion', conf:57.4, triage:'MED',  date:'12 May 2026', ref:'Dr. R. Kapoor',  color:'#1a2a4a', text:'#94a3b8' },
+    { id:'PT-00208', name:'Swathi Nair',      age:36, gender:'F', ward:'Emergency',     finding:'Normal',           conf:90.2, triage:'LOW',  date:'11 May 2026', ref:'Dr. A. Verma',   color:'#0d2a14', text:'#4ade80' },
+    { id:'PT-00194', name:'Prakash Menon',    age:65, gender:'M', ward:'Cardiology',    finding:'Cardiomegaly',     conf:71.5, triage:'MED',  date:'11 May 2026', ref:'Dr. M. Iyer',    color:'#1a2a4a', text:'#94a3b8' },
+    { id:'PT-00181', name:'Divya Pillai',     age:44, gender:'F', ward:'General',       finding:'Normal',           conf:87.6, triage:'LOW',  date:'10 May 2026', ref:'Dr. P. Menon',   color:'#0d2a14', text:'#4ade80' },
+  ];
+
+  const FINDING_COLORS = {
+    'Pneumonia':'#ef4444','Tuberculosis':'#f97316','Cardiomegaly':'#60c8f5',
+    'Pleural Effusion':'#f59e0b','Pneumothorax':'#a78bfa','Normal':'#22c55e'
+  };
+
+  let currentFilter = 'all';
+  let currentPage   = 1;
+  const PAGE_SIZE   = 10;
+  let sortKey       = 'date';
+  let sortAsc       = false;
+  let filtered      = [...PATIENTS];
+
+  function getInitials(name) {
+    return name.split(' ').map(w => w[0]).join('').substring(0,2).toUpperCase();
+  }
+
+  function triageClass(t) {
+    return t === 'HIGH' ? 'triage-high' : t === 'MED' ? 'triage-med' : 'triage-low';
+  }
+
+  function confColor(c) {
+    return c >= 75 ? '#f87171' : c >= 50 ? '#fbbf24' : '#4ade80';
+  }
+
+  function renderTable() {
+    const tbody  = document.getElementById('tableBody');
+    const empty  = document.getElementById('emptyState');
+    const start  = (currentPage - 1) * PAGE_SIZE;
+    const slice  = filtered.slice(start, start + PAGE_SIZE);
+
+    if (filtered.length === 0) {
+      tbody.innerHTML = '';
+      empty.style.display = 'flex';
+    } else {
+      empty.style.display = 'none';
+      tbody.innerHTML = slice.map((p, i) => `
+        <tr onclick="openPatient('${p.id}')" ${i === 0 && p.id === 'PT-00421' ? 'class="highlighted"' : ''}>
+          <td>
+            <div class="patient-cell">
+              <div class="initials" style="background:${p.color};color:${p.text};">${getInitials(p.name)}</div>
+              <div>
+                <div class="patient-name-cell">${p.name}</div>
+                <div class="patient-id-cell">${p.id} · ${p.age}y ${p.gender}</div>
+              </div>
+            </div>
+          </td>
+          <td><span class="ward-cell">${p.ward}</span></td>
+          <td>
+            <div class="finding-cell">
+              <div class="finding-dot" style="background:${FINDING_COLORS[p.finding]||'#64748b'};"></div>
+              <span style="color:${FINDING_COLORS[p.finding]||'#64748b'};font-size:11px;">${p.finding}</span>
+            </div>
+          </td>
+          <td><span class="conf-cell" style="color:${confColor(p.conf)};">${p.conf.toFixed(1)}%</span></td>
+          <td><span class="triage-pill ${triageClass(p.triage)}">● ${p.triage}</span></td>
+          <td><span class="date-cell">${p.date}</span></td>
+          <td><span style="font-size:10px;color:#475569;">${p.ref}</span></td>
+          <td>
+            <div class="action-cell">
+              <button class="icon-btn" title="Open dashboard" onclick="event.stopPropagation();openPatient('${p.id}')"><i class="ti ti-layout-dashboard"></i></button>
+              <button class="icon-btn" title="View analytics" onclick="event.stopPropagation();window.location.href='analytics.html'"><i class="ti ti-chart-line"></i></button>
+              <button class="icon-btn" title="Flag for review" onclick="event.stopPropagation();flagPatient('${p.id}')"><i class="ti ti-flag"></i></button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    // pagination info
+    const total = filtered.length;
+    const s = start + 1;
+    const e = Math.min(start + PAGE_SIZE, total);
+    document.getElementById('pageInfo').textContent = total === 0 ? 'No results' : `Showing ${s}–${e} of ${total}`;
+
+    // page buttons
+    const pages = Math.ceil(total / PAGE_SIZE);
+    document.getElementById('page1').classList.toggle('active', currentPage === 1);
+    document.getElementById('page2').classList.toggle('active', currentPage === 2);
+    document.getElementById('page2').style.display = pages > 1 ? '' : 'none';
+    document.getElementById('prevBtn').disabled = currentPage === 1;
+    document.getElementById('nextBtn').disabled = currentPage >= pages;
+  }
+
+  function applyFiltersAndSort() {
+    const q = document.getElementById('searchInput').value.toLowerCase();
+    filtered = PATIENTS.filter(p => {
+      const matchFilter = currentFilter === 'all' || p.triage === currentFilter;
+      const matchSearch = !q || p.name.toLowerCase().includes(q)
+        || p.id.toLowerCase().includes(q)
+        || p.ward.toLowerCase().includes(q)
+        || p.finding.toLowerCase().includes(q);
+      return matchFilter && matchSearch;
+    });
+
+    filtered.sort((a, b) => {
+      let av = a[sortKey], bv = b[sortKey];
+      if (typeof av === 'string') av = av.toLowerCase(), bv = bv.toLowerCase();
+      return sortAsc ? (av > bv ? 1 : -1) : (av < bv ? 1 : -1);
+    });
+
+    currentPage = 1;
+    renderTable();
+  }
+
+  function filterTable() { applyFiltersAndSort(); }
+
+  function setFilter(f) {
+    currentFilter = f;
+    ['filterAll','filterHigh','filterMed','filterLow'].forEach(id => {
+      document.getElementById(id).classList.remove('active');
+    });
+    const map = { all:'filterAll', HIGH:'filterHigh', MED:'filterMed', LOW:'filterLow' };
+    document.getElementById(map[f]).classList.add('active');
+    applyFiltersAndSort();
+  }
+
+  function sortTable(key) {
+    if (sortKey === key) sortAsc = !sortAsc;
+    else { sortKey = key; sortAsc = false; }
+    applyFiltersAndSort();
+  }
+
+  function changePage(dir) {
+    const pages = Math.ceil(filtered.length / PAGE_SIZE);
+    currentPage = Math.max(1, Math.min(pages, currentPage + dir));
+    renderTable();
+  }
+
+  function goPage(n) { currentPage = n; renderTable(); }
+
+  function openPatient(id) {
+    window.location.href = 'dashboard.html';
+  }
+
+  function flagPatient(id) {
+    alert(`Patient ${id} flagged for radiologist review.`);
+  }
+
+  /* initial render */
+  applyFiltersAndSort();
+</script>
+</body>
+</html>
