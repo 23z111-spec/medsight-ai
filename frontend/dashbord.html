@@ -24,10 +24,10 @@
 
   /* ── LAYOUT ── */
   .app{display:flex;flex-direction:column;height:100vh;}
-  .main{display:grid;grid-template-columns:210px 1fr 290px;flex:1;overflow:hidden;}
+  .main{display:grid;grid-template-columns:210px 1fr 290px;flex:1;overflow:hidden;min-height:0;}
 
   /* ── SIDEBAR ── */
-  .sidebar{background:#0d1017;border-right:1px solid #1e2530;padding:14px 10px;display:flex;flex-direction:column;gap:18px;overflow-y:auto;}
+.sidebar{background:#0d1017;border-right:1px solid #1e2530;padding:14px 10px;display:flex;flex-direction:column;gap:18px;overflow-y:auto;max-height:100%;flex-shrink:0;width:210px;}
   .section-label{font-size:9px;font-weight:500;color:#334155;letter-spacing:1.2px;text-transform:uppercase;padding:0 6px;margin-bottom:6px;}
   .patient-card{background:#131822;border:1px solid #1e2530;border-radius:10px;padding:12px;}
   .patient-name{font-size:13px;font-weight:600;color:#e2e8f0;margin-bottom:2px;}
@@ -50,7 +50,7 @@
   .model-val{font-size:11px;color:#94a3b8;margin-bottom:8px;}
 
   /* ── CENTER ── */
-  .center{background:#080b0f;padding:16px;display:flex;flex-direction:column;gap:12px;overflow-y:auto;}
+.center{background:#080b0f;padding:16px;display:flex;flex-direction:column;gap:12px;overflow:auto;flex:1;min-width:0;min-height:0;}
   .toolbar{display:flex;align-items:center;gap:6px;flex-shrink:0;}
   .tool-btn{background:#131822;border:1px solid #1e2530;border-radius:6px;padding:5px 11px;font-size:10px;color:#64748b;cursor:pointer;display:flex;align-items:center;gap:4px;transition:all .15s;}
   .tool-btn:hover{background:#1a2235;color:#94a3b8;}
@@ -63,7 +63,7 @@
   .toggle.on::after{left:16px;background:#60c8f5;}
 
   /* ── XRAY VIEWER ── */
-  .xray-box{width:100%;position:relative;border:1px solid #1e2530;border-radius:12px;overflow:hidden;background:#080b0f;flex-shrink:0;}
+  .xray-box{width:100%;position:relative;border:1px solid #1e2530;border-radius:12px;overflow:hidden;background:#080b0f;flex:1;min-height:0;}
   .heatmap-overlay{position:absolute;top:0;left:0;right:0;bottom:0;opacity:0;transition:opacity .4s;pointer-events:none;}
   .heatmap-overlay.visible{opacity:.55;}
   .zoom-tag{position:absolute;bottom:10px;right:10px;background:rgba(13,16,23,.9);border:1px solid #1e2530;border-radius:5px;padding:3px 7px;font-size:9px;color:#475569;font-family:'Space Mono',monospace;}
@@ -77,7 +77,7 @@
   .metric-sub{font-size:9px;color:#475569;margin-top:2px;}
 
   /* ── RIGHT PANEL ── */
-  .panel{background:#0d1017;border-left:1px solid #1e2530;display:flex;flex-direction:column;overflow-y:auto;}
+.panel{background:#0d1017;border-left:1px solid #1e2530;display:flex;flex-direction:column;overflow-y:auto;flex-shrink:0;width:290px;min-height:0;}
   .psec{padding:14px;border-bottom:1px solid #1e2530;flex-shrink:0;}
   .ptitle{font-size:9px;font-weight:500;color:#334155;letter-spacing:1.2px;text-transform:uppercase;margin-bottom:12px;}
   .status-banner{background:#1a0f0f;border:1px solid #3f1515;border-radius:10px;padding:12px;display:flex;align-items:flex-start;gap:10px;}
@@ -125,7 +125,7 @@
       <div class="nav-pill active">Screening</div>
       <div class="nav-pill" onclick="window.location.href='records.html'">Patient Records</div>
       <div class="nav-pill" onclick="window.location.href='analytics.html'">Analytics</div>
-      <div class="nav-pill">Settings</div>
+      <div class="nav-pill" onclick="window.location.href='settings.html'">Settings</div>
     </div>
     <div class="nav-right">
       <div class="badge">Model v2.4.1</div>

@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>PneumoScan AI · Settings</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{height:100%;background:#0a0c10;color:#e2e8f0;font-family:'DM Sans',sans-serif;overflow:hidden;}
+
+  /* NAV */
+  .topnav{background:#0d1017;border-bottom:1px solid #1e2530;display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:48px;flex-shrink:0;}
+  .logo{display:flex;align-items:center;gap:8px;font-family:'Space Mono',monospace;font-size:12px;color:#60c8f5;letter-spacing:.5px;}
+  .logo-dot{width:7px;height:7px;border-radius:50%;background:#60c8f5;}
+  .nav-pills{display:flex;gap:4px;}
+  .nav-pill{padding:4px 14px;border-radius:6px;font-size:11px;color:#64748b;cursor:pointer;transition:all .15s;}
+  .nav-pill:hover{color:#94a3b8;}
+  .nav-pill.active{background:#1a2235;color:#60c8f5;}
+  .badge{background:#1a2235;border:1px solid #1e2d45;border-radius:20px;padding:3px 10px;font-size:10px;color:#60c8f5;font-family:'Space Mono',monospace;}
+  .avatar{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#2563eb,#7c3aed);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#fff;}
+  .nav-right{display:flex;align-items:center;gap:12px;}
+
+  /* LAYOUT */
+  .app{display:flex;flex-direction:column;height:100vh;}
+  .main{display:grid;grid-template-columns:220px 1fr;flex:1;overflow:hidden;}
+
+  /* SIDEBAR */
+.sidebar{background:#0d1017;border-right:1px solid #1e2530;padding:16px 10px;display:flex;flex-direction:column;gap:4px;overflow:hidden;}
+  .sidebar-section{font-size:9px;font-weight:500;color:#334155;letter-spacing:1.2px;text-transform:uppercase;padding:10px 10px 6px;margin-top:8px;}
+  .sidebar-section:first-child{margin-top:0;}
+  .side-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;cursor:pointer;border:1px solid transparent;transition:all .15s;font-size:12px;color:#64748b;}
+  .side-item:hover{background:#131822;color:#94a3b8;}
+  .side-item.active{background:#0f1e35;border-color:#1e3a5f;color:#60c8f5;}
+  .side-item i{font-size:15px;width:16px;text-align:center;}
+  .side-badge{margin-left:auto;background:#2d1010;border:1px solid #5a1f1f;color:#f87171;font-size:9px;padding:1px 6px;border-radius:4px;font-family:'Space Mono',monospace;}
+
+  /* CONTENT */
+.content{overflow:hidden;padding:24px;display:flex;flex-direction:column;gap:20px;background:#080b0f;}
+
+  .page-header{display:flex;align-items:flex-start;justify-content:space-between;}
+  .page-title{font-size:18px;font-weight:500;color:#94a3b8;}
+  .page-sub{font-size:11px;color:#475569;margin-top:3px;}
+  .save-btn{background:#1a3a6a;border:1px solid #2563eb;border-radius:8px;padding:8px 18px;font-size:11px;color:#60c8f5;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;display:flex;align-items:center;gap:6px;}
+  .save-btn:hover{background:#1e4480;}
+
+  /* SECTION CARDS */
+  .settings-card{background:#0d1017;border:1px solid #1e2530;border-radius:12px;overflow:hidden;}
+  .card-header{padding:14px 18px;border-bottom:1px solid #1e2530;display:flex;align-items:center;gap:10px;}
+  .card-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;}
+  .card-title{font-size:13px;font-weight:500;color:#94a3b8;}
+  .card-sub{font-size:10px;color:#475569;margin-top:1px;}
+  .card-body{padding:6px 0;}
+
+  /* SETTING ROWS */
+  .setting-row{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;border-bottom:1px solid #0d1017;transition:background .12s;}
+  .setting-row:last-child{border-bottom:none;}
+  .setting-row:hover{background:#0a0f18;}
+  .setting-label{font-size:12px;color:#94a3b8;font-weight:500;}
+  .setting-sub{font-size:10px;color:#475569;margin-top:2px;}
+  .setting-control{flex-shrink:0;margin-left:20px;}
+
+  /* TOGGLE */
+  .toggle{width:36px;height:20px;background:#1e2530;border-radius:10px;position:relative;cursor:pointer;border:1px solid #2d3a4a;transition:background .2s;}
+  .toggle.on{background:#1a4a7a;border-color:#2563eb;}
+  .toggle::after{content:'';position:absolute;width:14px;height:14px;background:#475569;border-radius:50%;top:2px;left:2px;transition:all .2s;}
+  .toggle.on::after{left:18px;background:#60c8f5;}
+
+  /* INPUT */
+  .setting-input{background:#131822;border:1px solid #1e2530;border-radius:7px;padding:6px 10px;font-size:11px;color:#94a3b8;outline:none;font-family:'DM Sans',sans-serif;width:160px;transition:border .15s;}
+  .setting-input:focus{border-color:#1e3a5f;}
+
+  /* SELECT */
+  .setting-select{background:#131822;border:1px solid #1e2530;border-radius:7px;padding:6px 10px;font-size:11px;color:#94a3b8;outline:none;font-family:'DM Sans',sans-serif;width:160px;cursor:pointer;}
+  .setting-select option{background:#131822;}
+
+  /* SLIDER */
+  .slider-wrap{display:flex;align-items:center;gap:10px;}
+  .setting-slider{-webkit-appearance:none;width:130px;height:4px;border-radius:2px;background:#1e2530;outline:none;cursor:pointer;}
+  .setting-slider::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:#60c8f5;cursor:pointer;border:2px solid #0d1017;}
+  .slider-val{font-size:10px;font-family:'Space Mono',monospace;color:#60c8f5;min-width:32px;text-align:right;}
+
+  /* API STATUS */
+  .api-status{display:flex;align-items:center;gap:6px;font-size:10px;}
+  .status-dot{width:7px;height:7px;border-radius:50%;}
+  .status-dot.online{background:#22c55e;box-shadow:0 0 6px rgba(34,197,94,.5);}
+  .status-dot.offline{background:#ef4444;}
+
+  /* PROFILE CARD */
+  .profile-card{display:flex;align-items:center;gap:14px;padding:16px 18px;border-bottom:1px solid #131822;}
+  .profile-avatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#2563eb,#7c3aed);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:600;color:#fff;flex-shrink:0;}
+  .profile-name{font-size:13px;font-weight:500;color:#e2e8f0;}
+  .profile-role{font-size:10px;color:#475569;margin-top:2px;}
+  .profile-edit{margin-left:auto;background:transparent;border:1px solid #1e2530;border-radius:6px;padding:5px 10px;font-size:10px;color:#64748b;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;}
+  .profile-edit:hover{background:#131822;color:#94a3b8;}
+
+  /* DANGER ZONE */
+  .danger-card{background:#0d1017;border:1px solid #3f1515;border-radius:12px;overflow:hidden;}
+  .danger-header{padding:14px 18px;border-bottom:1px solid #3f1515;display:flex;align-items:center;gap:10px;}
+  .danger-icon{width:32px;height:32px;border-radius:8px;background:#2d1010;display:flex;align-items:center;justify-content:center;font-size:15px;color:#f87171;}
+  .danger-btn{background:transparent;border:1px solid #5a1f1f;border-radius:7px;padding:7px 14px;font-size:11px;color:#f87171;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;}
+  .danger-btn:hover{background:#2d1010;}
+
+  /* TOAST */
+  .toast{position:fixed;bottom:24px;right:24px;background:#0d1017;border:1px solid #1e3a5f;border-radius:10px;padding:12px 18px;display:flex;align-items:center;gap:10px;font-size:12px;color:#60c8f5;transform:translateY(80px);opacity:0;transition:all .3s;z-index:100;}
+  .toast.show{transform:translateY(0);opacity:1;}
+
+  ::-webkit-scrollbar{width:4px;}
+  ::-webkit-scrollbar-track{background:transparent;}
+  ::-webkit-scrollbar-thumb{background:#1e2530;border-radius:2px;}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- NAV -->
+<div class="topnav">
+  <div class="logo"><div class="logo-dot"></div>PNEUMOSCAN · AI</div>
+<div class="nav-pills">
+    <div class="nav-pill" onclick="window.location.href='dashbord.html'">Screening</div>
+    <div class="nav-pill" onclick="window.location.href='records.html'">Patient Records</div>
+    <div class="nav-pill" onclick="window.location.href='analytics.html'">Analytics</div>
+    <div class="nav-pill active">Settings</div>
+  </div>
+  <div class="nav-right">
+    <div class="badge">Model v2.4.1</div>
+    <div class="avatar">DR</div>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- SETTINGS SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-section">Account</div>
+    <div class="side-item active" onclick="showSection('profile')"><i class="ti ti-user-circle"></i> Profile</div>
+    <div class="side-item" onclick="showSection('notifications')"><i class="ti ti-bell"></i> Notifications<span class="side-badge">3</span></div>
+
+    <div class="sidebar-section">Model</div>
+    <div class="side-item" onclick="showSection('model')"><i class="ti ti-brain"></i> AI Model</div>
+    <div class="side-item" onclick="showSection('thresholds')"><i class="ti ti-adjustments"></i> Thresholds</div>
+
+    <div class="sidebar-section">System</div>
+    <div class="side-item" onclick="showSection('api')"><i class="ti ti-api"></i> API & Backend</div>
+    <div class="side-item" onclick="showSection('display')"><i class="ti ti-layout"></i> Display</div>
+    <div class="side-item" onclick="showSection('security')"><i class="ti ti-shield-lock"></i> Security</div>
+
+    <div class="sidebar-section">Data</div>
+    <div class="side-item" onclick="showSection('storage')"><i class="ti ti-database"></i> Storage</div>
+    <div class="side-item" onclick="showSection('danger')"><i class="ti ti-alert-triangle" style="color:#f87171;"></i> <span style="color:#f87171;">Danger Zone</span></div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content" id="settingsContent">
+
+    <!-- PROFILE -->
+    <div id="section-profile">
+      <div class="page-header">
+        <div><div class="page-title">Profile</div><div class="page-sub">Manage your account information</div></div>
+        <button class="save-btn" onclick="saveSettings()"><i class="ti ti-device-floppy"></i> Save changes</button>
+      </div>
+      <div class="settings-card">
+        <div class="profile-card">
+          <div class="profile-avatar">DR</div>
+          <div>
+            <div class="profile-name">Dr. Ramesh Anand</div>
+            <div class="profile-role">Radiologist · Apollo Hospital, Chennai</div>
+          </div>
+          <button class="profile-edit">Edit photo</button>
+        </div>
+        <div class="card-body">
+          <div class="setting-row">
+            <div><div class="setting-label">Full name</div><div class="setting-sub">Your display name across the system</div></div>
+            <div class="setting-control"><input class="setting-input" type="text" value="Dr. Ramesh Anand"/></div>
+          </div>
+          <div class="setting-row">
+            <div><div class="setting-label">Email address</div><div class="setting-sub">Used for report delivery and alerts</div></div>
+            <div class="setting-control"><input class="setting-input" type="email" value="r.anand@apollo.in"/></div>
+          </div>
+          <div class="setting-row">
+            <div><div class="setting-label">Department</div><div class="setting-sub">Your ward or department</div></div>
+            <div class="setting-control"><input class="setting-input" type="text" value="Radiology"/></div>
+          </div>
+          <div class="setting-row">
+            <div><div class="setting-label">Hospital</div><div class="setting-sub">Institution name shown on reports</div></div>
+            <div class="setting-control"><input class="setting-input" type="text" value="Apollo Hospital"/></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- NOTIFICATIONS -->
+    <div id="section-notifications" style="display:none;">
+      <div class="page-header">
+        <div><div class="page-title">Notifications</div><div class="page-sub">Control when and how you are alerted</div></div>
+        <button class="save-btn" onclick="saveSettings()"><i class="ti ti-device-floppy"></i> Save changes</button>
+      </div>
+      <div class="settings-card">
+        <div class="card-header">
+          <div class="card-icon" style="background:#1a2235;color:#60c8f5;"><i class="ti ti-bell"></i></div>
+          <div><div class="card-title">Alert preferences</div><div class="card-sub">Choose which events trigger notifications</div></div>
+        </div>
+        <div class="card-body">
+          <div class="setting-row">
+            <div><div class="setting-label">High triage findings</div><div class="setting-sub">Alert immediately when AI flags HIGH priority</div></div>
+            <div class="setting-control"><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+          </div>
+          <div class="setting-row">
+            <div><div class="setting-label">Medium triage findings</div><div class="setting-sub">Alert when confidence exceeds threshold</div></div>
+            <div class="setting-control"><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+          </div>
+          <div class="setting-row">
+            <div><div class="setting-label">Normal scan results</div><div class="setting-sub">Notify on every completed scan</div></div>
+            <div class="setting-control"><div class="toggle" onclick="this.classList.toggle('on')"></div></div>
+          </div>
+          <div class="setting-row">
+            <div><div class="setting-label">Model offline alert</div><div class="setting-sub">Notify if backend becomes unreachable</div></div>
+            <div class="setting-control"><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+          </div>
+          <div class="setting-row">
+            <div><div class="setting-label">Email reports</div><div class="setting-sub">Send daily summary to your email</div></div>
+            <div class="setting-control"><div class="toggle" onclick="this.classList.toggle('on')"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AI MODEL -->
+    <div id="section-model" style="display:none;">
+      <div class="page-header">
+        <div><div class="page-title">AI Model</div><div class="page-sub">Model configuration and status</div></div>
+        <button class="save-btn" onclick="saveSettings()"><i class="ti ti-device-floppy"></i> Save changes</button>
+      </div>
+      <div class="settings-card">
+        <div class="card-header">
+          <div class="card-icon" style="background:#0f1e35;color:#60c8f5;"><i class="ti ti-brain"></i></div>
+          <div><div class="card-title">Model info</div><div class="card-sub">Currently loaded model details</div></div>
+        </div>
+        <div class="card-body">
+          <div class="setting-row">
+            <div><div class="setting-label">Architecture</div><div class="setting-sub">Neural network backbone</div></div>
+            <div class="setting-control"><span style="font-size:11px;color:#60c8f5;font-family:'Space Mono',monospace;">EfficientNet-B3</span></div>
+          </div>
+          <div class="setting-row">
+            <div><div class="setting-label">Training dataset</div><div class="setting-sub">Dataset used for fine-tuning</div></div>
+            <div class="setting-control"><span style="font-size:11px;color:#64748b;font-family:'Space Mono',monospace;">NIH ChestXray14</span></div>
+          </div>
+          <div class="setting-row">
+            <div><div class="setting-label">Validation AUC-ROC</div><div class="setting-sub">Performance on held-out validation set</div></div>
+            <div class="setting-control"><span style="font-size:13px;font-weight:700;color:#4ade80;font-family:'Space Mono',monospace;">0.924</span></div>
+          </div>
+          <div class="setting-row">
+            <div><div class="setting-label">Model version</div><div class="setting-sub">Weights file identifier</div></div>
+            <div class="setting-control"><span style="font-size:11px;color:#64748b;font-family:'Space Mono',monospace;">v2.4.1</span></div>
+          </div>
+          <div class="setting-row">
+            <div><div class="setting-label">Mock mode</div><div class="setting-sub">Returns dummy predictions — disable once weights loaded</div></div>
+            <div class="setting-control"><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+          </div>
+          <div class="setting-row">
+            <div><div class="setting-label">Grad-CAM enabled</div><div class="setting-sub">Generate heatmap overlay on every prediction</div></div>
+            <div class="setting-control"><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+          </div>
+          <div class="setting-row">
+            <div><div class="setting-label">Inference device</div><div class="setting-sub">Hardware used for model inference</div></div>
+            <div class="setting-control">
+              <select class="setting-select">
+                <option>CPU</option>
+                <option selected>CUDA (GPU)</option>
+                <option>MPS (Apple)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- THRESHOLDS -->
+    <div id="section-thresholds" style="display:none;">
+      <div class="page-header">
+        <div><div class="page-title">Thresholds</div><div class="page-sub">Adjust AI sensitivity and triage cutoffs</div></div>
+        <button class="save-btn" onclick="saveSettings()"><i class="ti ti-device-floppy"></i> Save changes</button>
+      </div>
+      <div class="settings-card">
+        <div class="card-header">
+          <div class="card-icon" style="background:#2d1010;color:#f87171;"><i class="ti ti-adjustments"></i></div>
+          <div><div class="card-title">Triage thresholds</div><div class="card-sub">Confidence cutoffs for HIGH / MEDIUM / LOW triage</div></div>
+        </div>
+        <div class="card-body">
+          <div class="setting-row">
+            <div><div class="setting-label">HIGH triage cutoff</div><div class="setting-sub">Confidence above this → flagged as HIGH priority</div></div>
+            <div class="setting-control">
+              <div class="slider-wrap">
+                <input class="setting-slider" type="range" min="50" max="95" value="75" oninput="document.getElementById('highVal').textContent=this.value+'%'"/>
+                <span class="slider-val" id="highVal">75%</span>
+              </div>
+            </div>
+          </div>
+          <div class="setting-row">
+            <div><div class="setting-label">MEDIUM triage cutoff</div><div class="setting-sub">Confidence above this → flagged as MEDIUM priority</div></div>
+            <div class="setting-control">
+              <div class="slider-wrap">
+                <input class="setting-slider" type="range" min="20" max="74" value="40" oninput="document.getElementById('medVal').textContent=this.value+'%'"/>
+                <span class="slider-val" id="medVal">40%</span>
+              </div>
+            </div>
+          </div>
+          <div class="setting-row">
+            <div><div class="setting-label">Minimum confidence to display</div><div class="setting-sub">Findings below this are hidden from results</div></div>
+            <div class="setting-control">
+              <div class="slider-wrap">
+                <input class="setting-slider" type="range" min="1" max="30" value="5" oninput="document.getElementById('minVal').textContent=this.value+'%'"/>
+                <span class="slider-val" id="minVal">5%</span>
+              </div>
+            </div>
+          </div>
+          <div class="setting-row">
+            <div><div class="setting-label">Human review flag threshold</div><div class="setting-sub">Scans below this confidence are flagged for manual review</div></div>
+            <div class="setting-control">
+              <div class="slider-wrap">
+                <input class="setting-slider" type="range" min="50" max="90" value="70" oninput="document.getElementById('reviewVal').textContent=this.value+'%'"/>
+                <span class="slider-val" id="reviewVal">70%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- API & BACKEND -->
+    <div id="section-api" style="display:none;">
+      <div class="page-header">
+        <div><div class="page-title">API & Backend</div><div class="page-sub">FastAPI server connection settings</div></div>
+        <button class="save-btn" onclick="checkConnection()"><i class="ti ti-plug"></i> Test connection</button>
+      </div>
+      <div class="settings-card">
+        <div class="card-header">
+          <div class="card-icon" style="background:#0f1e35;color:#60c8f5;"><i class="ti ti-api"></i></div>
+          <div>
+            <div class="card-title">Backend connection</div>
+            <div style="display:flex;align-items:center;gap:6px;margin-top:4px;">
+              <div class="api-status"><div class="status-dot online"></div><span style="font-size:10px;color:#4ade80;">Connected · localhost:8000</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="setting-row">
+            <div><div class="setting-label">API base URL</div><div class="setting-sub">FastAPI server address</div></div>
+            <div class="setting-control"><input class="setting-input" type="text" value="http://localhost:8000" style="width:200px;"/></div>
+          </div>
+          <div class="setting-row">
+            <div><div class="setting-label">Predict endpoint</div><div class="setting-sub">POST endpoint for image inference</div></div>
+            <div class="setting-control"><input class="setting-input" type="text" value="/predict" style="width:200px;"/></div>
+          </div>
+          <div class="setting-row">
+            <div><div class="setting-label">Request timeout</div><div class="setting-sub">Max wait time for inference response</div></div>
+            <div class="setting-control">
+              <select class="setting-select">
+                <option>10 seconds</option>
+                <option selected>30 seconds</option>
+                <option>60 seconds</option>
+              </select>
+            </div>
+          </div>
+          <div class="setting-row">
+            <div><div class="setting-label">Auto-reconnect</div><div class="setting-sub">Retry connection if backend goes offline</div></div>
+            <div class="setting-control"><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DISPLAY -->
+    <div id="section-display" style="display:none;">
+      <div class="page-header">
+        <div><div class="page-title">Display</div><div class="page-sub">Viewer and UI preferences</div></div>
+        <button class="save-btn" onclick="saveSettings()"><i class="ti ti-device-floppy"></i> Save changes</button>
+      </div>
+      <div class="settings-card">
+        <div class="card-header">
+          <div class="card-icon" style="background:#131822;color:#64748b;"><i class="ti ti-layout"></i></div>
+          <div><div class="card-title">Viewer settings</div><div class="card-sub">X-ray viewer and heatmap preferences</div></div>
+        </div>
+        <div class="card-body">
+          <div class="setting-row">
+            <div><div class="setting-label">Default Grad-CAM overlay</div><div class="setting-sub">Show heatmap by default on scan open</div></div>
+            <div class="setting-control"><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+          </div>
+          <div class="setting-row">
+            <div><div class="setting-label">Heatmap opacity</div><div class="setting-sub">Default overlay transparency</div></div>
+            <div class="setting-control">
+              <div class="slider-wrap">
+                <input class="setting-slider" type="range" min="10" max="90" value="55" oninput="document.getElementById('opacityVal').textContent=this.value+'%'"/>
+                <span class="slider-val" id="opacityVal">55%</span>
+              </div>
+            </div>
+          </div>
+          <div class="setting-row">
+            <div><div class="setting-label">Default zoom level</div><div class="setting-sub">Initial magnification on scan open</div></div>
+            <div class="setting-control">
+              <select class="setting-select">
+                <option selected>1.0× — Fit to screen</option>
+                <option>1.5×</option>
+                <option>2.0×</option>
+              </select>
+            </div>
+          </div>
+          <div class="setting-row">
+            <div><div class="setting-label">Annotation markers</div><div class="setting-sub">Show RUL / region labels on X-ray</div></div>
+            <div class="setting-control"><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+          </div>
+          <div class="setting-row">
+            <div><div class="setting-label">Show confidence on findings</div><div class="setting-sub">Display % next to each finding label</div></div>
+            <div class="setting-control"><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECURITY -->
+    <div id="section-security" style="display:none;">
+      <div class="page-header">
+        <div><div class="page-title">Security</div><div class="page-sub">Access and authentication settings</div></div>
+        <button class="save-btn" onclick="saveSettings()"><i class="ti ti-device-floppy"></i> Save changes</button>
+      </div>
+      <div class="settings-card">
+        <div class="card-body">
+          <div class="setting-row">
+            <div><div class="setting-label">Session timeout</div><div class="setting-sub">Auto-logout after inactivity</div></div>
+            <div class="setting-control">
+              <select class="setting-select">
+                <option>15 minutes</option>
+                <option selected>30 minutes</option>
+                <option>1 hour</option>
+                <option>Never</option>
+              </select>
+            </div>
+          </div>
+          <div class="setting-row">
+            <div><div class="setting-label">Require login on startup</div><div class="setting-sub">Prompt for credentials each session</div></div>
+            <div class="setting-control"><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+          </div>
+          <div class="setting-row">
+            <div><div class="setting-label">Audit log</div><div class="setting-sub">Record all AI actions and doctor overrides</div></div>
+            <div class="setting-control"><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+          </div>
+          <div class="setting-row">
+            <div><div class="setting-label">Change password</div><div class="setting-sub">Update your account password</div></div>
+            <div class="setting-control"><button class="profile-edit" style="font-size:11px;padding:6px 12px;">Change</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STORAGE -->
+    <div id="section-storage" style="display:none;">
+      <div class="page-header">
+        <div><div class="page-title">Storage</div><div class="page-sub">Database and file storage settings</div></div>
+        <button class="save-btn" onclick="saveSettings()"><i class="ti ti-device-floppy"></i> Save changes</button>
+      </div>
+      <div class="settings-card">
+        <div class="card-body">
+          <div class="setting-row">
+            <div><div class="setting-label">Database</div><div class="setting-sub">Active database backend</div></div>
+            <div class="setting-control"><span style="font-size:11px;color:#60c8f5;font-family:'Space Mono',monospace;">SQLite · local</span></div>
+          </div>
+          <div class="setting-row">
+            <div><div class="setting-label">Storage used</div><div class="setting-sub">Current database and scan storage</div></div>
+            <div class="setting-control"><span style="font-size:11px;color:#94a3b8;font-family:'Space Mono',monospace;">1.24 GB / 10 GB</span></div>
+          </div>
+          <div class="setting-row">
+            <div><div class="setting-label">Auto-backup</div><div class="setting-sub">Backup database daily to local folder</div></div>
+            <div class="setting-control"><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+          </div>
+          <div class="setting-row">
+            <div><div class="setting-label">Retain scans for</div><div class="setting-sub">Auto-delete scans older than this period</div></div>
+            <div class="setting-control">
+              <select class="setting-select">
+                <option>3 months</option>
+                <option>6 months</option>
+                <option selected>1 year</option>
+                <option>Forever</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DANGER ZONE -->
+    <div id="section-danger" style="display:none;">
+      <div class="page-header">
+        <div><div class="page-title">Danger Zone</div><div class="page-sub">Irreversible actions — proceed with caution</div></div>
+      </div>
+      <div class="danger-card">
+        <div class="danger-header">
+          <div class="danger-icon"><i class="ti ti-alert-triangle"></i></div>
+          <div><div class="card-title" style="color:#f87171;">Destructive actions</div><div class="card-sub">These cannot be undone</div></div>
+        </div>
+        <div class="card-body">
+          <div class="setting-row">
+            <div><div class="setting-label">Clear all scan history</div><div class="setting-sub">Permanently delete all patient scans and results</div></div>
+            <div class="setting-control"><button class="danger-btn" onclick="confirmDanger('clear scans')">Clear scans</button></div>
+          </div>
+          <div class="setting-row">
+            <div><div class="setting-label">Reset model to mock mode</div><div class="setting-sub">Unload weights and revert to dummy predictions</div></div>
+            <div class="setting-control"><button class="danger-btn" onclick="confirmDanger('reset model')">Reset model</button></div>
+          </div>
+          <div class="setting-row">
+            <div><div class="setting-label">Delete all patient records</div><div class="setting-sub">Remove all patients and associated data from the database</div></div>
+            <div class="setting-control"><button class="danger-btn" onclick="confirmDanger('delete all records')">Delete records</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"><i class="ti ti-check" style="font-size:15px;color:#4ade80;"></i> Settings saved successfully</div>
+
+<script>
+  const sections = ['profile','notifications','model','thresholds','api','display','security','storage','danger'];
+
+  function showSection(id) {
+    sections.forEach(s => {
+      document.getElementById('section-' + s).style.display = s === id ? 'flex' : 'none';
+      document.getElementById('section-' + s).style.flexDirection = 'column';
+      document.getElementById('section-' + s).style.gap = '16px';
+    });
+    document.querySelectorAll('.side-item').forEach(el => el.classList.remove('active'));
+    event.currentTarget.classList.add('active');
+  }
+
+  /* show profile by default */
+  document.getElementById('section-profile').style.display = 'flex';
+  document.getElementById('section-profile').style.flexDirection = 'column';
+  document.getElementById('section-profile').style.gap = '16px';
+
+  function saveSettings() {
+    const toast = document.getElementById('toast');
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2500);
+  }
+
+  function checkConnection() {
+    fetch('http://localhost:8000/health')
+      .then(r => r.json())
+      .then(() => { const t = document.getElementById('toast'); t.innerHTML = '<i class="ti ti-check" style="font-size:15px;color:#4ade80;"></i> Backend connected · localhost:8000'; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2500); })
+      .catch(() => { const t = document.getElementById('toast'); t.style.borderColor='#5a1f1f'; t.innerHTML = '<i class="ti ti-x" style="font-size:15px;color:#f87171;"></i> Cannot reach backend — is uvicorn running?'; t.classList.add('show'); setTimeout(()=>{t.classList.remove('show');t.style.borderColor='#1e3a5f';},3000); });
+  }
+
+  function confirmDanger(action) {
+    if (confirm(`Are you sure you want to ${action}? This cannot be undone.`)) {
+      saveSettings();
+    }
+  }
+</script>
+</body>
+</html>
