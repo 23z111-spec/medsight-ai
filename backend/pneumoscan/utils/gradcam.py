@@ -108,3 +108,11 @@ def mock_gradcam() -> str:
     buffer = io.BytesIO()
     pil_img.save(buffer, format="PNG")
     return base64.b64encode(buffer.getvalue()).decode("utf-8")
+def generate_gradcam_b64(model, image_bytes, class_idx, val_transforms):
+    """Wrapper for compatibility with predict.py"""
+    import io as _io
+    from PIL import Image as PILImage
+    original = PILImage.open(_io.BytesIO(image_bytes)).convert("RGB")
+    tensor = val_transforms(original).unsqueeze(0)
+    gradcam = GradCAM(model)
+    return gradcam.generate(tensor, class_idx)

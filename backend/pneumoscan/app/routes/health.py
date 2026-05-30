@@ -1,20 +1,17 @@
+import torch
 from fastapi import APIRouter
-from app.schemas import HealthResponse
-from app.model_loader import MOCK_MODE, DEVICE, MODEL_PATH
-import os
+from app.model_loader import ModelHolder
 
 router = APIRouter()
 
-@router.get("/", response_model=HealthResponse)
+@router.get("/")
 def health_check():
-    """
-    Quick status check — call this from the dashboard on page load
-    to confirm the API is up and the model is ready.
-    """
-    return HealthResponse(
-        status="ok",
-        model_loaded=not MOCK_MODE and os.path.exists(MODEL_PATH),
-        mock_mode=MOCK_MODE,
-        device=str(DEVICE),
-        model_version="efficientnet_b3_v1",
-    )
+    return {
+        "status":     "ok" if ModelHolder.loaded else "not_loaded",
+        "b0_loaded":  ModelHolder.b0 is not None,
+        "b3_loaded":  ModelHolder.b3 is not None,
+        "mock_mode":  ModelHolder.mock,
+        "device":     "cuda" if torch.cuda.is_available() else "cpu",
+        "model_auc":  0.7749,
+        "conditions": ["No Finding", "Pneumonia", "Cardiomegaly", "Effusion", "Infiltration"]
+    }

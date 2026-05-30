@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>PneumoScan AI · Login</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{height:100%;background:#0a0c10;color:#e2e8f0;font-family:'DM Sans',sans-serif;overflow:hidden;}
+
+  /* BACKGROUND GRID */
+  .bg{position:fixed;inset:0;background:#0a0c10;overflow:hidden;}
+  .bg-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(30,37,48,0.4) 1px,transparent 1px),linear-gradient(90deg,rgba(30,37,48,0.4) 1px,transparent 1px);background-size:40px 40px;mask-image:radial-gradient(ellipse at 50% 50%,black 30%,transparent 80%);}
+  .bg-glow{position:absolute;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(37,99,235,0.08) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);}
+
+  /* LAYOUT */
+  .page{position:relative;z-index:1;height:100vh;display:grid;grid-template-columns:1fr 1fr;overflow:hidden;}
+
+  /* LEFT PANEL */
+  .left{display:flex;flex-direction:column;justify-content:space-between;padding:24px 32px;border-right:1px solid #1e2530;background:rgba(13,16,23,0.6);overflow:hidden;}
+  .brand{display:flex;align-items:center;gap:10px;}
+  .brand-dot{width:8px;height:8px;border-radius:50%;background:#60c8f5;}
+  .brand-name{font-family:'Space Mono',monospace;font-size:12px;color:#60c8f5;letter-spacing:.5px;}
+
+  .left-hero{display:flex;flex-direction:column;gap:10px;flex:1;justify-content:center;}
+  .left-title{font-size:24px;font-weight:600;color:#e2e8f0;line-height:1.3;}
+  .left-title span{color:#60c8f5;}
+  .left-sub{font-size:11px;color:#475569;line-height:1.6;max-width:340px;}
+
+  .feature-list{display:flex;flex-direction:column;gap:7px;}
+  .feature-item{display:flex;align-items:center;gap:10px;}
+  .feature-icon{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
+  .feature-text{font-size:11px;color:#64748b;}
+  .feature-text strong{color:#94a3b8;display:block;margin-bottom:1px;font-size:11px;}
+
+  .left-footer{font-size:9px;color:#334155;flex-shrink:0;}
+
+  /* XRAY ILLUSTRATION */
+  .xray-preview{background:#080b0f;border:1px solid #1e2530;border-radius:10px;padding:10px;margin-top:10px;}
+  .xray-preview-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+  .xray-preview-title{font-size:9px;color:#334155;font-family:'Space Mono',monospace;}
+  .xray-preview-badge{font-size:8px;padding:2px 6px;border-radius:4px;background:#2d1010;border:1px solid #5a1f1f;color:#f87171;font-family:'Space Mono',monospace;}
+
+  /* RIGHT PANEL — LOGIN FORM */
+  .right{display:flex;align-items:center;justify-content:center;padding:24px 32px;background:#080b0f;overflow:hidden;}
+  .login-box{width:100%;max-width:360px;display:flex;flex-direction:column;gap:14px;}
+
+  .login-header{text-align:center;}
+  .login-title{font-size:18px;font-weight:600;color:#e2e8f0;margin-bottom:4px;}
+  .login-sub{font-size:11px;color:#475569;}
+
+  .form{display:flex;flex-direction:column;gap:10px;}
+  .field{display:flex;flex-direction:column;gap:4px;}
+  .field-label{font-size:10px;color:#64748b;font-weight:500;}
+  .field-wrap{position:relative;}
+  .field-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:14px;color:#334155;pointer-events:none;}
+  .field-input{width:100%;background:#0d1017;border:1px solid #1e2530;border-radius:7px;padding:8px 10px 8px 32px;font-size:11px;color:#94a3b8;outline:none;font-family:'DM Sans',sans-serif;transition:all .2s;}
+  .field-input::placeholder{color:#334155;}
+  .field-input:focus{border-color:#1e3a5f;background:#0a1525;}
+  .field-input.error{border-color:#5a1f1f;background:#0d0a0a;}
+
+  .password-wrap{position:relative;}
+  .show-pw{position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:14px;color:#334155;cursor:pointer;transition:color .15s;}
+  .show-pw:hover{color:#64748b;}
+
+  .field-row{display:flex;align-items:center;justify-content:space-between;}
+  .remember{display:flex;align-items:center;gap:5px;cursor:pointer;}
+  .remember input{accent-color:#2563eb;width:12px;height:12px;}
+  .remember span{font-size:10px;color:#475569;}
+  .forgot{font-size:10px;color:#60c8f5;cursor:pointer;text-decoration:none;transition:color .15s;}
+  .forgot:hover{color:#94c8e8;}
+
+  .login-btn{background:#1a3a6a;border:1px solid #2563eb;border-radius:7px;padding:9px;font-size:12px;font-weight:500;color:#60c8f5;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:7px;}
+  .login-btn:hover{background:#1e4480;}
+  .login-btn:active{transform:scale(0.99);}
+  .login-btn.loading{opacity:.7;cursor:not-allowed;}
+
+  .spinner{width:12px;height:12px;border:2px solid rgba(96,200,245,0.3);border-top-color:#60c8f5;border-radius:50%;animation:spin .7s linear infinite;display:none;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+
+  .divider{display:flex;align-items:center;gap:8px;}
+  .divider-line{flex:1;height:1px;background:#1e2530;}
+  .divider-text{font-size:9px;color:#334155;}
+
+  .role-btns{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+  .role-btn{background:#0d1017;border:1px solid #1e2530;border-radius:7px;padding:8px;font-size:10px;color:#64748b;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;display:flex;flex-direction:column;align-items:center;gap:3px;}
+  .role-btn:hover{background:#131822;border-color:#2d3a4a;color:#94a3b8;}
+  .role-btn i{font-size:15px;margin-bottom:1px;}
+
+  .error-msg{background:#1a0f0f;border:1px solid #3f1515;border-radius:6px;padding:7px 10px;font-size:10px;color:#f87171;display:none;align-items:center;gap:6px;}
+  .error-msg.show{display:flex;}
+
+  .disclaimer{font-size:9px;color:#334155;text-align:center;line-height:1.5;border-top:1px solid #1e2530;padding-top:10px;}
+
+  /* DEMO CREDENTIALS BOX */
+  .demo-box{background:#131822;border:1px solid #1e2530;border-radius:7px;padding:8px 12px;}
+  .demo-title{font-size:9px;color:#334155;letter-spacing:.8px;text-transform:uppercase;margin-bottom:6px;}
+  .demo-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;}
+  .demo-row:last-child{margin-bottom:0;}
+  .demo-label{font-size:10px;color:#475569;}
+  .demo-val{font-size:10px;font-family:'Space Mono',monospace;color:#64748b;}
+  .demo-copy{font-size:9px;color:#60c8f5;cursor:pointer;background:transparent;border:none;font-family:'DM Sans',sans-serif;}
+  .demo-copy:hover{text-decoration:underline;}
+</style>
+</head>
+<body>
+
+<div class="bg">
+  <div class="bg-grid"></div>
+  <div class="bg-glow"></div>
+</div>
+
+<div class="page">
+
+  <!-- LEFT PANEL -->
+  <div class="left">
+    <div class="brand">
+      <div class="brand-dot"></div>
+      <div class="brand-name">PNEUMOSCAN · AI</div>
+    </div>
+
+    <div class="left-hero">
+      <div>
+        <div class="left-title">AI-powered<br/><span>chest X-ray</span><br/>screening</div>
+        <div class="left-sub" style="margin-top:12px;">EfficientNet-B3 trained on NIH ChestXray14. Detects pneumonia, tuberculosis, cardiomegaly and pleural effusion with Grad-CAM explainability.</div>
+      </div>
+
+      <div class="feature-list">
+        <div class="feature-item">
+          <div class="feature-icon" style="background:#0f1e35;color:#60c8f5;"><i class="ti ti-brain"></i></div>
+          <div class="feature-text"><strong>EfficientNet-B3 · AUC 0.924</strong>Transfer learning on NIH ChestXray14 dataset</div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon" style="background:#2d1010;color:#f87171;"><i class="ti ti-eye"></i></div>
+          <div class="feature-text"><strong>Grad-CAM explainability</strong>Heatmap overlay shows exactly what the model flagged</div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon" style="background:#0d2a14;color:#4ade80;"><i class="ti ti-shield-check"></i></div>
+          <div class="feature-text"><strong>Doctor-in-the-loop</strong>Every finding requires radiologist confirmation</div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon" style="background:#1a2235;color:#a78bfa;"><i class="ti ti-chart-line"></i></div>
+          <div class="feature-text"><strong>Patient trend tracking</strong>Monitor condition changes across multiple scans</div>
+        </div>
+      </div>
+
+      <!-- MODEL STAT ROW -->
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">
+        <div style="background:#080b0f;border:1px solid #1e2530;border-radius:8px;padding:10px;text-align:center;">
+          <div style="font-size:15px;font-weight:700;color:#60c8f5;font-family:'Space Mono',monospace;">0.924</div>
+          <div style="font-size:8px;color:#334155;margin-top:2px;">AUC-ROC</div>
+        </div>
+        <div style="background:#080b0f;border:1px solid #1e2530;border-radius:8px;padding:10px;text-align:center;">
+          <div style="font-size:15px;font-weight:700;color:#f87171;font-family:'Space Mono',monospace;">91.3%</div>
+          <div style="font-size:8px;color:#334155;margin-top:2px;">Top confidence</div>
+        </div>
+        <div style="background:#080b0f;border:1px solid #1e2530;border-radius:8px;padding:10px;text-align:center;">
+          <div style="font-size:15px;font-weight:700;color:#4ade80;font-family:'Space Mono',monospace;">EfB3</div>
+          <div style="font-size:8px;color:#334155;margin-top:2px;">Architecture</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="left-footer">© 2026 PneumoScan AI · Stepping Edge Internship · PS5</div>
+  </div>
+
+  <!-- RIGHT PANEL — LOGIN FORM -->
+  <div class="right">
+    <div class="login-box">
+
+      <div class="login-header">
+        <div class="login-title">Welcome back</div>
+        <div class="login-sub">Sign in to access the screening dashboard</div>
+      </div>
+
+      <!-- ERROR MESSAGE -->
+      <div class="error-msg" id="errorMsg">
+        <i class="ti ti-alert-circle" style="font-size:15px;flex-shrink:0;"></i>
+        <span id="errorText">Invalid credentials. Please try again.</span>
+      </div>
+
+      <!-- FORM -->
+      <div class="form">
+        <div class="field">
+          <div class="field-label">Email address</div>
+          <div class="field-wrap">
+            <i class="ti ti-mail field-icon"></i>
+            <input class="field-input" type="email" id="emailInput" placeholder="doctor@hospital.in" autocomplete="email"/>
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="field-label">Password</div>
+          <div class="field-wrap password-wrap">
+            <i class="ti ti-lock field-icon"></i>
+            <input class="field-input" type="password" id="pwInput" placeholder="Enter your password" autocomplete="current-password" style="padding-right:36px;"/>
+            <i class="ti ti-eye show-pw" id="eyeIcon" onclick="togglePw()"></i>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <label class="remember">
+            <input type="checkbox" id="rememberMe" checked/>
+            <span>Remember me</span>
+          </label>
+          <a class="forgot" onclick="alert('Password reset link sent to your email.')">Forgot password?</a>
+        </div>
+
+        <button class="login-btn" id="loginBtn" onclick="handleLogin()">
+          <div class="spinner" id="spinner"></div>
+          <span id="loginBtnText"><i class="ti ti-login" style="font-size:15px;"></i> Sign in</span>
+        </button>
+      </div>
+
+      <!-- DIVIDER -->
+      <div class="divider">
+        <div class="divider-line"></div>
+        <div class="divider-text">or sign in as</div>
+        <div class="divider-line"></div>
+      </div>
+
+      <!-- ROLE QUICK LOGIN -->
+      <div class="role-btns">
+        <button class="role-btn" onclick="quickLogin('radiologist')">
+          <i class="ti ti-stethoscope" style="color:#60c8f5;"></i>
+          Radiologist
+        </button>
+        <button class="role-btn" onclick="quickLogin('admin')">
+          <i class="ti ti-shield" style="color:#a78bfa;"></i>
+          Admin
+        </button>
+      </div>
+
+      <!-- DEMO CREDENTIALS -->
+      <div class="demo-box">
+        <div class="demo-title">Demo credentials</div>
+        <div class="demo-row">
+          <span class="demo-label">Email</span>
+          <span class="demo-val">doctor@pneumoscan.ai</span>
+          <button class="demo-copy" onclick="fillDemo()">Fill</button>
+        </div>
+        <div class="demo-row">
+          <span class="demo-label">Password</span>
+          <span class="demo-val">demo1234</span>
+        </div>
+      </div>
+
+      <div class="disclaimer">
+        For authorized medical personnel only. All patient data is confidential and protected. This AI system is a screening aid — not a diagnostic tool.
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<script>
+  /* ── DEMO FILL ── */
+  function fillDemo() {
+    document.getElementById('emailInput').value = 'doctor@pneumoscan.ai';
+    document.getElementById('pwInput').value = 'demo1234';
+  }
+
+  /* ── QUICK LOGIN ── */
+  function quickLogin(role) {
+    if (role === 'radiologist') {
+      document.getElementById('emailInput').value = 'doctor@pneumoscan.ai';
+      document.getElementById('pwInput').value = 'demo1234';
+    } else {
+      document.getElementById('emailInput').value = 'admin@pneumoscan.ai';
+      document.getElementById('pwInput').value = 'admin1234';
+    }
+    handleLogin();
+  }
+
+  /* ── SHOW / HIDE PASSWORD ── */
+  function togglePw() {
+    const input = document.getElementById('pwInput');
+    const icon  = document.getElementById('eyeIcon');
+    if (input.type === 'password') {
+      input.type = 'text';
+      icon.classList.replace('ti-eye', 'ti-eye-off');
+    } else {
+      input.type = 'password';
+      icon.classList.replace('ti-eye-off', 'ti-eye');
+    }
+  }
+
+  /* ── LOGIN HANDLER ── */
+  function handleLogin() {
+    const email = document.getElementById('emailInput').value.trim();
+    const pw    = document.getElementById('pwInput').value;
+    const btn   = document.getElementById('loginBtn');
+    const spinner = document.getElementById('spinner');
+    const btnText = document.getElementById('loginBtnText');
+    const errMsg  = document.getElementById('errorMsg');
+
+    /* clear previous errors */
+    errMsg.classList.remove('show');
+    document.getElementById('emailInput').classList.remove('error');
+    document.getElementById('pwInput').classList.remove('error');
+
+    /* basic validation */
+    if (!email) {
+      document.getElementById('emailInput').classList.add('error');
+      showError('Please enter your email address.');
+      return;
+    }
+    if (!pw) {
+      document.getElementById('pwInput').classList.add('error');
+      showError('Please enter your password.');
+      return;
+    }
+
+    /* show loading */
+    btn.classList.add('loading');
+    spinner.style.display = 'block';
+    btnText.style.display = 'none';
+    btn.disabled = true;
+
+    /* simulate auth check */
+    setTimeout(() => {
+      const valid = (email === 'doctor@pneumoscan.ai' && pw === 'demo1234')
+                 || (email === 'admin@pneumoscan.ai'  && pw === 'admin1234');
+
+      btn.classList.remove('loading');
+      spinner.style.display = 'none';
+      btnText.style.display = 'flex';
+      btnText.style.alignItems = 'center';
+      btnText.style.gap = '8px';
+      btn.disabled = false;
+
+      if (valid) {
+        /* success — redirect to dashboard */
+        btnText.innerHTML = '<i class="ti ti-check" style="font-size:15px;color:#4ade80;"></i> Redirecting…';
+        btn.style.borderColor = '#22c55e';
+        btn.style.color = '#4ade80';
+        setTimeout(() => { window.location.href = 'dashbord.html'; }, 800);
+      } else {
+        /* wrong credentials */
+        document.getElementById('emailInput').classList.add('error');
+        document.getElementById('pwInput').classList.add('error');
+        showError('Invalid email or password. Use the demo credentials below.');
+      }
+    }, 1200);
+  }
+
+  function showError(msg) {
+    document.getElementById('errorText').textContent = msg;
+    document.getElementById('errorMsg').classList.add('show');
+  }
+
+  /* ── ENTER KEY ── */
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Enter') handleLogin();
+  });
+</script>
+</body>
+</html>
