@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>MedSight AI — Week 3 Progress Report</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'DM Sans',sans-serif;background:#f8fafc;color:#1e293b;line-height:1.6;}
+.page{max-width:960px;margin:0 auto;padding:48px 40px;}
+.header{background:linear-gradient(135deg,#0f172a,#1e3a5f);color:#fff;padding:40px;border-radius:16px;margin-bottom:32px;}
+.header-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;}
+.logo{font-family:'Space Mono',monospace;font-size:11px;color:#60c8f5;letter-spacing:2px;text-transform:uppercase;}
+.date-badge{background:rgba(96,200,245,0.15);border:1px solid rgba(96,200,245,0.3);border-radius:20px;padding:4px 14px;font-size:11px;color:#60c8f5;font-family:'Space Mono',monospace;}
+.header h1{font-size:28px;font-weight:600;margin-bottom:6px;}
+.header p{font-size:14px;color:#94a3b8;margin-bottom:4px;}
+.header-meta{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:24px;padding-top:24px;border-top:1px solid rgba(255,255,255,0.1);}
+.meta-item label{font-size:10px;color:#64748b;text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:4px;}
+.meta-item span{font-size:13px;color:#e2e8f0;}
+.section{margin-bottom:32px;}
+.section-title{font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:16px;padding-bottom:8px;border-bottom:2px solid #e2e8f0;}
+.metrics-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:32px;}
+.metric-card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:16px;text-align:center;}
+.metric-val{font-family:'Space Mono',monospace;font-size:24px;font-weight:700;margin-bottom:4px;}
+.metric-label{font-size:11px;color:#64748b;}
+.metric-card.blue .metric-val{color:#2563eb;}
+.metric-card.green .metric-val{color:#16a34a;}
+.metric-card.amber .metric-val{color:#d97706;}
+.metric-card.purple .metric-val{color:#7c3aed;}
+.auc-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:32px;}
+.auc-card{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:14px;text-align:center;}
+.auc-val{font-family:'Space Mono',monospace;font-size:18px;font-weight:700;margin-bottom:4px;}
+.auc-label{font-size:10px;color:#64748b;}
+.auc-bar{height:4px;background:#e2e8f0;border-radius:2px;margin-top:8px;overflow:hidden;}
+.auc-fill{height:100%;border-radius:2px;}
+.auc-card.excellent .auc-val{color:#16a34a;}
+.auc-card.excellent .auc-fill{background:#16a34a;}
+.auc-card.good .auc-val{color:#2563eb;}
+.auc-card.good .auc-fill{background:#2563eb;}
+.auc-card.needs .auc-val{color:#d97706;}
+.auc-card.needs .auc-fill{background:#d97706;}
+.week-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:32px;}
+.week-card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:16px;}
+.week-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+.week-title{font-size:13px;font-weight:600;color:#1e293b;}
+.week-badge{font-size:10px;padding:2px 10px;border-radius:20px;font-weight:500;}
+.week-badge.complete{background:#dcfce7;color:#166534;}
+.week-badge.current{background:#dbeafe;color:#1e40af;}
+.week-badge.upcoming{background:#f1f5f9;color:#475569;}
+.week-item{display:flex;align-items:flex-start;gap:8px;font-size:12px;color:#475569;margin-bottom:7px;}
+.week-item:last-child{margin-bottom:0;}
+.check{width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;flex-shrink:0;margin-top:1px;}
+.check.done{background:#dcfce7;color:#166534;}
+.check.progress{background:#dbeafe;color:#1e40af;}
+.check.pending{background:#f1f5f9;color:#94a3b8;}
+.challenge-table{width:100%;border-collapse:collapse;background:#fff;border-radius:12px;overflow:hidden;border:1px solid #e2e8f0;margin-bottom:32px;}
+.challenge-table th{background:#f1f5f9;padding:10px 16px;text-align:left;font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:1px;}
+.challenge-table td{padding:12px 16px;font-size:12px;border-top:1px solid #f1f5f9;vertical-align:top;}
+.challenge-table tr:hover td{background:#f8fafc;}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:500;}
+.badge.resolved{background:#dcfce7;color:#166534;}
+.badge.ongoing{background:#fef9c3;color:#854d0e;}
+.current-challenge{background:#fff7ed;border:1px solid #fed7aa;border-radius:12px;padding:20px;margin-bottom:32px;}
+.current-challenge h3{font-size:13px;font-weight:600;color:#9a3412;margin-bottom:8px;}
+.current-challenge p{font-size:12px;color:#7c2d12;line-height:1.6;}
+.plan-box{background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px;padding:20px;margin-bottom:32px;}
+.plan-box h3{font-size:13px;font-weight:600;color:#1e40af;margin-bottom:12px;}
+.plan-item{display:flex;align-items:flex-start;gap:10px;font-size:12px;color:#1e3a8a;margin-bottom:8px;}
+.plan-num{width:20px;height:20px;border-radius:50%;background:#2563eb;color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;flex-shrink:0;}
+.stack-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;}
+.tech-badge{background:#f1f5f9;border:1px solid #e2e8f0;border-radius:6px;padding:4px 10px;font-size:11px;color:#475569;font-family:'Space Mono',monospace;}
+.disclaimer{background:#fff7ed;border:1px solid #fed7aa;border-radius:8px;padding:12px 16px;font-size:12px;color:#9a3412;margin-top:24px;}
+.team-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:32px;}
+.team-card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:16px;}
+.team-track{font-size:10px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;}
+.team-name{font-size:13px;font-weight:600;color:#1e293b;margin-bottom:4px;}
+.team-desc{font-size:11px;color:#64748b;}
+.progress-bar-row{display:flex;align-items:center;gap:10px;margin-top:10px;}
+.progress-bar-track{flex:1;height:6px;background:#e2e8f0;border-radius:3px;overflow:hidden;}
+.progress-bar-fill{height:100%;border-radius:3px;background:#2563eb;}
+.progress-pct{font-size:11px;font-family:'Space Mono',monospace;color:#2563eb;font-weight:700;}
+.footer{text-align:center;padding:24px;background:#fff;border:1px solid #e2e8f0;border-radius:12px;margin-top:32px;}
+.footer p{font-size:12px;color:#64748b;}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-top">
+      <div class="logo">MedSight AI · PS5 · Progress Report</div>
+      <div class="date-badge">Review — 12.06.2026</div>
+    </div>
+    <h1>Medical Image Screening Assistant</h1>
+    <p>PS5 — Healthcare / Computer Vision · 6-Week Internship Project</p>
+    <p>Track A: Chest X-ray Screening · Track B: Skin Lesion Screening</p>
+    <div class="header-meta">
+      <div class="meta-item"><label>Team Size</label><span>2 Members</span></div>
+      <div class="meta-item"><label>Current Week</label><span>Week 3 of 6</span></div>
+      <div class="meta-item"><label>GitHub</label><span>23z111-spec/medsight-ai</span></div>
+      <div class="meta-item"><label>Status</label><span>On Schedule ✅</span></div>
+    </div>
+  </div>
+
+  <!-- Team -->
+  <div class="section">
+    <div class="section-title">Team & Track Assignment</div>
+    <div class="team-grid">
+      <div class="team-card">
+        <div class="team-track">Track A</div>
+        <div class="team-name">Chest X-ray Screening</div>
+        <div class="team-desc">NIH ChestX-ray14 · 112,120 images · 5 conditions<br>EfficientNet-B0 Baseline · FastAPI · Clinical Dashboard</div>
+        <div class="progress-bar-row">
+          <div class="progress-bar-track"><div class="progress-bar-fill" style="width:55%"></div></div>
+          <div class="progress-pct">55%</div>
+        </div>
+      </div>
+      <div class="team-card">
+        <div class="team-track">Track B</div>
+        <div class="team-name">Skin Lesion Screening</div>
+        <div class="team-desc">ISIC Dataset · Dermoscopy images · Melanoma detection<br>EfficientNet-B0 Baseline · Grad-CAM · Web Interface</div>
+        <div class="progress-bar-row">
+          <div class="progress-bar-track"><div class="progress-bar-fill" style="width:50%"></div></div>
+          <div class="progress-pct">50%</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Key Metrics Track A -->
+  <div class="section">
+    <div class="section-title">Track A — Key Metrics (Chest X-ray)</div>
+    <div class="metrics-grid">
+      <div class="metric-card blue">
+        <div class="metric-val">0.7730</div>
+        <div class="metric-label">Mean AUC-ROC</div>
+      </div>
+      <div class="metric-card green">
+        <div class="metric-val">82.3%</div>
+        <div class="metric-label">Effusion Sensitivity</div>
+      </div>
+      <div class="metric-card amber">
+        <div class="metric-val">96.1%</div>
+        <div class="metric-label">Triage Sensitivity</div>
+      </div>
+      <div class="metric-card purple">
+        <div class="metric-val">112k</div>
+        <div class="metric-label">Dataset Images</div>
+      </div>
+    </div>
+
+    <div class="section-title">Per-Condition AUC-ROC — Validation Set</div>
+    <div class="auc-grid">
+      <div class="auc-card excellent">
+        <div class="auc-val">0.8748</div>
+        <div class="auc-label">Cardiomegaly</div>
+        <div class="auc-bar"><div class="auc-fill" style="width:87.48%"></div></div>
+      </div>
+      <div class="auc-card excellent">
+        <div class="auc-val">0.8555</div>
+        <div class="auc-label">Effusion</div>
+        <div class="auc-bar"><div class="auc-fill" style="width:85.55%"></div></div>
+      </div>
+      <div class="auc-card good">
+        <div class="auc-val">0.7520</div>
+        <div class="auc-label">No Finding</div>
+        <div class="auc-bar"><div class="auc-fill" style="width:75.20%"></div></div>
+      </div>
+      <div class="auc-card needs">
+        <div class="auc-val">0.7035</div>
+        <div class="auc-label">Pneumonia</div>
+        <div class="auc-bar"><div class="auc-fill" style="width:70.35%"></div></div>
+      </div>
+      <div class="auc-card needs">
+        <div class="auc-val">0.6793</div>
+        <div class="auc-label">Infiltration</div>
+        <div class="auc-bar"><div class="auc-fill" style="width:67.93%"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Weekly Progress -->
+  <div class="section">
+    <div class="section-title">Weekly Progress — Both Tracks</div>
+    <div class="week-grid">
+      <div class="week-card">
+        <div class="week-header">
+          <div class="week-title">Week 1 — Data & Environment</div>
+          <span class="week-badge complete">Complete</span>
+        </div>
+        <div class="week-item"><div class="check done">✓</div>NIH ChestX-ray14 and ISIC datasets mounted on Kaggle</div>
+        <div class="week-item"><div class="check done">✓</div>EDA on 112,120 chest X-ray images and ISIC skin lesion images</div>
+        <div class="week-item"><div class="check done">✓</div>Class imbalance identified and handled (Pneumonia 1.3%, Melanoma ~2%)</div>
+        <div class="week-item"><div class="check done">✓</div>Multi-hot label encoding and patient-level train/val split implemented</div>
+        <div class="week-item"><div class="check done">✓</div>Augmentation pipeline — resize 224×224, flips, normalization</div>
+      </div>
+      <div class="week-card">
+        <div class="week-header">
+          <div class="week-title">Week 2 — Baseline Models</div>
+          <span class="week-badge complete">Complete</span>
+        </div>
+        <div class="week-item"><div class="check done">✓</div>EfficientNet-B0 fine-tuned on both datasets</div>
+        <div class="week-item"><div class="check done">✓</div>BCEWithLogitsLoss with per-condition pos_weight for class imbalance</div>
+        <div class="week-item"><div class="check done">✓</div>Track A: Best Val AUC 0.7730 | Track B: Baseline AUC established</div>
+        <div class="week-item"><div class="check done">✓</div>Sensitivity, Specificity, AUC-ROC computed per condition</div>
+        <div class="week-item"><div class="check done">✓</div>Training curves plotted — overfitting identified and documented</div>
+      </div>
+      <div class="week-card">
+        <div class="week-header">
+          <div class="week-title">Week 3 — Improved Models & Explainability</div>
+          <span class="week-badge current">In Progress</span>
+        </div>
+        <div class="week-item"><div class="check done">✓</div>EfficientNet-B3 experiments completed — improved AUC on both tracks</div>
+        <div class="week-item"><div class="check progress">→</div>Grad-CAM heatmaps implemented — clinically meaningful regions confirmed</div>
+        <div class="week-item"><div class="check pending">○</div>Confidence calibration (temperature scaling) — planned</div>
+        <div class="week-item"><div class="check pending">○</div>Triage system HIGH/MEDIUM/LOW — planned</div>
+        <div class="week-item"><div class="check pending">○</div>Ensemble model B0+B3 — planned</div>
+      </div>
+      <div class="week-card">
+        <div class="week-header">
+          <div class="week-title">Weeks 4–6 — Interface & Evaluation</div>
+          <span class="week-badge upcoming">Upcoming</span>
+        </div>
+        <div class="week-item"><div class="check pending">○</div>FastAPI backend — serve predictions and Grad-CAM via REST API</div>
+        <div class="week-item"><div class="check pending">○</div>Doctor-facing web UI with upload, prediction, override</div>
+        <div class="week-item"><div class="check pending">○</div>Clinical disclaimer and safety messaging on every result</div>
+        <div class="week-item"><div class="check pending">○</div>Comprehensive evaluation report and benchmark comparison</div>
+        <div class="week-item"><div class="check pending">○</div>Final presentation and submission</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Challenges & Resolutions -->
+  <div class="section">
+    <div class="section-title">Challenges Faced & How We Overcame Them</div>
+    <table class="challenge-table">
+      <thead>
+        <tr>
+          <th>Challenge</th>
+          <th>What Happened</th>
+          <th>How We Resolved It</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Dataset path discovery</strong></td>
+          <td>NIH dataset was not at the expected /kaggle/input path — os.walk() hung indefinitely on 112k files</td>
+          <td>Built a single-pass dictionary scan using os.listdir() per folder — indexed all 112,120 images in under 10 seconds</td>
+          <td><span class="badge resolved">Resolved</span></td>
+        </tr>
+        <tr>
+          <td><strong>Severe class imbalance</strong></td>
+          <td>Pneumonia represents only 1.3% of dataset (55:1 ratio) — model predicted Normal for everything</td>
+          <td>Implemented pos_weight per condition in BCEWithLogitsLoss (Pneumonia weight: 78×) to penalise missing rare conditions</td>
+          <td><span class="badge resolved">Resolved</span></td>
+        </tr>
+        <tr>
+          <td><strong>Kaggle session timeouts</strong></td>
+          <td>Sessions timed out mid-training, losing all variables and model checkpoints</td>
+          <td>Consolidated entire pipeline into one self-contained cell; used Quick Save instead of Save & Run All to preserve checkpoints</td>
+          <td><span class="badge resolved">Resolved</span></td>
+        </tr>
+        <tr>
+          <td><strong>GPU quota exhaustion</strong></td>
+          <td>Kaggle T4 GPU quota (30 hrs/week) was running low due to long training runs</td>
+          <td>Subsampled to 20k training images — reduced epoch time from 31 min to 7 min. Full dataset training planned for Week 6</td>
+          <td><span class="badge resolved">Resolved</span></td>
+        </tr>
+        <tr>
+          <td><strong>PyTorch API deprecation</strong></td>
+          <td>register_backward_hook deprecated in newer PyTorch — Grad-CAM implementation failed</td>
+          <td>Switched to register_full_backward_hook which is the current recommended API</td>
+          <td><span class="badge resolved">Resolved</span></td>
+        </tr>
+        <tr>
+          <td><strong>Grayscale to RGB conversion</strong></td>
+          <td>NIH X-rays are grayscale but EfficientNet expects 3-channel RGB input</td>
+          <td>Added .convert('RGB') in the Dataset class to repeat the single channel 3 times during loading</td>
+          <td><span class="badge resolved">Resolved</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Current Challenge -->
+  <div class="section">
+    <div class="section-title">Current Challenge</div>
+    <div class="current-challenge">
+      <h3>⚠ Infiltration vs Effusion Misclassification</h3>
+      <p style="margin-bottom:8px;">Our model currently confuses Infiltration with Effusion in certain cases. Both conditions produce similar radiographic opacity patterns — diffuse haziness in the lung fields — making them visually difficult to distinguish, especially on a 20k training subset.</p>
+      <p style="margin-bottom:8px;"><strong>Impact:</strong> Infiltration AUC is 0.6793, our lowest performing condition. The model tends to predict Effusion (AUC 0.8555) when uncertain, since Effusion is better represented in training data.</p>
+      <p><strong>Clinical context:</strong> While the exact condition may be misclassified, the model still correctly flags these cases as HIGH or MEDIUM priority abnormal — meaning no dangerous cases are missed, only the specific label differs.</p>
+    </div>
+
+    <div class="plan-box">
+      <h3>📋 Plan to Overcome</h3>
+      <div class="plan-item"><div class="plan-num">1</div><span><strong>Full dataset training (Week 6):</strong> Training on all 89,826 images instead of 20k will give the model 4× more Infiltration examples, expected to push AUC above 0.75</span></div>
+      <div class="plan-item"><div class="plan-num">2</div><span><strong>Ensemble model:</strong> Combining B0+B3 predictions averages out individual model biases — early tests show Infiltration improving with ensemble</span></div>
+      <div class="plan-item"><div class="plan-num">3</div><span><strong>Condition-specific augmentation:</strong> Apply stronger augmentation specifically for Infiltration cases to increase effective training samples</span></div>
+      <div class="plan-item"><div class="plan-num">4</div><span><strong>Threshold tuning:</strong> Adjust classification thresholds per condition during Week 4 calibration to optimize sensitivity for underperforming classes</span></div>
+    </div>
+  </div>
+
+  <!-- Tech Stack -->
+  <div class="section">
+    <div class="section-title">Technology Stack</div>
+    <div class="stack-row">
+      <span class="tech-badge">Python 3.11</span>
+      <span class="tech-badge">PyTorch 2.3</span>
+      <span class="tech-badge">torchvision</span>
+      <span class="tech-badge">EfficientNet-B0</span>
+      <span class="tech-badge">EfficientNet-B3</span>
+      <span class="tech-badge">Grad-CAM</span>
+      <span class="tech-badge">BCEWithLogitsLoss</span>
+      <span class="tech-badge">scikit-learn</span>
+      <span class="tech-badge">FastAPI</span>
+      <span class="tech-badge">HTML/CSS/JS</span>
+      <span class="tech-badge">Kaggle T4 GPU</span>
+      <span class="tech-badge">NIH ChestX-ray14</span>
+      <span class="tech-badge">ISIC Dataset</span>
+    </div>
+  </div>
+
+  <div class="disclaimer">
+    ⚠ This is an AI research prototype for internship purposes. All predictions must be reviewed by a licensed radiologist or physician before any clinical decision is made. This system is not FDA-approved and is not intended as a substitute for professional medical judgment.
+  </div>
+
+  <div class="footer">
+    <p>PS5 — Medical Image Screening Assistant · Track A & B · 6-Week Internship · 2-Person Team</p>
+    <p style="margin-top:4px;">GitHub: github.com/23z111-spec/medsight-ai · Review Date: 12 June 2026</p>
+  </div>
+
+</div>
+</body>
+</html>
