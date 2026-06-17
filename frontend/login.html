@@ -257,6 +257,8 @@
 </div>
 
 <script>
+  const API_BASE = window.location.protocol.startsWith('http') ? window.location.origin : 'http://127.0.0.1:8000';
+
   /* ── DEMO FILL ── */
   function fillDemo() {
     document.getElementById('emailInput').value = 'doctor@pneumoscan.ai';
@@ -320,37 +322,70 @@
     btnText.style.display = 'none';
     btn.disabled = true;
 
-    /* simulate auth check */
-    setTimeout(() => {
-      const valid = (email === 'doctor@pneumoscan.ai' && pw === 'demo1234')
-                 || (email === 'admin@pneumoscan.ai'  && pw === 'admin1234');
-
-      btn.classList.remove('loading');
-      spinner.style.display = 'none';
-      btnText.style.display = 'flex';
-      btnText.style.alignItems = 'center';
-      btnText.style.gap = '8px';
-      btn.disabled = false;
-
-      if (valid) {
-        /* success — redirect to dashboard */
+    fetch(`${API_BASE}/auth/login`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ email: email, password: pw })
+    })
+      .then(async res => {
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) {
+          throw new Error(data.detail || 'Invalid email or password.');
+        }
+        return data;
+      })
+      .then(data => {
+        if (!data.access_token) {
+          throw new Error(data.detail || 'Invalid email or password.');
+        }
+        localStorage.setItem('token', data.access_token);
         btnText.innerHTML = '<i class="ti ti-check" style="font-size:15px;color:#4ade80;"></i> Redirecting…';
         btn.style.borderColor = '#22c55e';
         btn.style.color = '#4ade80';
-        setTimeout(() => { window.location.href = 'dashbord.html'; }, 800);
-      } else {
-        /* wrong credentials */
+        setTimeout(() => { window.location.href = 'dashbord.html'; }, 600);
+      })
+      .catch(err => {
         document.getElementById('emailInput').classList.add('error');
         document.getElementById('pwInput').classList.add('error');
-        showError('Invalid email or password. Use the demo credentials below.');
-      }
-    }, 1200);
+        showError(err.message || 'Server error. Please try again.');
+      })
+      .finally(() => {
+        btn.classList.remove('loading');
+        spinner.style.display = 'none';
+        btnText.style.display = 'flex';
+        btn.disabled = false;
+      });
   }
 
   function showError(msg) {
     document.getElementById('errorText').textContent = msg;
     document.getElementById('errorMsg').classList.add('show');
   }
+
+  function checkSession() {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+
+    fetch(`${API_BASE}/auth/me`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+      .then(res => {
+        if (!res.ok) throw new Error('session invalid');
+        return res.json();
+      })
+      .then(() => {
+        window.location.href = 'dashbord.html';
+      })
+      .catch(() => {
+        localStorage.removeItem('token');
+      });
+  }
+
+  window.addEventListener('load', checkSession);
 
   /* ── ENTER KEY ── */
   document.addEventListener('keydown', e => {
@@ -359,5 +394,4 @@
 </script>
 </body>
 </html>
-
 
