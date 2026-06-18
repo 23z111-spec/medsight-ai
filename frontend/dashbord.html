@@ -6,9 +6,15 @@
 <title>PneumoScan AI · Chest X-Ray Screening Dashboard</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="styles.css"/>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
-html,body{height:100%;background:#0a0c10;color:#e2e8f0;font-family:'DM Sans',sans-serif;overflow:hidden;}
+html,body{height:100%;background:#0a0c10;color:#e2e8f0;font-family:'DM Sans',sans-serif;overflow:hidden;
+  background:
+      radial-gradient(circle at top right, rgba(96,200,245,.08), transparent 35%),
+      radial-gradient(circle at bottom left, rgba(124,58,237,.08), transparent 35%),
+      #050b14;
+}
 .topnav{background:#0d1017;border-bottom:1px solid #1e2530;display:flex;align-items:center;justify-content:space-between;padding:0 20px;height:48px;flex-shrink:0;}
 .logo{display:flex;align-items:center;gap:8px;font-family:'Space Mono',monospace;font-size:12px;color:#60c8f5;letter-spacing:.5px;}
 .logo-dot{width:7px;height:7px;border-radius:50%;background:#60c8f5;}
@@ -54,12 +60,56 @@ html,body{height:100%;background:#0a0c10;color:#e2e8f0;font-family:'DM Sans',san
 .toggle::after{content:'';position:absolute;width:10px;height:10px;background:#475569;border-radius:50%;top:2px;left:2px;transition:all .2s;}
 .toggle.on::after{left:16px;background:#60c8f5;}
 .xray-box{width:100%;position:relative;border:1px solid #1e2530;border-radius:12px;overflow:hidden;background:#080b0f;flex:1;min-height:0;}
+
+/* Animated scanner effect */
+.scan-line{
+    position:absolute;
+    left:0;
+    width:100%;
+    height:3px;
+    background:linear-gradient(
+        90deg,
+        transparent,
+        rgba(96,200,245,.9),
+        transparent
+    );
+    box-shadow:0 0 20px rgba(96,200,245,.8);
+    animation:scanMove 4s linear infinite;
+    z-index:20;
+}
+@keyframes scanMove{
+    0%{top:0;}
+    100%{top:100%;}
+}
+
+/* Glassmorphism cardiology-like overlay (used in this page only) */
+
+/* ECG strip animation */
+.ecg-container{
+    height:50px;
+    overflow:hidden;
+}
+.ecg-container svg{
+    width:100%;
+    height:50px;
+}
+.ecg-path{
+    fill:none;
+    stroke:#22c55e;
+    stroke-width:3;
+    stroke-dasharray:1200;
+    stroke-dashoffset:1200;
+    animation:ecg 4s linear infinite;
+}
+@keyframes ecg{
+    to{stroke-dashoffset:0;}
+}
 .heatmap-overlay{position:absolute;top:0;left:0;right:0;bottom:0;opacity:0;transition:opacity .4s;pointer-events:none;}
 .heatmap-overlay.visible{opacity:.55;}
 .zoom-tag{position:absolute;bottom:10px;right:10px;background:rgba(13,16,23,.9);border:1px solid #1e2530;border-radius:5px;padding:3px 7px;font-size:9px;color:#475569;font-family:'Space Mono',monospace;}
 .ann-tag{position:absolute;top:10px;left:10px;background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.4);border-radius:5px;padding:3px 8px;font-size:9px;color:#f87171;font-family:'Space Mono',monospace;}
 .metrics-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;flex-shrink:0;}
-.metric-card{background:#0d1017;border:1px solid #1e2530;border-radius:8px;padding:10px 14px;}
+.metric-card{background:rgba(13,16,23,.65);backdrop-filter:blur(16px);border:1px solid rgba(96,200,245,.15);box-shadow:0 0 20px rgba(96,200,245,.05),inset 0 0 20px rgba(255,255,255,.02);border-radius:8px;padding:10px 14px;}
 .metric-label{font-size:9px;color:#334155;margin-bottom:4px;}
 .metric-val{font-size:20px;font-weight:700;font-family:'Space Mono',monospace;}
 .metric-sub{font-size:9px;color:#475569;margin-top:2px;}
@@ -189,6 +239,7 @@ html,body{height:100%;background:#0a0c10;color:#e2e8f0;font-family:'DM Sans',san
       </div>
 
       <div class="xray-box">
+        <div class="scan-line" aria-hidden="true"></div>
 
         <div class="loading-overlay" id="loadingOverlay">
           <div class="loader">
@@ -287,6 +338,19 @@ html,body{height:100%;background:#0a0c10;color:#e2e8f0;font-family:'DM Sans',san
       </div>
 
       <div class="metrics-row">
+        <!-- ECG strip animation (visual) -->
+        <div class="metric-card" style="grid-column:1/-1; padding:8px 12px;">
+          <div style="font-size:9px;color:#334155;margin-bottom:6px;letter-spacing:.8px;text-transform:uppercase;">
+            ECG Strip (Simulation)
+          </div>
+          <div class="ecg-container" aria-hidden="true">
+            <svg viewBox="0 0 1000 100" preserveAspectRatio="none">
+              <path class="ecg-path" d="M0 50 L100 50 L130 10 L160 90 L190 50 L1000 50"/>
+            </svg>
+          </div>
+        </div>
+
+        <!-- metrics cards -->
         <div class="metric-card">
           <div class="metric-label">Model confidence</div>
           <div class="metric-val" style="color:#f87171;" id="confVal">91.3%</div>

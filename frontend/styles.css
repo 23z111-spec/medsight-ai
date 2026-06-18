@@ -1,0 +1,194 @@
+/* Shared UI style system for the PneumoScan AI frontend.
+   Goal: match the professional look/feel of login.html across all pages. */
+
+:root{
+  --page-bg:#061528;
+  --surface:#0f1f34;
+  --surface-soft:#132942;
+  --surface-lift:#1f3d6f;
+  --surface-strong:#183156;
+  --border:rgba(96,165,250,.18);
+  --text:#e2efff;
+  --muted:#94a3b8;
+  --muted-strong:#cbd5e6;
+  --accent:#60a5fa;
+  --accent-soft:rgba(96,165,250,.16);
+  --accent-strong:#3b82f6;
+  --accent-strong-hover:#2563eb;
+  --danger:#fda4af;
+  --success:#86efac;
+  --shadow:0 1px 2px rgba(0,0,0,.48);
+  --text-inverse:#FFFFFF;
+
+  --radius:12px;
+  --radius-sm:8px;
+  --radius-xs:6px;
+
+  --focus:rgba(96,165,250,.65);
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;}
+
+body{
+  background:var(--page-bg);
+  color:var(--text);
+  font-family:'DM Sans',sans-serif;
+  overflow:hidden;
+}
+
+/* App chrome */
+.topnav{
+  background:#0d1017;
+  border-bottom:1px solid #1e2530;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 24px;
+  height:48px;
+  flex-shrink:0;
+}
+.logo{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-family:'Space Mono',monospace;
+  font-size:12px;
+  color:#60c8f5;
+  letter-spacing:.5px;
+}
+.logo-dot{width:7px;height:7px;border-radius:50%;background:#60c8f5;}
+.nav-pills{display:flex;gap:4px;}
+.nav-pill{
+  padding:4px 14px;
+  border-radius:6px;
+  font-size:11px;
+  color:#64748b;
+  cursor:pointer;
+  transition:all .15s;
+  user-select:none;
+}
+.nav-pill:hover{color:#94a3b8;}
+.nav-pill.active{background:#1a2235;color:#60c8f5;}
+
+.badge{
+  background:#1a2235;
+  border:1px solid #1e2d45;
+  border-radius:20px;
+  padding:3px 10px;
+  font-size:10px;
+  color:#60c8f5;
+  font-family:'Space Mono',monospace;
+}
+.avatar{
+  width:28px;
+  height:28px;
+  border-radius:50%;
+  background:linear-gradient(135deg,#2563eb,#7c3aed);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:11px;
+  font-weight:600;
+  color:#fff;
+}
+.nav-right{display:flex;align-items:center;gap:12px;}
+
+/* Surfaces/cards */
+.surface-card,
+.panel-card{
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(124,58,237,.22);
+  border-radius:12px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+
+/* Buttons */
+.btn{
+  border-radius:8px;
+  padding:8px 14px;
+  font-size:11px;
+  font-weight:500;
+  cursor:pointer;
+  font-family:'DM Sans',sans-serif;
+  transition:all .15s;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+}
+.btn:disabled{opacity:.6;cursor:not-allowed;}
+.btn-primary{
+  background:#1a3a6a;
+  border:1px solid #2563eb;
+  color:#60c8f5;
+}
+.btn-primary:hover{background:#1e4480;}
+.btn-secondary{
+  background:transparent;
+  border:1px solid #1e2530;
+  color:#64748b;
+}
+.btn-secondary:hover{background:#131822;color:#94a3b8;}
+.btn-danger{
+  background:transparent;
+  border:1px solid #5a1f1f;
+  color:#f87171;
+}
+.btn-danger:hover{background:#2d1010;}
+
+/* Form controls (used by login.html style system) */
+.field{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+}
+.field-label{font-size:10px;color:var(--muted-strong);font-weight:500;}
+.field-wrap{position:relative;}
+
+.input{
+  width:100%;
+  background:var(--surface-soft);
+  border:1px solid var(--border);
+  border-radius:7px;
+  padding:8px 10px;
+  font-size:11px;
+  color:var(--text);
+  outline:none;
+  font-family:'DM Sans',sans-serif;
+  transition:all .2s;
+}
+.input::placeholder{color:var(--muted);}
+.input:focus{
+  border-color:var(--accent);
+  background:rgba(96,165,250,.1);
+  box-shadow:0 0 0 3px rgba(96,165,250,.12);
+}
+
+/* Login-like status pills */
+.pill{
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+  padding:2px 9px;
+  border-radius:4px;
+  font-size:9px;
+  font-family:'Space Mono',monospace;
+  font-weight:700;
+}
+.pill.high{background:#2d1010;color:#f87171;border:1px solid #5a1f1f;}
+.pill.medium{background:#2d1f08;color:#fbbf24;border:1px solid #5a3f10;}
+.pill.low{background:#0d2a14;color:#4ade80;border:1px solid #1a5228;}
+
+/* Triage cards */
+.triage-high{background:#2d1010;border:1px solid #5a1f1f;color:#f87171;}
+.triage-med{background:#2d1f08;border:1px solid #5a3f10;color:#fbbf24;}
+.triage-low{background:#0d2a14;border:1px solid #1a5228;color:#4ade80;}
+
+/* Consistent scrollbars */
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:#1e2530;border-radius:2px;}
+

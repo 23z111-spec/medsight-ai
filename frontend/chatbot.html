@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>MedSight AI — PneumoScan Chat</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Inter:wght@300;400;500;600&display=swap');
+
+  :root {
+    --bg:        #0b0f14;
+    --surface:   #111820;
+    --border:    #1e2a35;
+    --accent:    #00c2a8;
+    --accent-dim:#004d43;
+    --high:      #ff4d4d;
+    --medium:    #ffaa00;
+    --low:       #00c2a8;
+    --text:      #d4e0e8;
+    --muted:     #5a7080;
+    --mono:      'IBM Plex Mono', monospace;
+    --sans:      'Inter', sans-serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* ── Header ── */
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 28px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    flex-shrink: 0;
+  }
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--mono);
+    font-weight: 600;
+    font-size: 16px;
+    letter-spacing: 0.04em;
+    color: var(--accent);
+  }
+  .logo svg { width: 26px; height: 26px; }
+  .nav-links { display: flex; gap: 20px; }
+  .nav-links a {
+    text-decoration: none;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover, .nav-links a.active { color: var(--accent); }
+  .status-dot {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 12px; color: var(--muted); font-family: var(--mono);
+  }
+  .dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 6px var(--accent);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+  /* ── Layout ── */
+  .layout {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+  }
+
+  /* ── Left Panel ── */
+  .left-panel {
+    width: 320px;
+    flex-shrink: 0;
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    background: var(--surface);
+    overflow-y: auto;
+  }
+
+  .panel-section {
+    padding: 20px;
+    border-bottom: 1px solid var(--border);
+  }
+  .panel-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  /* Upload zone */
+  .upload-zone {
+    border: 1.5px dashed var(--border);
+    border-radius: 8px;
+    padding: 28px 16px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .upload-zone:hover, .upload-zone.drag { border-color: var(--accent); background: rgba(0,194,168,0.04); }
+  .upload-zone input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+  .upload-icon { font-size: 28px; margin-bottom: 8px; }
+  .upload-zone p { font-size: 12px; color: var(--muted); line-height: 1.6; }
+  .upload-zone strong { color: var(--accent); }
+
+  #preview-wrap { display: none; margin-top: 12px; border-radius: 6px; overflow: hidden; position: relative; }
+  #preview-img { width: 100%; display: block; border-radius: 6px; }
+  .remove-img {
+    position: absolute; top: 6px; right: 6px;
+    background: rgba(0,0,0,0.7); border: none; color: #fff;
+    border-radius: 50%; width: 22px; height: 22px;
+    cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center;
+  }
+
+  .scan-btn {
+    width: 100%;
+    margin-top: 14px;
+    padding: 11px;
+    background: var(--accent);
+    color: #000;
+    border: none;
+    border-radius: 6px;
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.1s;
+  }
+  .scan-btn:hover { opacity: 0.88; }
+  .scan-btn:active { transform: scale(0.98); }
+  .scan-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+  /* Result card */
+  #result-card { display: none; }
+  .triage-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 12px; border-radius: 20px;
+    font-family: var(--mono); font-size: 11px; font-weight: 600; letter-spacing: 0.08em;
+    margin-bottom: 14px;
+  }
+  .triage-HIGH   { background: rgba(255,77,77,0.15);  color: var(--high);   border: 1px solid rgba(255,77,77,0.3); }
+  .triage-MEDIUM { background: rgba(255,170,0,0.12); color: var(--medium); border: 1px solid rgba(255,170,0,0.3); }
+  .triage-LOW    { background: rgba(0,194,168,0.1);  color: var(--low);    border: 1px solid rgba(0,194,168,0.3); }
+
+  .condition-name {
+    font-size: 18px; font-weight: 600; margin-bottom: 4px;
+  }
+  .confidence-val {
+    font-family: var(--mono); font-size: 12px; color: var(--muted); margin-bottom: 16px;
+  }
+
+  .findings-list { display: flex; flex-direction: column; gap: 7px; }
+  .finding-row { display: flex; flex-direction: column; gap: 3px; }
+  .finding-label {
+    display: flex; justify-content: space-between;
+    font-size: 11px; color: var(--muted);
+  }
+  .finding-label span:last-child { font-family: var(--mono); color: var(--text); }
+  .bar-track {
+    height: 4px; background: var(--border); border-radius: 2px; overflow: hidden;
+  }
+  .bar-fill {
+    height: 100%; border-radius: 2px;
+    background: linear-gradient(90deg, var(--accent-dim), var(--accent));
+    transition: width 0.8s cubic-bezier(.4,0,.2,1);
+  }
+  .bar-fill.high-risk { background: linear-gradient(90deg, #7a0000, var(--high)); }
+
+  /* Grad-CAM */
+  #gradcam-wrap { display: none; }
+  #gradcam-img { width: 100%; border-radius: 6px; display: block; margin-top: 10px; }
+
+  /* ── Chat Panel ── */
+  .chat-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    scroll-behavior: smooth;
+  }
+  .chat-messages::-webkit-scrollbar { width: 4px; }
+  .chat-messages::-webkit-scrollbar-track { background: transparent; }
+  .chat-messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  /* Messages */
+  .msg { display: flex; gap: 12px; max-width: 780px; }
+  .msg.user { align-self: flex-end; flex-direction: row-reverse; }
+
+  .avatar {
+    width: 32px; height: 32px; border-radius: 50%;
+    flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 600;
+  }
+  .avatar.bot { background: var(--accent-dim); color: var(--accent); font-family: var(--mono); font-size: 11px; }
+  .avatar.user { background: #1e2a35; color: var(--text); }
+
+  .bubble {
+    padding: 12px 16px;
+    border-radius: 12px;
+    font-size: 14px;
+    line-height: 1.65;
+    max-width: 640px;
+  }
+  .msg.bot .bubble {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-top-left-radius: 4px;
+  }
+  .msg.user .bubble {
+    background: var(--accent-dim);
+    border: 1px solid rgba(0,194,168,0.2);
+    border-top-right-radius: 4px;
+    color: #c8f0ec;
+  }
+
+  .bubble .tag {
+    display: inline-block;
+    font-family: var(--mono); font-size: 10px; font-weight: 600;
+    padding: 2px 8px; border-radius: 4px; margin-bottom: 8px;
+    background: rgba(0,194,168,0.12); color: var(--accent);
+    letter-spacing: 0.08em;
+  }
+  .bubble ul { padding-left: 18px; margin-top: 6px; }
+  .bubble li { margin-bottom: 4px; }
+  .bubble .disclaimer {
+    margin-top: 10px; padding-top: 10px;
+    border-top: 1px solid var(--border);
+    font-size: 11px; color: var(--muted);
+    font-style: italic;
+  }
+  .bubble strong { color: #fff; }
+
+  /* Typing indicator */
+  .typing { display: flex; align-items: center; gap: 4px; padding: 8px 0; }
+  .typing span {
+    width: 6px; height: 6px; border-radius: 50%; background: var(--muted);
+    animation: bounce 1.2s infinite;
+  }
+  .typing span:nth-child(2) { animation-delay: 0.2s; }
+  .typing span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes bounce { 0%,80%,100%{transform:translateY(0)} 40%{transform:translateY(-6px)} }
+
+  /* Suggestions */
+  .suggestions {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    padding: 0 28px 16px;
+  }
+  .sug-btn {
+    padding: 7px 14px;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    background: transparent;
+    color: var(--muted);
+    font-size: 12px; font-family: var(--sans);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .sug-btn:hover { border-color: var(--accent); color: var(--accent); background: rgba(0,194,168,0.05); }
+
+  /* Input bar */
+  .input-bar {
+    padding: 16px 28px 20px;
+    border-top: 1px solid var(--border);
+    display: flex; gap: 10px; align-items: flex-end;
+    background: var(--bg);
+  }
+  #chat-input {
+    flex: 1;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 11px 16px;
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 14px;
+    resize: none;
+    outline: none;
+    transition: border-color 0.2s;
+    min-height: 44px;
+    max-height: 120px;
+    line-height: 1.5;
+  }
+  #chat-input:focus { border-color: var(--accent); }
+  #chat-input::placeholder { color: var(--muted); }
+
+  .send-btn {
+    width: 44px; height: 44px;
+    background: var(--accent);
+    border: none; border-radius: 10px;
+    cursor: pointer; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    transition: opacity 0.2s, transform 0.1s;
+  }
+  .send-btn:hover { opacity: 0.85; }
+  .send-btn:active { transform: scale(0.95); }
+  .send-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+  .send-btn svg { width: 18px; height: 18px; fill: #000; }
+
+  /* Welcome screen */
+  .welcome {
+    flex: 1; display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 12px; text-align: center; padding: 40px;
+    color: var(--muted);
+  }
+  .welcome-icon { font-size: 48px; opacity: 0.4; }
+  .welcome h2 { font-size: 20px; font-weight: 500; color: var(--text); }
+  .welcome p { font-size: 13px; line-height: 1.7; max-width: 400px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <svg viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="26" height="26" rx="6" fill="#00c2a8" fill-opacity="0.15"/>
+      <path d="M13 4C8.03 4 4 8.03 4 13s4.03 9 9 9 9-4.03 9-9-4.03-9-9-9zm0 2c3.86 0 7 3.14 7 7s-3.14 7-7 7-7-3.14-7-7 3.14-7 7-7z" fill="#00c2a8"/>
+      <path d="M10 13h6M13 10v6" stroke="#00c2a8" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>
+    MEDSIGHT · PNEUMOSCAN
+  </div>
+  <nav class="nav-links">
+    <a href="dashbord.html">Dashboard</a>
+    <a href="records.html">Records</a>
+    <a href="analytics.html">Analytics</a>
+    <a href="chatbot.html" class="active">Scan Chat</a>
+    <a href="settings.html">Settings</a>
+  </nav>
+  <div class="status-dot"><div class="dot"></div>API Online</div>
+</header>
+
+<div class="layout">
+
+  <!-- Left Panel -->
+  <div class="left-panel">
+
+    <div class="panel-section">
+      <div class="panel-label">Upload X-Ray</div>
+      <div class="upload-zone" id="drop-zone">
+        <input type="file" id="file-input" accept="image/jpeg,image/png,image/webp" />
+        <div class="upload-icon">🫁</div>
+        <p><strong>Click or drag</strong> to upload<br>JPEG · PNG · WEBP · max 10 MB</p>
+      </div>
+      <div id="preview-wrap">
+        <img id="preview-img" src="" alt="X-ray preview" />
+        <button class="remove-img" id="remove-img">✕</button>
+      </div>
+      <button class="scan-btn" id="scan-btn" disabled>RUN SCAN</button>
+    </div>
+
+    <div class="panel-section" id="result-card">
+      <div class="panel-label">Scan Result</div>
+      <div id="triage-badge" class="triage-badge"></div>
+      <div class="condition-name" id="condition-name"></div>
+      <div class="confidence-val" id="confidence-val"></div>
+      <div class="findings-list" id="findings-list"></div>
+    </div>
+
+    <div class="panel-section" id="gradcam-wrap">
+      <div class="panel-label">Grad-CAM Heatmap</div>
+      <p style="font-size:11px;color:var(--muted);margin-bottom:4px">Activation regions for detected condition</p>
+      <img id="gradcam-img" src="" alt="Grad-CAM heatmap" />
+    </div>
+
+  </div>
+
+  <!-- Chat Panel -->
+  <div class="chat-panel">
+    <div class="chat-messages" id="chat-messages">
+      <div class="welcome" id="welcome-screen">
+        <div class="welcome-icon">🩻</div>
+        <h2>PneumoScan Chat</h2>
+        <p>Upload a chest X-ray on the left and run a scan. I'll analyse the result and answer any clinical questions you have.</p>
+      </div>
+    </div>
+
+    <div class="suggestions" id="suggestions" style="display:none">
+      <button class="sug-btn" onclick="sendSuggestion('What does this result mean?')">What does this mean?</button>
+      <button class="sug-btn" onclick="sendSuggestion('What are the symptoms of the detected condition?')">Symptoms?</button>
+      <button class="sug-btn" onclick="sendSuggestion('What treatment is recommended?')">Treatment?</button>
+      <button class="sug-btn" onclick="sendSuggestion('How confident is the model in this result?')">Model confidence?</button>
+      <button class="sug-btn" onclick="sendSuggestion('Should I be concerned about the other findings?')">Other findings?</button>
+    </div>
+
+    <div class="input-bar">
+      <textarea id="chat-input" rows="1" placeholder="Ask about the scan result…" disabled></textarea>
+      <button class="send-btn" id="send-btn" disabled>
+        <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── State ──────────────────────────────────────────────────────────
+const API_BASE = 'http://localhost:8000';
+let currentScan = null;
+let uploadedFile = null;
+
+// ── DOM refs ───────────────────────────────────────────────────────
+const fileInput    = document.getElementById('file-input');
+const dropZone     = document.getElementById('drop-zone');
+const previewWrap  = document.getElementById('preview-wrap');
+const previewImg   = document.getElementById('preview-img');
+const removeImg    = document.getElementById('remove-img');
+const scanBtn      = document.getElementById('scan-btn');
+const resultCard   = document.getElementById('result-card');
+const triageBadge  = document.getElementById('triage-badge');
+const conditionEl  = document.getElementById('condition-name');
+const confidenceEl = document.getElementById('confidence-val');
+const findingsList = document.getElementById('findings-list');
+const gradcamWrap  = document.getElementById('gradcam-wrap');
+const gradcamImg   = document.getElementById('gradcam-img');
+const chatMessages = document.getElementById('chat-messages');
+const welcomeScreen= document.getElementById('welcome-screen');
+const chatInput    = document.getElementById('chat-input');
+const sendBtn      = document.getElementById('send-btn');
+const suggestions  = document.getElementById('suggestions');
+
+// ── File handling ──────────────────────────────────────────────────
+fileInput.addEventListener('change', e => handleFile(e.target.files[0]));
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag'));
+dropZone.addEventListener('drop', e => {
+  e.preventDefault(); dropZone.classList.remove('drag');
+  handleFile(e.dataTransfer.files[0]);
+});
+removeImg.addEventListener('click', clearFile);
+
+function handleFile(file) {
+  if (!file) return;
+  uploadedFile = file;
+  const url = URL.createObjectURL(file);
+  previewImg.src = url;
+  previewWrap.style.display = 'block';
+  scanBtn.disabled = false;
+}
+
+function clearFile() {
+  uploadedFile = null;
+  fileInput.value = '';
+  previewImg.src = '';
+  previewWrap.style.display = 'none';
+  scanBtn.disabled = true;
+}
+
+// ── Scan ───────────────────────────────────────────────────────────
+scanBtn.addEventListener('click', runScan);
+
+async function runScan() {
+  if (!uploadedFile) return;
+  scanBtn.disabled = true;
+  scanBtn.textContent = 'SCANNING…';
+
+  const formData = new FormData();
+  formData.append('file', uploadedFile);
+
+  try {
+    const res = await fetch(`${API_BASE}/predict/`, { method: 'POST', body: formData });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    currentScan = data;
+    renderResult(data);
+    enableChat();
+    showScanMessage(data);
+  } catch (err) {
+    showErrorMessage(err.message);
+  } finally {
+    scanBtn.disabled = false;
+    scanBtn.textContent = 'RUN SCAN';
+  }
+}
+
+// ── Render result panel ────────────────────────────────────────────
+function renderResult(data) {
+  resultCard.style.display = 'block';
+
+  triageBadge.className = `triage-badge triage-${data.triage}`;
+  const icons = { HIGH: '🔴', MEDIUM: '🟡', LOW: '🟢' };
+  triageBadge.innerHTML = `${icons[data.triage]} ${data.triage} PRIORITY`;
+
+  conditionEl.textContent = data.top_condition;
+  confidenceEl.textContent = `Confidence: ${(data.confidence * 100).toFixed(1)}%  ·  ID: ${data.scan_id}`;
+
+  findingsList.innerHTML = '';
+  Object.entries(data.findings).forEach(([cond, prob]) => {
+    const pct = (prob * 100).toFixed(1);
+    const isHigh = prob > 0.5 && cond !== 'No Finding';
+    findingsList.innerHTML += `
+      <div class="finding-row">
+        <div class="finding-label"><span>${cond}</span><span>${pct}%</span></div>
+        <div class="bar-track"><div class="bar-fill ${isHigh ? 'high-risk' : ''}" style="width:${pct}%"></div></div>
+      </div>`;
+  });
+
+  if (data.gradcam_base64) {
+    gradcamWrap.style.display = 'block';
+    gradcamImg.src = `data:image/png;base64,${data.gradcam_base64}`;
+  }
+}
+
+// ── Chat helpers ───────────────────────────────────────────────────
+function enableChat() {
+  welcomeScreen.style.display = 'none';
+  chatInput.disabled = false;
+  sendBtn.disabled = false;
+  suggestions.style.display = 'flex';
+}
+
+function addMessage(role, html) {
+  const isUser = role === 'user';
+  const div = document.createElement('div');
+  div.className = `msg ${role}`;
+  div.innerHTML = `
+    <div class="avatar ${role}">${isUser ? '👤' : 'AI'}</div>
+    <div class="bubble">${html}</div>`;
+  chatMessages.appendChild(div);
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+  return div;
+}
+
+function showTyping() {
+  const div = document.createElement('div');
+  div.className = 'msg bot';
+  div.id = 'typing-indicator';
+  div.innerHTML = `<div class="avatar bot">AI</div><div class="bubble"><div class="typing"><span></span><span></span><span></span></div></div>`;
+  chatMessages.appendChild(div);
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+function removeTyping() {
+  const el = document.getElementById('typing-indicator');
+  if (el) el.remove();
+}
+
+function showScanMessage(data) {
+  const conf = (data.confidence * 100).toFixed(1);
+  const triageText = {
+    HIGH:   '⚠️ This is a <strong>high-priority</strong> finding that warrants immediate clinical attention.',
+    MEDIUM: '⚡ This is a <strong>medium-priority</strong> finding. Prompt review is advised.',
+    LOW:    '✅ This is a <strong>low-priority</strong> finding. Routine follow-up is recommended.'
+  }[data.triage];
+
+  const findingsHtml = Object.entries(data.findings)
+    .filter(([c]) => c !== 'No Finding')
+    .sort((a,b) => b[1]-a[1])
+    .map(([c,p]) => `<li>${c}: <strong>${(p*100).toFixed(1)}%</strong></li>`)
+    .join('');
+
+  addMessage('bot', `
+    <span class="tag">SCAN COMPLETE · ${data.scan_id}</span>
+    <div>Primary finding: <strong>${data.top_condition}</strong> (${conf}% confidence)</div>
+    <div style="margin-top:6px">${triageText}</div>
+    <ul style="margin-top:10px">${findingsHtml}</ul>
+    <div class="disclaimer">AI screening only. All findings must be reviewed by a licensed radiologist or physician before clinical decisions are made.</div>
+  `);
+}
+
+function showErrorMessage(msg) {
+  addMessage('bot', `<span class="tag">ERROR</span> Could not connect to the API: <strong>${msg}</strong>. Make sure your FastAPI server is running on <code>localhost:8000</code>.`);
+}
+
+// ── Rule-based chatbot responses ───────────────────────────────────
+const CONDITION_INFO = {
+  'Pneumonia': {
+    meaning: 'Pneumonia is an infection that inflames the air sacs (alveoli) in one or both lungs. On X-ray it appears as opacification or consolidation of lung tissue.',
+    symptoms: 'Common symptoms include fever, chills, cough with phlegm, shortness of breath, chest pain, and fatigue.',
+    treatment: 'Treatment depends on the cause: bacterial pneumonia is treated with antibiotics, viral pneumonia with antivirals or supportive care. Severe cases may require hospitalisation and oxygen therapy.',
+    urgency: 'Seek medical care promptly, especially if oxygen saturation is low or symptoms are severe.'
+  },
+  'Cardiomegaly': {
+    meaning: 'Cardiomegaly (enlarged heart) is seen on X-ray as an increased cardiothoracic ratio (>0.5). It is a sign of an underlying cardiac condition, not a disease itself.',
+    symptoms: 'Symptoms may include shortness of breath, fatigue, oedema in the legs, and reduced exercise tolerance.',
+    treatment: 'Treatment targets the underlying cause: heart failure medications (ACE inhibitors, beta-blockers, diuretics), lifestyle changes, or in severe cases, surgical intervention.',
+    urgency: 'Cardiomegaly should be evaluated by a cardiologist. If accompanied by chest pain or breathlessness, seek urgent care.'
+  },
+  'Effusion': {
+    meaning: 'Pleural effusion is the accumulation of excess fluid in the pleural space (between the lungs and chest wall). It appears as blunting of the costophrenic angle on X-ray.',
+    symptoms: 'Symptoms include chest pain (especially on breathing), dry cough, and shortness of breath that worsens when lying down.',
+    treatment: 'Small effusions may resolve on their own. Larger ones may require thoracentesis (fluid drainage). Treatment also targets the underlying cause (infection, heart failure, malignancy).',
+    urgency: 'Requires evaluation by a physician to determine the cause and appropriate management.'
+  },
+  'Infiltration': {
+    meaning: 'Pulmonary infiltration refers to material (fluid, cells, or protein) that has accumulated in the alveolar airspace, seen as hazy or fluffy opacities on X-ray.',
+    symptoms: 'Symptoms vary by cause: cough, fever, breathlessness, and reduced oxygen levels are common.',
+    treatment: 'Depends on the underlying cause — infection, pulmonary oedema, or inflammatory conditions each have different treatments.',
+    urgency: 'Medical review is important to establish the cause and initiate treatment.'
+  },
+  'No Finding': {
+    meaning: 'No significant abnormality was detected in the chest X-ray. Lung fields appear clear with no signs of consolidation, effusion, or cardiomegaly.',
+    symptoms: 'N/A — this is a normal result.',
+    treatment: 'No treatment indicated based on this scan alone.',
+    urgency: 'Continue routine health monitoring. If symptoms persist despite a normal X-ray, further investigation may be warranted.'
+  }
+};
+
+function generateResponse(userMsg) {
+  if (!currentScan) return "Please upload and scan an X-ray first so I have results to discuss.";
+
+  const msg = userMsg.toLowerCase();
+  const cond = currentScan.top_condition;
+  const info = CONDITION_INFO[cond] || {};
+  const conf = (currentScan.confidence * 100).toFixed(1);
+
+  // Confidence / accuracy questions
+  if (msg.match(/confiden|accurate|sure|reliab|trust|auc|model/)) {
+    const b0 = currentScan.b0_findings?.[cond];
+    const b3 = currentScan.b3_findings?.[cond];
+    return `
+      <span class="tag">MODEL CONFIDENCE</span>
+      The ensemble reports <strong>${conf}% confidence</strong> for <strong>${cond}</strong>.<br><br>
+      Individual model agreement:<br>
+      <ul>
+        <li>EfficientNet-B0: <strong>${b0 ? (b0*100).toFixed(1) : '—'}%</strong></li>
+        <li>EfficientNet-B3: <strong>${b3 ? (b3*100).toFixed(1) : '—'}%</strong></li>
+      </ul>
+      The model was trained with an AUC of ~0.80, meaning it performs well as a screening aid. However, it is <strong>not a diagnostic tool</strong> — always confirm with a radiologist.
+    `;
+  }
+
+  // Treatment
+  if (msg.match(/treat|medicine|medic|drug|therap|cure|management/)) {
+    return `<span class="tag">TREATMENT</span>${info.treatment || 'Please consult a physician for treatment guidance.'}<div class="disclaimer">This information is educational. Treatment must be prescribed by a licensed clinician.</div>`;
+  }
+
+  // Symptoms
+  if (msg.match(/symptom|sign|feel|present/)) {
+    return `<span class="tag">SYMPTOMS</span>${info.symptoms || 'Symptoms vary. Please consult a doctor.'}`;
+  }
+
+  // What does it mean / explain
+  if (msg.match(/mean|what is|explain|about|result|finding|detect/)) {
+    return `<span class="tag">CONDITION OVERVIEW</span>${info.meaning || 'Please consult a physician for detailed information.'}`;
+  }
+
+  // Urgency / danger
+  if (msg.match(/danger|urgent|emergency|serious|concern|worried|risk/)) {
+    return `<span class="tag">CLINICAL URGENCY · ${currentScan.triage}</span>${info.urgency || 'Please consult a physician.'}<div class="disclaimer">Triage level is AI-generated and should not replace clinical judgement.</div>`;
+  }
+
+  // Other findings
+  if (msg.match(/other|rest|remain|all finding|breakdown/)) {
+    const rows = Object.entries(currentScan.findings)
+      .sort((a,b) => b[1]-a[1])
+      .map(([c,p]) => `<li>${c}: <strong>${(p*100).toFixed(1)}%</strong></li>`)
+      .join('');
+    return `<span class="tag">ALL FINDINGS</span><ul>${rows}</ul><div class="disclaimer">Values represent sigmoid probabilities from an ensemble of B0+B3 models.</div>`;
+  }
+
+  // Grad-CAM
+  if (msg.match(/gradcam|grad.cam|heatmap|highlight|activat|region|where/)) {
+    if (currentScan.gradcam_base64) {
+      return `<span class="tag">GRAD-CAM</span>The heatmap is displayed in the left panel. It highlights the image regions that most influenced the model's prediction of <strong>${cond}</strong>. Brighter/warmer areas indicate higher model attention.`;
+    }
+    return `<span class="tag">GRAD-CAM</span>Grad-CAM was not generated for this scan. This can occur if the model ran in mock mode or an error occurred during heatmap generation.`;
+  }
+
+  // Scan ID / meta
+  if (msg.match(/scan id|id|when|time|stamp/)) {
+    return `<span class="tag">SCAN METADATA</span>Scan ID: <strong>${currentScan.scan_id}</strong><br>Top condition: <strong>${cond}</strong><br>Confidence: <strong>${conf}%</strong><br>Triage: <strong>${currentScan.triage}</strong>`;
+  }
+
+  // Fallback
+  return `I can help you understand this scan result. Try asking about:<br>
+    <ul>
+      <li>What the finding means</li>
+      <li>Symptoms of the detected condition</li>
+      <li>Recommended treatment</li>
+      <li>Model confidence and accuracy</li>
+      <li>All findings breakdown</li>
+    </ul>`;
+}
+
+// ── Send message ───────────────────────────────────────────────────
+async function sendMessage() {
+  const text = chatInput.value.trim();
+  if (!text) return;
+
+  chatInput.value = '';
+  chatInput.style.height = 'auto';
+  addMessage('user', text);
+  showTyping();
+  sendBtn.disabled = true;
+
+  await new Promise(r => setTimeout(r, 600 + Math.random() * 500));
+
+  removeTyping();
+  const reply = generateResponse(text);
+  addMessage('bot', reply);
+  sendBtn.disabled = false;
+  chatInput.focus();
+}
+
+function sendSuggestion(text) {
+  chatInput.value = text;
+  sendMessage();
+}
+
+sendBtn.addEventListener('click', sendMessage);
+chatInput.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+});
+chatInput.addEventListener('input', () => {
+  chatInput.style.height = 'auto';
+  chatInput.style.height = Math.min(chatInput.scrollHeight, 120) + 'px';
+});
+</script>
+</body>
+</html>
