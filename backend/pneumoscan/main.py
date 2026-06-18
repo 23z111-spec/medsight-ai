@@ -8,6 +8,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 from app.routes import predict, health, patients
 from app.model_loader import load_models
+from app.routes import chat
+import os
+
+print("MAIN FILE:", os.path.abspath(__file__))
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -32,6 +36,7 @@ app.add_middleware(
 app.include_router(health.router,   prefix="/health",   tags=["Health"])
 app.include_router(predict.router,  prefix="/predict",  tags=["Prediction"])
 app.include_router(patients.router, prefix="/patients", tags=["Patients"])
+app.include_router(chat.router, prefix="/chat", tags=["Chat"])
 
 @app.get("/")
 def root():
