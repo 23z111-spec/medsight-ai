@@ -340,7 +340,17 @@
         if (!data.access_token) {
           throw new Error(data.detail || 'Invalid email or password.');
         }
+        console.log('Login response data:', data);
         localStorage.setItem('token', data.access_token);
+        // Store user info for dashboard dropdown
+        const userInfo = {
+          full_name: data.full_name || 'Doctor',
+          email: data.email || email,
+          role: data.role || 'doctor'
+        };
+        console.log('Storing user info:', userInfo);
+        localStorage.setItem('pneumoscan_user', JSON.stringify(userInfo));
+        console.log('Stored in localStorage:', localStorage.getItem('pneumoscan_user'));
         btnText.innerHTML = '<i class="ti ti-check" style="font-size:15px;color:#4ade80;"></i> Redirecting…';
         btn.style.borderColor = '#22c55e';
         btn.style.color = '#4ade80';

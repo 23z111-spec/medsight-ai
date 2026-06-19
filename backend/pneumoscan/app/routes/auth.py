@@ -6,7 +6,7 @@ GET  /auth/me        — return current logged-in user (requires token)
 """
 
 from fastapi import APIRouter, Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from pydantic import BaseModel, EmailStr
 
@@ -16,7 +16,7 @@ from app.auth_utils import hash_password, verify_password, create_access_token, 
 
 router = APIRouter()
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/token")
 
 
 # ── Schemas ───────────────────────────────────────────────────────
@@ -87,6 +87,28 @@ def register(body: RegisterRequest, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(user)
 
+    token = create_access_token({"sub": user.email})
+    return TokenResponse(
+        access_token=token,
+        full_name=user.full_name,
+        email=user.email,
+        role=user.role,
+    )
+
+
+@router.post("/token", response_model=TokenResponse)
+def login_for_swagger(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+    """
+    OAuth2-compatible token endpoint, used ONLY by the Swagger 'Authorize' button.
+    Swagger sends username/password as form data; we treat 'username' as the email.
+    The actual frontend should keep using POST /auth/login with JSON instead.
+    """
+    user = db.query(User).filter(User.email == form_data.username).first()
+    if not user or not verify_password(form_data.password, user.hashed_password):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect email or password.",
+        )
     token = create_access_token({"sub": user.email})
     return TokenResponse(
         access_token=token,

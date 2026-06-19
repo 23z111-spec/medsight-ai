@@ -1,64 +1,139 @@
 """
-/patients  —  Patient records & scan history
-=============================================
-In production, wire these to your SQLite/PostgreSQL DB.
-For now, returns mock data that matches the dashboard sidebar.
+app/routes/patients.py
+GET  /patients/search?name=    — autocomplete search for existing patients
+POST /patients                 — create a new patient
+GET  /patients/{id}            — patient details + full scan history
 """
 
-from fastapi import APIRouter, HTTPException
-from app.schemas import PatientRecord, PatientScan
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.orm import Session
+from sqlalchemy import or_
+from pydantic import BaseModel
+from typing import Optional, List
+from datetime import datetime
+
+from app.database import get_db
+from app.models_db import Patient, Scan
+from app.routes.auth import get_current_user
+from app.models_db import User
 
 router = APIRouter()
 
-# ── Mock DB — replace with real DB queries later ──
-MOCK_PATIENTS = {
-    "PT-00421": PatientRecord(
-        patient_id="PT-00421",
-        name="Rajan Mehta",
-        age=54,
-        gender="Male",
-        ward="Pulmonology",
-        referred_by="Dr. S. Anand",
-        scans=[
-            PatientScan(
-                scan_id="SCN-A1B2C3D4",
-                date="2026-05-20",
-                prediction="Abnormal",
-                primary_finding="Pneumonia",
-                confidence=0.913,
-                triage="HIGH",
-            ),
-            PatientScan(
-                scan_id="SCN-E5F6G7H8",
-                date="2026-03-02",
-                prediction="Abnormal",
-                primary_finding="Pleural Effusion",
-                confidence=0.612,
-                triage="MEDIUM",
-            ),
-            PatientScan(
-                scan_id="SCN-I9J0K1L2",
-                date="2025-10-14",
-                prediction="Normal",
-                primary_finding="Normal",
-                confidence=0.891,
-                triage="LOW",
-            ),
-        ],
+
+# ── Schemas ───────────────────────────────────────────────────────
+class PatientCreateRequest(BaseModel):
+    name: str
+    age: Optional[int] = None
+    gender: Optional[str] = None
+
+
+class PatientSummary(BaseModel):
+    id: int
+    name: str
+    age: Optional[int]
+    gender: Optional[str]
+    total_scans: int
+    last_scan_date: Optional[str] = None
+
+
+class ScanSummary(BaseModel):
+    id: int
+    department: str
+    scan_date: str
+    upload_date: str
+    triage: Optional[str]
+    top_condition: Optional[str]
+    confidence: Optional[float]
+    doctor_name: Optional[str] = None
+
+
+class PatientDetailResponse(BaseModel):
+    id: int
+    name: str
+    age: Optional[int]
+    gender: Optional[str]
+    scans: List[ScanSummary]
+
+
+# ── Routes ────────────────────────────────────────────────────────
+@router.get("/search", response_model=List[PatientSummary])
+def search_patients(
+    name: str = "",
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Search existing patients by partial name match (case-insensitive)."""
+    query = db.query(Patient)
+    if name:
+        query = query.filter(Patient.name.ilike(f"%{name}%"))
+
+    patients = query.order_by(Patient.name).limit(20).all()
+
+    results = []
+    for p in patients:
+        last_scan = p.scans[0] if p.scans else None
+        results.append(PatientSummary(
+            id=p.id,
+            name=p.name,
+            age=p.age,
+            gender=p.gender,
+            total_scans=len(p.scans),
+            last_scan_date=last_scan.scan_date.isoformat() if last_scan else None,
+        ))
+    return results
+
+
+@router.post("/", response_model=PatientSummary, status_code=201)
+def create_patient(
+    body: PatientCreateRequest,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Create a new patient record."""
+    patient = Patient(name=body.name.strip(), age=body.age, gender=body.gender)
+    db.add(patient)
+    db.commit()
+    db.refresh(patient)
+
+    return PatientSummary(
+        id=patient.id,
+        name=patient.name,
+        age=patient.age,
+        gender=patient.gender,
+        total_scans=0,
+        last_scan_date=None,
     )
-}
 
 
-@router.get("/{patient_id}", response_model=PatientRecord)
-def get_patient(patient_id: str):
-    """Fetch patient record and full scan history by patient ID."""
-    patient = MOCK_PATIENTS.get(patient_id)
+@router.get("/{patient_id}", response_model=PatientDetailResponse)
+def get_patient(
+    patient_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Return patient details and full scan history, most recent first."""
+    patient = db.query(Patient).filter(Patient.id == patient_id).first()
     if not patient:
-        raise HTTPException(status_code=404, detail=f"Patient '{patient_id}' not found.")
-    return patient
+        raise HTTPException(status_code=404, detail="Patient not found.")
 
+    scan_summaries = [
+        ScanSummary(
+            id=s.id,
+            department=s.department,
+            scan_date=s.scan_date.isoformat(),
+            upload_date=s.upload_date.isoformat() if s.upload_date else "",
+            triage=s.triage,
+            top_condition=s.top_condition,
+            confidence=s.confidence,
+            doctor_name=s.doctor.full_name if s.doctor else None,
+        )
+        for s in patient.scans
+    ]
 
-@router.get("/", response_model=list[PatientRecord])
-def list_patients():
-    """List all patients (paginate this in production)."""
-    return list(MOCK_PATIENTS.values())
+    return PatientDetailResponse(
+        id=patient.id,
+        name=patient.name,
+        age=patient.age,
+        gender=patient.gender,
+        scans=scan_summaries,
+    )

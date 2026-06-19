@@ -8,7 +8,7 @@ Docs at:   http://localhost:8000/docs
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
-from app.routes import predict, health, patients, auth
+from app.routes import predict, health, patients, auth, scans
 from app.model_loader import load_models
 
 from app.routes import chat
@@ -64,6 +64,7 @@ app.include_router(auth.router,     prefix="/auth",      tags=["Authentication"]
 app.include_router(health.router,   prefix="/health",    tags=["Health"])
 app.include_router(predict.router,  prefix="/predict",   tags=["Prediction"])
 app.include_router(patients.router, prefix="/patients",  tags=["Patients"])
+app.include_router(scans.router,    prefix="/scans",     tags=["Scans"])
 
 
 @app.get("/")
