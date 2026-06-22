@@ -4,3 +4,5 @@ __pycache__/
 *.pyc
 .env
 *.zipbackend/pneumoscan/models/*.pth 
+backend/pneumoscan/storage/ 
+backend/pneumoscan/pneumoscan.db 

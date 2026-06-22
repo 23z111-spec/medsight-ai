@@ -4,22 +4,20 @@ PneumoScan AI — FastAPI Backend
 Run with:  uvicorn main:app --reload --port 8000
 Docs at:   http://localhost:8000/docs
 """
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
-from app.routes import predict, health, patients, auth, scans
+
+from app.routes import predict, health, patients, auth, scans, chat
 from app.model_loader import load_models
-
-from app.routes import chat
-import os
-
-print("MAIN FILE:", os.path.abspath(__file__))
-
 from app.database import engine, Base
 from app import models_db  # noqa: F401 — ensures User table is registered
 
-
+print("MAIN FILE:", os.path.abspath(__file__))
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -28,7 +26,6 @@ async def lifespan(app: FastAPI):
     # Load ML models at startup
     load_models()
     yield
-
 
 app = FastAPI(
     title="PneumoScan AI",
@@ -42,6 +39,7 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+# CORS configuration
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -50,23 +48,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
-app.include_router(health.router,   prefix="/health",   tags=["Health"])
-app.include_router(predict.router,  prefix="/predict",  tags=["Prediction"])
-app.include_router(patients.router, prefix="/patients", tags=["Patients"])
-app.include_router(chat.router, prefix="/chat", tags=["Chat"])
-
-@app.get("/")
-def root():
-    return {"service": "PneumoScan AI", "status": "running", "version": "1.0.0"}
-
-app.include_router(auth.router,     prefix="/auth",      tags=["Authentication"])
-app.include_router(health.router,   prefix="/health",    tags=["Health"])
-app.include_router(predict.router,  prefix="/predict",   tags=["Prediction"])
-app.include_router(patients.router, prefix="/patients",  tags=["Patients"])
-app.include_router(scans.router,    prefix="/scans",     tags=["Scans"])
-
-
+# Root endpoint (returns basic project metadata)
 @app.get("/")
 def root():
     return {
@@ -79,3 +61,10 @@ def root():
         "disclaimer":  "AI screening tool — not for clinical use without physician review."
     }
 
+# Register all routes precisely once
+app.include_router(auth.router,     prefix="/auth",      tags=["Authentication"])
+app.include_router(health.router,   prefix="/health",    tags=["Health"])
+app.include_router(predict.router,  prefix="/predict",   tags=["Prediction"])
+app.include_router(patients.router, prefix="/patients",  tags=["Patients"])
+app.include_router(scans.router,    prefix="/scans",     tags=["Scans"])
+app.include_router(chat.router,     prefix="/chat",      tags=["Chat"])
