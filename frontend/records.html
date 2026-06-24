@@ -3,199 +3,212 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>PneumoScan AI · Patient Records</title>
+<title>MedSight AI · Patient Records</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css"/>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="styles.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
 <style>
-  *{margin:0;padding:0;box-sizing:border-box;}
-  html,body{height:100%;background:#0a0c10;color:#e2e8f0;font-family:'DM Sans',sans-serif;overflow:hidden;}
+:root{
+  --bg:#061528;--surface:#0F1F34;--surface-soft:#132942;--surface-strong:#183156;
+  --border:rgba(96,165,250,0.14);--border-bright:rgba(96,165,250,0.30);
+  --accent:#60A5FA;--accent-strong:#3B82F6;--accent-glow:rgba(59,130,246,0.15);
+  --text:#E2EFFF;--muted-strong:#CBD5E6;--muted:#94A3B8;--muted-dim:#4A6080;
+  --danger:#F87171;--warning:#FBBF24;--success:#34D399;
+  --danger-bg:rgba(248,113,113,0.10);--success-bg:rgba(52,211,153,0.10);--warning-bg:rgba(251,191,36,0.10);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;overflow:hidden;}
 
-  /* NAV */
-  .topnav{background:#0d1017;border-bottom:1px solid #1e2530;display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:48px;flex-shrink:0;}
-  .logo{display:flex;align-items:center;gap:8px;font-family:'Space Mono',monospace;font-size:12px;color:#60c8f5;letter-spacing:.5px;}
-  .logo-dot{width:7px;height:7px;border-radius:50%;background:#60c8f5;}
-  .nav-pills{display:flex;gap:4px;}
-  .nav-pill{padding:4px 14px;border-radius:6px;font-size:11px;color:#64748b;cursor:pointer;transition:all .15s;}
-  .nav-pill:hover{color:#94a3b8;}
-  .nav-pill.active{background:#1a2235;color:#60c8f5;}
-  .badge{background:#1a2235;border:1px solid #1e2d45;border-radius:20px;padding:3px 10px;font-size:10px;color:#60c8f5;font-family:'Space Mono',monospace;}
-  .avatar{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#2563eb,#7c3aed);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#fff;}
-  .nav-right{display:flex;align-items:center;gap:12px;}
+/* NAV */
+.topnav{background:rgba(15,31,52,0.97);border-bottom:1px solid var(--border);backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:52px;flex-shrink:0;}
+.logo{display:flex;align-items:center;gap:10px;font-family:'Space Mono',monospace;font-size:13px;color:var(--accent);letter-spacing:.5px;font-weight:700;}
+.logo-icon{width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,var(--accent-strong),#1D4ED8);display:flex;align-items:center;justify-content:center;font-size:14px;color:#fff;}
+.nav-pills{display:flex;gap:2px;}
+.nav-pill{padding:5px 16px;border-radius:8px;font-size:12px;font-weight:500;color:var(--muted);cursor:pointer;transition:all .15s;}
+.nav-pill:hover{color:var(--muted-strong);background:var(--surface-soft);}
+.nav-pill.active{background:var(--accent-glow);color:var(--accent);border:1px solid var(--border-bright);}
+.nav-badge{background:var(--surface-soft);border:1px solid var(--border-bright);border-radius:20px;padding:3px 12px;font-size:10px;color:var(--accent);font-family:'Space Mono',monospace;}
+.nav-right{display:flex;align-items:center;gap:14px;}
+.avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--accent-strong),#1D4ED8);border:2px solid var(--border-bright);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;font-family:'Space Mono',monospace;}
+.demo-banner{background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.25);border-radius:6px;padding:4px 12px;font-size:10px;color:var(--warning);display:none;align-items:center;gap:6px;}
 
-  /* LAYOUT */
-  .app{display:flex;flex-direction:column;height:100vh;}
-  .body{flex:1;display:flex;flex-direction:column;overflow:hidden;padding:20px;gap:16px;background:#080b0f;}
+/* LAYOUT */
+.app{display:flex;flex-direction:column;height:100vh;}
+.body{flex:1;display:flex;flex-direction:column;overflow:hidden;padding:16px;gap:12px;background:var(--bg);}
 
-  /* STAT CARDS */
-  .stat-row{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;flex-shrink:0;}
-  .stat-card{background:#0d1017;border:1px solid #1e2530;border-radius:10px;padding:12px 14px;}
-  .stat-label{font-size:9px;color:#334155;margin-bottom:4px;letter-spacing:.8px;text-transform:uppercase;}
-  .stat-val{font-size:20px;font-weight:700;font-family:'Space Mono',monospace;}
-  .stat-sub{font-size:9px;color:#475569;margin-top:2px;}
+/* STAT CARDS */
+.stat-row{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;flex-shrink:0;}
+.stat-card{background:var(--surface-strong);border:1px solid var(--border-bright);border-radius:12px;padding:14px 18px;position:relative;overflow:hidden;transition:border-color .15s;}
+.stat-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(59,130,246,0.07) 0%,transparent 60%);pointer-events:none;}
+.stat-card:hover{border-color:var(--accent);}
+.stat-label{font-size:9px;color:var(--muted);margin-bottom:6px;letter-spacing:1px;text-transform:uppercase;font-weight:600;}
+.stat-val{font-size:26px;font-weight:700;font-family:'Space Mono',monospace;line-height:1;}
+.stat-sub{font-size:9px;color:var(--muted);margin-top:5px;}
 
-  /* TOOLBAR */
-  .toolbar{display:flex;align-items:center;gap:10px;flex-shrink:0;}
-  .search-wrap{flex:1;position:relative;}
-  .search-wrap i{position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:15px;color:#334155;}
-  .search-input{width:100%;background:#0d1017;border:1px solid #1e2530;border-radius:8px;padding:8px 12px 8px 34px;font-size:12px;color:#94a3b8;outline:none;font-family:'DM Sans',sans-serif;transition:border .15s;}
-  .search-input::placeholder{color:#334155;}
-  .search-input:focus{border-color:#1e3a5f;}
-  .filter-btn{background:#0d1017;border:1px solid #1e2530;border-radius:8px;padding:7px 14px;font-size:11px;color:#64748b;cursor:pointer;display:flex;align-items:center;gap:5px;transition:all .15s;font-family:'DM Sans',sans-serif;}
-  .filter-btn:hover{background:#131822;color:#94a3b8;}
-  .filter-btn.active{background:#0f1e35;border-color:#1e3a5f;color:#60c8f5;}
-  .add-btn{background:#1a3a6a;border:1px solid #2563eb;border-radius:8px;padding:7px 16px;font-size:11px;color:#60c8f5;cursor:pointer;display:flex;align-items:center;gap:6px;font-family:'DM Sans',sans-serif;transition:all .15s;}
-  .add-btn:hover{background:#1e4480;}
+/* skeleton */
+.skeleton{background:linear-gradient(90deg,var(--surface-soft) 25%,var(--surface-strong) 50%,var(--surface-soft) 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;border-radius:6px;}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
 
-  /* TABLE */
-.table-wrap{flex:1;overflow:hidden;background:#0d1017;border:1px solid #1e2530;border-radius:12px;}
-  table{width:100%;border-collapse:collapse;}
-  thead{position:sticky;top:0;z-index:2;}
-  thead tr{background:#0d1017;border-bottom:1px solid #1e2530;}
-  th{font-size:9px;color:#334155;letter-spacing:1px;text-transform:uppercase;padding:11px 14px;text-align:left;font-weight:500;white-space:nowrap;}
-  th.sortable{cursor:pointer;user-select:none;}
-  th.sortable:hover{color:#64748b;}
-  td{font-size:11px;color:#64748b;padding:11px 14px;border-bottom:1px solid #131822;vertical-align:middle;}
-  tbody tr{cursor:pointer;transition:background .12s;}
-  tbody tr:hover td{background:#0f1017;}
-  tbody tr:last-child td{border-bottom:none;}
-  tbody tr.highlighted td{background:#0a1525;}
+/* TOOLBAR */
+.toolbar{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.search-wrap{flex:1;position:relative;}
+.search-wrap i{position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:14px;color:var(--muted-dim);}
+.search-input{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px 12px 8px 34px;font-size:12px;color:var(--text);outline:none;font-family:'Inter',sans-serif;transition:border .15s;}
+.search-input::placeholder{color:var(--muted-dim);}
+.search-input:focus{border-color:var(--accent);}
+.filter-btn{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:7px 14px;font-size:11px;color:var(--muted);cursor:pointer;display:flex;align-items:center;gap:5px;transition:all .15s;font-family:'Inter',sans-serif;white-space:nowrap;}
+.filter-btn:hover{border-color:var(--accent);color:var(--accent);}
+.filter-btn.active{background:var(--accent-glow);border-color:var(--border-bright);color:var(--accent);}
+.add-btn{background:var(--accent-glow);border:1px solid var(--border-bright);border-radius:8px;padding:7px 16px;font-size:11px;color:var(--accent);cursor:pointer;display:flex;align-items:center;gap:6px;font-family:'Inter',sans-serif;transition:all .15s;white-space:nowrap;}
+.add-btn:hover{background:rgba(59,130,246,0.25);}
 
-  /* CELLS */
-  .patient-cell{display:flex;align-items:center;gap:10px;}
-  .initials{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;flex-shrink:0;}
-  .patient-name-cell{font-size:12px;color:#94a3b8;font-weight:500;}
-  .patient-id-cell{font-size:9px;color:#334155;font-family:'Space Mono',monospace;margin-top:1px;}
+/* TABLE */
+.table-wrap{flex:1;overflow-y:auto;background:var(--surface);border:1px solid var(--border);border-radius:12px;}
+table{width:100%;border-collapse:collapse;}
+thead{position:sticky;top:0;z-index:2;}
+thead tr{background:var(--surface);border-bottom:1px solid var(--border);}
+th{font-size:9px;color:var(--muted-dim);letter-spacing:1px;text-transform:uppercase;padding:11px 14px;text-align:left;font-weight:600;white-space:nowrap;}
+th.sortable{cursor:pointer;user-select:none;transition:color .15s;}
+th.sortable:hover{color:var(--muted);}
+td{font-size:11px;color:var(--muted);padding:11px 14px;border-bottom:1px solid var(--surface-soft);vertical-align:middle;}
+tbody tr{cursor:pointer;transition:background .12s;}
+tbody tr:hover td{background:var(--surface-soft);}
+tbody tr:last-child td{border-bottom:none;}
 
-  .triage-pill{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:4px;font-size:9px;font-family:'Space Mono',monospace;font-weight:700;}
-  .triage-high{background:#2d1010;border:1px solid #5a1f1f;color:#f87171;}
-  .triage-med{background:#2d1f08;border:1px solid #5a3f10;color:#fbbf24;}
-  .triage-low{background:#0d2a14;border:1px solid #1a5228;color:#4ade80;}
+/* CELLS */
+.patient-cell{display:flex;align-items:center;gap:10px;}
+.initials{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--accent-strong),#1D4ED8);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0;}
+.patient-name-cell{font-size:12px;color:var(--muted-strong);font-weight:500;}
+.patient-id-cell{font-size:9px;color:var(--muted-dim);font-family:'Space Mono',monospace;margin-top:1px;}
 
-  .finding-cell{display:flex;align-items:center;gap:6px;}
-  .finding-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
-  .conf-cell{font-family:'Space Mono',monospace;font-size:10px;font-weight:700;}
-  .date-cell{font-family:'Space Mono',monospace;font-size:10px;color:#475569;}
-  .ward-cell{font-size:10px;color:#475569;}
+.triage-pill{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:4px;font-size:9px;font-family:'Space Mono',monospace;font-weight:700;}
+.triage-HIGH{background:var(--danger-bg);border:1px solid rgba(248,113,113,0.3);color:var(--danger);}
+.triage-MEDIUM{background:var(--warning-bg);border:1px solid rgba(251,191,36,0.3);color:var(--warning);}
+.triage-LOW{background:var(--success-bg);border:1px solid rgba(52,211,153,0.3);color:var(--success);}
 
-  .action-cell{display:flex;align-items:center;gap:6px;}
-  .icon-btn{background:transparent;border:1px solid #1e2530;border-radius:6px;padding:4px 8px;font-size:12px;color:#475569;cursor:pointer;transition:all .15s;}
-  .icon-btn:hover{background:#131822;color:#94a3b8;border-color:#2d3a4a;}
+.finding-cell{display:flex;align-items:center;gap:6px;}
+.finding-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+.conf-cell{font-family:'Space Mono',monospace;font-size:10px;font-weight:700;}
+.date-cell{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted-dim);}
 
-  /* EMPTY STATE */
-  .empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px;gap:10px;}
-  .empty-icon{font-size:36px;color:#1e2530;}
-  .empty-title{font-size:13px;color:#475569;}
-  .empty-sub{font-size:11px;color:#334155;}
+.action-cell{display:flex;align-items:center;gap:6px;}
+.icon-btn{background:transparent;border:1px solid var(--border);border-radius:6px;padding:4px 8px;font-size:12px;color:var(--muted-dim);cursor:pointer;transition:all .15s;}
+.icon-btn:hover{background:var(--surface-soft);color:var(--accent);border-color:var(--border-bright);}
 
-  /* PAGINATION */
-  .pagination{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-top:1px solid #1e2530;flex-shrink:0;}
-  .page-info{font-size:10px;color:#334155;font-family:'Space Mono',monospace;}
-  .page-btns{display:flex;gap:4px;}
-  .page-btn{background:#0d1017;border:1px solid #1e2530;border-radius:5px;padding:4px 10px;font-size:10px;color:#475569;cursor:pointer;transition:all .15s;}
-  .page-btn:hover{background:#131822;color:#94a3b8;}
-  .page-btn.active{background:#0f1e35;border-color:#1e3a5f;color:#60c8f5;}
-  .page-btn:disabled{opacity:.3;cursor:not-allowed;}
+/* EMPTY */
+.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px;gap:8px;color:var(--muted-dim);}
+.empty-icon{font-size:36px;opacity:.4;}
+.empty-title{font-size:13px;color:var(--muted);}
+.empty-sub{font-size:11px;}
 
-  ::-webkit-scrollbar{width:4px;}
-  ::-webkit-scrollbar-track{background:transparent;}
-  ::-webkit-scrollbar-thumb{background:#1e2530;border-radius:2px;}
+/* skeleton rows */
+.skeleton-row td{padding:13px 14px;}
+.skeleton-cell{height:11px;border-radius:4px;}
+
+/* PAGINATION */
+.pagination{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-top:1px solid var(--border);flex-shrink:0;background:var(--surface);border-radius:0 0 12px 12px;}
+.page-info{font-size:10px;color:var(--muted-dim);font-family:'Space Mono',monospace;}
+.page-btns{display:flex;gap:4px;}
+.page-btn{background:var(--surface-soft);border:1px solid var(--border);border-radius:5px;padding:4px 10px;font-size:10px;color:var(--muted);cursor:pointer;transition:all .15s;font-family:'Inter',sans-serif;}
+.page-btn:hover{border-color:var(--accent);color:var(--accent);}
+.page-btn.active{background:var(--accent-glow);border-color:var(--border-bright);color:var(--accent);}
+.page-btn:disabled{opacity:.3;cursor:not-allowed;}
+
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border-bright);border-radius:2px;}
 </style>
 </head>
 <body>
 <div class="app">
 
-<!-- NAV -->
 <div class="topnav">
-  <div class="logo"><div class="logo-dot"></div>PNEUMOSCAN · AI</div>
-<div class="nav-pills">
+  <div class="logo"><div class="logo-icon"><i class="ti ti-brain"></i></div>MEDSIGHT · AI</div>
+  <div class="nav-pills">
     <div class="nav-pill" onclick="window.location.href='dashbord.html'">Screening</div>
     <div class="nav-pill active">Patient Records</div>
     <div class="nav-pill" onclick="window.location.href='analytics.html'">Analytics</div>
     <div class="nav-pill" onclick="window.location.href='settings.html'">Settings</div>
   </div>
   <div class="nav-right">
-    <div class="badge">Model v2.4.1</div>
-    <div class="avatar">DR</div>
+    <div class="demo-banner" id="demoBanner"><i class="ti ti-flask"></i> Demo data</div>
+    <div class="nav-badge">Model v2.4.1</div>
+    <div class="avatar" id="navAvatar">DR</div>
   </div>
 </div>
 
 <div class="body">
 
-  <!-- STAT CARDS -->
   <div class="stat-row">
     <div class="stat-card">
-      <div class="stat-label">Total patients</div>
-      <div class="stat-val" style="color:#60c8f5;">248</div>
+      <div class="stat-label">Total Patients</div>
+      <div class="stat-val" style="color:var(--accent);" id="statTotal">—</div>
+      <div class="stat-sub">In database</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Total Scans</div>
+      <div class="stat-val" style="color:var(--muted-strong);" id="statScans">—</div>
       <div class="stat-sub">All time</div>
     </div>
     <div class="stat-card">
-      <div class="stat-label">Scans this week</div>
-      <div class="stat-val" style="color:#94a3b8;">64</div>
-      <div class="stat-sub">↑ 12 from last week</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">High priority</div>
-      <div class="stat-val" style="color:#f87171;">12</div>
+      <div class="stat-label">High Priority</div>
+      <div class="stat-val" style="color:var(--danger);" id="statHigh">—</div>
       <div class="stat-sub">Needs review</div>
     </div>
     <div class="stat-card">
-      <div class="stat-label">Awaiting review</div>
-      <div class="stat-val" style="color:#fbbf24;">7</div>
-      <div class="stat-sub">Flagged by AI</div>
+      <div class="stat-label">Medium Priority</div>
+      <div class="stat-val" style="color:var(--warning);" id="statMed">—</div>
+      <div class="stat-sub">Monitor closely</div>
     </div>
     <div class="stat-card">
-      <div class="stat-label">Normal today</div>
-      <div class="stat-val" style="color:#4ade80;">29</div>
+      <div class="stat-label">Low / Normal</div>
+      <div class="stat-val" style="color:var(--success);" id="statLow">—</div>
       <div class="stat-sub">No action needed</div>
     </div>
   </div>
 
-  <!-- TOOLBAR -->
   <div class="toolbar">
     <div class="search-wrap">
-      <i class="ti ti-search" aria-hidden="true"></i>
-      <input class="search-input" type="text" placeholder="Search by name, ID, ward, or finding…" id="searchInput" oninput="filterTable()"/>
+      <i class="ti ti-search"></i>
+      <input class="search-input" type="text" placeholder="Search by name, ID, department, or finding…"
+             id="searchInput" oninput="applyFilters()"/>
     </div>
-    <button class="filter-btn active" id="filterAll" onclick="setFilter('all')">All</button>
-    <button class="filter-btn" id="filterHigh" onclick="setFilter('HIGH')"><span style="width:6px;height:6px;border-radius:50%;background:#ef4444;display:inline-block;"></span> High</button>
-    <button class="filter-btn" id="filterMed" onclick="setFilter('MED')"><span style="width:6px;height:6px;border-radius:50%;background:#f59e0b;display:inline-block;"></span> Medium</button>
-    <button class="filter-btn" id="filterLow" onclick="setFilter('LOW')"><span style="width:6px;height:6px;border-radius:50%;background:#22c55e;display:inline-block;"></span> Low</button>
-    <button class="add-btn"><i class="ti ti-user-plus" aria-hidden="true"></i> Add Patient</button>
+    <button class="filter-btn active" id="filterAll"    onclick="setFilter('all')">All</button>
+    <button class="filter-btn"        id="filterHigh"   onclick="setFilter('HIGH')">
+      <span style="width:6px;height:6px;border-radius:50%;background:var(--danger);display:inline-block;flex-shrink:0;"></span> High
+    </button>
+    <button class="filter-btn"        id="filterMedium" onclick="setFilter('MEDIUM')">
+      <span style="width:6px;height:6px;border-radius:50%;background:var(--warning);display:inline-block;flex-shrink:0;"></span> Medium
+    </button>
+    <button class="filter-btn"        id="filterLow"    onclick="setFilter('LOW')">
+      <span style="width:6px;height:6px;border-radius:50%;background:var(--success);display:inline-block;flex-shrink:0;"></span> Low
+    </button>
+    <button class="add-btn"><i class="ti ti-user-plus"></i> Add Patient</button>
   </div>
 
-  <!-- TABLE -->
   <div class="table-wrap">
     <table>
       <thead>
         <tr>
-          <th class="sortable" onclick="sortTable('name')">Patient <i class="ti ti-selector" style="font-size:10px;"></i></th>
-          <th class="sortable" onclick="sortTable('ward')">Ward</th>
-          <th class="sortable" onclick="sortTable('finding')">Latest Finding</th>
-          <th class="sortable" onclick="sortTable('conf')">Confidence <i class="ti ti-selector" style="font-size:10px;"></i></th>
-          <th class="sortable" onclick="sortTable('triage')">Triage <i class="ti ti-selector" style="font-size:10px;"></i></th>
-          <th class="sortable" onclick="sortTable('date')">Last Scan <i class="ti ti-selector" style="font-size:10px;"></i></th>
-          <th>Referred by</th>
+          <th class="sortable" onclick="sortBy('name')">Patient <i class="ti ti-selector" style="font-size:10px;"></i></th>
+          <th class="sortable" onclick="sortBy('department')">Department</th>
+          <th class="sortable" onclick="sortBy('top_condition')">Latest Finding</th>
+          <th class="sortable" onclick="sortBy('confidence')">Confidence <i class="ti ti-selector" style="font-size:10px;"></i></th>
+          <th class="sortable" onclick="sortBy('triage')">Triage <i class="ti ti-selector" style="font-size:10px;"></i></th>
+          <th class="sortable" onclick="sortBy('scan_date')">Last Scan <i class="ti ti-selector" style="font-size:10px;"></i></th>
+          <th>Doctor</th>
           <th>Actions</th>
         </tr>
       </thead>
       <tbody id="tableBody"></tbody>
     </table>
     <div class="empty-state" id="emptyState" style="display:none;">
-      <i class="ti ti-user-search empty-icon" aria-hidden="true"></i>
+      <div class="empty-icon"><i class="ti ti-user-search"></i></div>
       <div class="empty-title">No patients found</div>
       <div class="empty-sub">Try a different search or filter</div>
     </div>
-  </div>
-
-  <!-- PAGINATION -->
-  <div class="pagination">
-    <div class="page-info" id="pageInfo">Showing 1–10 of 20</div>
-    <div class="page-btns">
-      <button class="page-btn" id="prevBtn" onclick="changePage(-1)"><i class="ti ti-chevron-left" style="font-size:12px;"></i></button>
-      <button class="page-btn active" id="page1" onclick="goPage(1)">1</button>
-      <button class="page-btn" id="page2" onclick="goPage(2)">2</button>
-      <button class="page-btn" id="nextBtn" onclick="changePage(1)"><i class="ti ti-chevron-right" style="font-size:12px;"></i></button>
+    <div class="pagination">
+      <div class="page-info" id="pageInfo">Loading…</div>
+      <div class="page-btns" id="pageBtns"></div>
     </div>
   </div>
 
@@ -203,170 +216,247 @@
 </div>
 
 <script>
-  /* ── PATIENT DATA ── */
-  const PATIENTS = [
-    { id:'PT-00421', name:'Rajan Mehta',      age:54, gender:'M', ward:'Pulmonology',   finding:'Pneumonia',        conf:91.3, triage:'HIGH', date:'20 May 2026', ref:'Dr. S. Anand',   color:'#1a3a6a', text:'#60c8f5' },
-    { id:'PT-00398', name:'Priya Sharma',     age:42, gender:'F', ward:'General',       finding:'Pleural Effusion', conf:61.2, triage:'MED',  date:'19 May 2026', ref:'Dr. R. Kapoor',  color:'#1a2a4a', text:'#94a3b8' },
-    { id:'PT-00415', name:'Arun Krishnan',    age:67, gender:'M', ward:'ICU',           finding:'Cardiomegaly',     conf:78.4, triage:'HIGH', date:'19 May 2026', ref:'Dr. M. Iyer',    color:'#2a1a1a', text:'#f87171' },
-    { id:'PT-00402', name:'Sunita Patel',     age:38, gender:'F', ward:'Pulmonology',   finding:'Normal',           conf:89.1, triage:'LOW',  date:'18 May 2026', ref:'Dr. S. Anand',   color:'#0d2a14', text:'#4ade80' },
-    { id:'PT-00388', name:'Vikram Nair',      age:59, gender:'M', ward:'Emergency',     finding:'Tuberculosis',     conf:72.6, triage:'HIGH', date:'18 May 2026', ref:'Dr. P. Menon',   color:'#2a1a1a', text:'#f87171' },
-    { id:'PT-00376', name:'Kavitha Reddy',    age:45, gender:'F', ward:'General',       finding:'Normal',           conf:94.2, triage:'LOW',  date:'17 May 2026', ref:'Dr. R. Kapoor',  color:'#0d2a14', text:'#4ade80' },
-    { id:'PT-00361', name:'Mohan Das',        age:71, gender:'M', ward:'Pulmonology',   finding:'Pneumonia',        conf:85.7, triage:'HIGH', date:'17 May 2026', ref:'Dr. S. Anand',   color:'#2a1a1a', text:'#f87171' },
-    { id:'PT-00349', name:'Ananya Singh',     age:29, gender:'F', ward:'General',       finding:'Normal',           conf:91.8, triage:'LOW',  date:'16 May 2026', ref:'Dr. M. Iyer',    color:'#0d2a14', text:'#4ade80' },
-    { id:'PT-00334', name:'Ramesh Gupta',     age:63, gender:'M', ward:'Cardiology',    finding:'Cardiomegaly',     conf:66.3, triage:'MED',  date:'16 May 2026', ref:'Dr. A. Verma',   color:'#1a2a4a', text:'#94a3b8' },
-    { id:'PT-00312', name:'Deepa Menon',      age:51, gender:'F', ward:'ICU',           finding:'Pleural Effusion', conf:74.9, triage:'MED',  date:'15 May 2026', ref:'Dr. P. Menon',   color:'#1a2a4a', text:'#94a3b8' },
-    { id:'PT-00298', name:'Suresh Babu',      age:48, gender:'M', ward:'Pulmonology',   finding:'Tuberculosis',     conf:81.2, triage:'HIGH', date:'15 May 2026', ref:'Dr. S. Anand',   color:'#2a1a1a', text:'#f87171' },
-    { id:'PT-00287', name:'Lakshmi Iyer',     age:34, gender:'F', ward:'General',       finding:'Normal',           conf:96.4, triage:'LOW',  date:'14 May 2026', ref:'Dr. R. Kapoor',  color:'#0d2a14', text:'#4ade80' },
-    { id:'PT-00274', name:'Arjun Pillai',     age:55, gender:'M', ward:'Emergency',     finding:'Pneumothorax',     conf:69.8, triage:'HIGH', date:'14 May 2026', ref:'Dr. A. Verma',   color:'#2a1a1a', text:'#f87171' },
-    { id:'PT-00261', name:'Meera Nambiar',    age:40, gender:'F', ward:'Cardiology',    finding:'Normal',           conf:88.3, triage:'LOW',  date:'13 May 2026', ref:'Dr. M. Iyer',    color:'#0d2a14', text:'#4ade80' },
-    { id:'PT-00248', name:'Ganesh Rao',       age:77, gender:'M', ward:'ICU',           finding:'Cardiomegaly',     conf:83.1, triage:'HIGH', date:'13 May 2026', ref:'Dr. P. Menon',   color:'#2a1a1a', text:'#f87171' },
-    { id:'PT-00235', name:'Pooja Krishnan',   age:27, gender:'F', ward:'General',       finding:'Normal',           conf:93.7, triage:'LOW',  date:'12 May 2026', ref:'Dr. S. Anand',   color:'#0d2a14', text:'#4ade80' },
-    { id:'PT-00221', name:'Rajesh Kumar',     age:60, gender:'M', ward:'Pulmonology',   finding:'Pleural Effusion', conf:57.4, triage:'MED',  date:'12 May 2026', ref:'Dr. R. Kapoor',  color:'#1a2a4a', text:'#94a3b8' },
-    { id:'PT-00208', name:'Swathi Nair',      age:36, gender:'F', ward:'Emergency',     finding:'Normal',           conf:90.2, triage:'LOW',  date:'11 May 2026', ref:'Dr. A. Verma',   color:'#0d2a14', text:'#4ade80' },
-    { id:'PT-00194', name:'Prakash Menon',    age:65, gender:'M', ward:'Cardiology',    finding:'Cardiomegaly',     conf:71.5, triage:'MED',  date:'11 May 2026', ref:'Dr. M. Iyer',    color:'#1a2a4a', text:'#94a3b8' },
-    { id:'PT-00181', name:'Divya Pillai',     age:44, gender:'F', ward:'General',       finding:'Normal',           conf:87.6, triage:'LOW',  date:'10 May 2026', ref:'Dr. P. Menon',   color:'#0d2a14', text:'#4ade80' },
-  ];
+const API_BASE = 'http://127.0.0.1:8000';
+const token = () => localStorage.getItem('token') || localStorage.getItem('pneumoscan_token') || '';
 
-  const FINDING_COLORS = {
-    'Pneumonia':'#ef4444','Tuberculosis':'#f97316','Cardiomegaly':'#60c8f5',
-    'Pleural Effusion':'#f59e0b','Pneumothorax':'#a78bfa','Normal':'#22c55e'
-  };
+const DEMO_PATIENTS = [
+  { id:1, name:'Priya Ramachandran',   age:52, gender:'Female', total_scans:5, top_condition:'Pneumonia',    confidence:0.91, triage:'HIGH',   scan_date:'2024-11-04', department:'Pulmonology', doctor_name:'Dr. Senthil'  },
+  { id:2, name:'Arjun Krishnamurthy',  age:67, gender:'Male',   total_scans:4, top_condition:'Cardiomegaly', confidence:0.88, triage:'HIGH',   scan_date:'2024-10-20', department:'Cardiology',  doctor_name:'Dr. Meena'    },
+  { id:3, name:'Meenakshi Sundaram',   age:41, gender:'Female', total_scans:3, top_condition:'No Finding',   confidence:0.97, triage:'LOW',    scan_date:'2024-10-01', department:'General',     doctor_name:'Dr. Pradeep'  },
+  { id:4, name:'Ravi Subramaniam',     age:58, gender:'Male',   total_scans:6, top_condition:'Effusion',     confidence:0.85, triage:'HIGH',   scan_date:'2024-11-10', department:'Pulmonology', doctor_name:'Dr. Kavitha'  },
+  { id:5, name:'Lakshmi Venkataraman', age:34, gender:'Female', total_scans:2, top_condition:'No Finding',   confidence:0.98, triage:'LOW',    scan_date:'2024-10-15', department:'General',     doctor_name:'Dr. Pradeep'  },
+  { id:6, name:'Suresh Babu',          age:48, gender:'Male',   total_scans:3, top_condition:'Infiltration', confidence:0.72, triage:'MEDIUM', scan_date:'2024-09-30', department:'Pulmonology', doctor_name:'Dr. Senthil'  },
+  { id:7, name:'Deepa Menon',          age:55, gender:'Female', total_scans:2, top_condition:'Effusion',     confidence:0.74, triage:'MEDIUM', scan_date:'2024-09-15', department:'Cardiology',  doctor_name:'Dr. Meena'    },
+  { id:8, name:'Rajesh Kumar',         age:60, gender:'Male',   total_scans:4, top_condition:'Pneumonia',    confidence:0.83, triage:'HIGH',   scan_date:'2024-08-22', department:'Emergency',   doctor_name:'Dr. Senthil'  },
+];
 
-  let currentFilter = 'all';
-  let currentPage   = 1;
-  const PAGE_SIZE   = 10;
-  let sortKey       = 'date';
-  let sortAsc       = false;
-  let filtered      = [...PATIENTS];
+const FINDING_COLORS = {
+  'Pneumonia':'#F87171','Tuberculosis':'#f97316','Cardiomegaly':'#60A5FA',
+  'Pleural Effusion':'#FBBF24','Effusion':'#FBBF24','Pneumothorax':'#A78BFA',
+  'Infiltration':'#C084FC','No Finding':'#34D399','Normal':'#34D399',
+};
 
-  function getInitials(name) {
-    return name.split(' ').map(w => w[0]).join('').substring(0,2).toUpperCase();
+let ALL_PATIENTS   = [];
+let filtered       = [];
+let currentFilter  = 'all';
+let currentPage    = 1;
+const PAGE_SIZE    = 10;
+let sortKey        = 'scan_date';
+let sortAsc        = false;
+let usingDemo      = false;
+
+// profile initials
+(function(){
+  try {
+    const u = JSON.parse(localStorage.getItem('pneumoscan_user')||'{}');
+    if (u.full_name) document.getElementById('navAvatar').textContent =
+      u.full_name.replace(/^Dr\.?\s*/i,'').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+  } catch(e){}
+})();
+
+async function loadPatients() {
+  showSkeletonRows();
+  try {
+    const r = await fetch(`${API_BASE}/patients/search?name=`, {
+      headers: { 'Authorization': 'Bearer ' + token() },
+      signal: AbortSignal.timeout(4000)
+    });
+    if (!r.ok) throw new Error('API error');
+    const data = await r.json();
+    if (!Array.isArray(data)) throw new Error('bad response');
+    ALL_PATIENTS = data.map(p => ({
+      id:            p.id,
+      name:          p.name,
+      age:           p.age,
+      gender:        p.gender,
+      total_scans:   p.total_scans || 0,
+      top_condition: p.top_condition || p.latest_condition || '—',
+      confidence:    p.confidence   || p.latest_confidence || 0,
+      triage:        p.triage       || p.latest_triage     || '—',
+      scan_date:     p.scan_date    || p.latest_scan_date  || '',
+      department:    p.department   || '—',
+      doctor_name:   p.doctor_name  || '—',
+    }));
+    usingDemo = false;
+    document.getElementById('demoBanner').style.display = 'none';
+  } catch(e) {
+    ALL_PATIENTS = DEMO_PATIENTS;
+    usingDemo = true;
+    document.getElementById('demoBanner').style.display = 'flex';
+  }
+  updateStats();
+  applyFilters();
+}
+
+function updateStats() {
+  const totalScans = ALL_PATIENTS.reduce((s,p)=>s+(p.total_scans||0), 0);
+  document.getElementById('statTotal').textContent = ALL_PATIENTS.length;
+  document.getElementById('statScans').textContent = totalScans;
+  document.getElementById('statHigh').textContent  = ALL_PATIENTS.filter(p=>p.triage==='HIGH').length;
+  document.getElementById('statMed').textContent   = ALL_PATIENTS.filter(p=>p.triage==='MEDIUM').length;
+  document.getElementById('statLow').textContent   = ALL_PATIENTS.filter(p=>p.triage==='LOW').length;
+}
+
+function applyFilters() {
+  const q = document.getElementById('searchInput').value.toLowerCase().trim();
+  filtered = ALL_PATIENTS.filter(p => {
+    const matchFilter = currentFilter === 'all' || p.triage === currentFilter;
+    const matchSearch = !q
+      || p.name.toLowerCase().includes(q)
+      || String(p.id).includes(q)
+      || (p.department||'').toLowerCase().includes(q)
+      || (p.top_condition||'').toLowerCase().includes(q)
+      || (p.doctor_name||'').toLowerCase().includes(q);
+    return matchFilter && matchSearch;
+  });
+  filtered.sort((a,b) => {
+    let av = a[sortKey] ?? '', bv = b[sortKey] ?? '';
+    if (typeof av === 'string') { av = av.toLowerCase(); bv = bv.toLowerCase(); }
+    if (av < bv) return sortAsc ? -1 : 1;
+    if (av > bv) return sortAsc ? 1 : -1;
+    return 0;
+  });
+  currentPage = 1;
+  renderTable();
+}
+
+function setFilter(f) {
+  currentFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  const map = { all:'filterAll', HIGH:'filterHigh', MEDIUM:'filterMedium', LOW:'filterLow' };
+  document.getElementById(map[f])?.classList.add('active');
+  applyFilters();
+}
+
+function sortBy(key) {
+  if (sortKey === key) sortAsc = !sortAsc;
+  else { sortKey = key; sortAsc = false; }
+  applyFilters();
+}
+
+function getInitials(name) {
+  return (name||'??').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+}
+function confColor(c) {
+  const pct = c > 1 ? c : c * 100;
+  return pct >= 75 ? 'var(--danger)' : pct >= 50 ? 'var(--warning)' : 'var(--success)';
+}
+function formatDate(d) {
+  if (!d) return '—';
+  return new Date(d+'T00:00:00').toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
+}
+
+function renderTable() {
+  const tbody = document.getElementById('tableBody');
+  const empty = document.getElementById('emptyState');
+
+  if (filtered.length === 0) {
+    tbody.innerHTML = '';
+    empty.style.display = 'flex';
+    document.getElementById('pageInfo').textContent = 'No results';
+    document.getElementById('pageBtns').innerHTML = '';
+    return;
   }
 
-  function triageClass(t) {
-    return t === 'HIGH' ? 'triage-high' : t === 'MED' ? 'triage-med' : 'triage-low';
-  }
+  empty.style.display = 'none';
+  const start = (currentPage-1) * PAGE_SIZE;
+  const slice = filtered.slice(start, start+PAGE_SIZE);
+  const confPct = p => p.confidence > 1 ? p.confidence : p.confidence * 100;
 
-  function confColor(c) {
-    return c >= 75 ? '#f87171' : c >= 50 ? '#fbbf24' : '#4ade80';
-  }
+  tbody.innerHTML = slice.map(p => {
+    const fc = FINDING_COLORS[p.top_condition] || 'var(--muted)';
+    return `<tr onclick="openPatient(${p.id})">
+      <td>
+        <div class="patient-cell">
+          <div class="initials">${getInitials(p.name)}</div>
+          <div>
+            <div class="patient-name-cell">${p.name}</div>
+            <div class="patient-id-cell">ID #${p.id} · ${p.age||'—'}y ${p.gender?p.gender[0]:'?'}</div>
+          </div>
+        </div>
+      </td>
+      <td><span style="font-size:10px;color:var(--muted-dim);">${p.department||'—'}</span></td>
+      <td>
+        <div class="finding-cell">
+          <div class="finding-dot" style="background:${fc};"></div>
+          <span style="color:${fc};font-size:11px;">${p.top_condition||'—'}</span>
+        </div>
+      </td>
+      <td><span class="conf-cell" style="color:${confColor(p.confidence)};">${confPct(p).toFixed(1)}%</span></td>
+      <td><span class="triage-pill triage-${p.triage||'LOW'}">● ${p.triage||'—'}</span></td>
+      <td><span class="date-cell">${formatDate(p.scan_date)}</span></td>
+      <td><span style="font-size:10px;color:var(--muted-dim);">${p.doctor_name||'—'}</span></td>
+      <td>
+        <div class="action-cell">
+          <button class="icon-btn" title="Open dashboard"
+            onclick="event.stopPropagation();openPatient(${p.id})">
+            <i class="ti ti-layout-dashboard"></i>
+          </button>
+          <button class="icon-btn" title="View analytics"
+            onclick="event.stopPropagation();window.location.href='analytics.html'">
+            <i class="ti ti-chart-line"></i>
+          </button>
+          <button class="icon-btn" title="Flag for review"
+            onclick="event.stopPropagation();flagPatient(${p.id},'${p.name}')">
+            <i class="ti ti-flag"></i>
+          </button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
 
-  function renderTable() {
-    const tbody  = document.getElementById('tableBody');
-    const empty  = document.getElementById('emptyState');
-    const start  = (currentPage - 1) * PAGE_SIZE;
-    const slice  = filtered.slice(start, start + PAGE_SIZE);
+  const total = filtered.length;
+  const pages = Math.ceil(total / PAGE_SIZE);
+  const s = start+1, e = Math.min(start+PAGE_SIZE, total);
+  document.getElementById('pageInfo').textContent = `Showing ${s}–${e} of ${total} patient${total!==1?'s':''}`;
 
-    if (filtered.length === 0) {
-      tbody.innerHTML = '';
-      empty.style.display = 'flex';
-    } else {
-      empty.style.display = 'none';
-      tbody.innerHTML = slice.map((p, i) => `
-        <tr onclick="openPatient('${p.id}')" ${i === 0 && p.id === 'PT-00421' ? 'class="highlighted"' : ''}>
-          <td>
-            <div class="patient-cell">
-              <div class="initials" style="background:${p.color};color:${p.text};">${getInitials(p.name)}</div>
-              <div>
-                <div class="patient-name-cell">${p.name}</div>
-                <div class="patient-id-cell">${p.id} · ${p.age}y ${p.gender}</div>
-              </div>
-            </div>
-          </td>
-          <td><span class="ward-cell">${p.ward}</span></td>
-          <td>
-            <div class="finding-cell">
-              <div class="finding-dot" style="background:${FINDING_COLORS[p.finding]||'#64748b'};"></div>
-              <span style="color:${FINDING_COLORS[p.finding]||'#64748b'};font-size:11px;">${p.finding}</span>
-            </div>
-          </td>
-          <td><span class="conf-cell" style="color:${confColor(p.conf)};">${p.conf.toFixed(1)}%</span></td>
-          <td><span class="triage-pill ${triageClass(p.triage)}">● ${p.triage}</span></td>
-          <td><span class="date-cell">${p.date}</span></td>
-          <td><span style="font-size:10px;color:#475569;">${p.ref}</span></td>
-          <td>
-            <div class="action-cell">
-              <button class="icon-btn" title="Open dashboard" onclick="event.stopPropagation();openPatient('${p.id}')"><i class="ti ti-layout-dashboard"></i></button>
-              <button class="icon-btn" title="View analytics" onclick="event.stopPropagation();window.location.href='analytics.html'"><i class="ti ti-chart-line"></i></button>
-              <button class="icon-btn" title="Flag for review" onclick="event.stopPropagation();flagPatient('${p.id}')"><i class="ti ti-flag"></i></button>
-            </div>
-          </td>
-        </tr>
-      `).join('');
+  let html = `<button class="page-btn" onclick="changePage(-1)" ${currentPage===1?'disabled':''}>
+    <i class="ti ti-chevron-left" style="font-size:12px;"></i></button>`;
+  for (let i=1; i<=pages; i++) {
+    if (pages<=7 || i===1 || i===pages || Math.abs(i-currentPage)<=1) {
+      html += `<button class="page-btn ${i===currentPage?'active':''}" onclick="goPage(${i})">${i}</button>`;
+    } else if (Math.abs(i-currentPage)===2) {
+      html += `<button class="page-btn" disabled style="border:none;">…</button>`;
     }
-
-    // pagination info
-    const total = filtered.length;
-    const s = start + 1;
-    const e = Math.min(start + PAGE_SIZE, total);
-    document.getElementById('pageInfo').textContent = total === 0 ? 'No results' : `Showing ${s}–${e} of ${total}`;
-
-    // page buttons
-    const pages = Math.ceil(total / PAGE_SIZE);
-    document.getElementById('page1').classList.toggle('active', currentPage === 1);
-    document.getElementById('page2').classList.toggle('active', currentPage === 2);
-    document.getElementById('page2').style.display = pages > 1 ? '' : 'none';
-    document.getElementById('prevBtn').disabled = currentPage === 1;
-    document.getElementById('nextBtn').disabled = currentPage >= pages;
   }
+  html += `<button class="page-btn" onclick="changePage(1)" ${currentPage>=pages?'disabled':''}>
+    <i class="ti ti-chevron-right" style="font-size:12px;"></i></button>`;
+  document.getElementById('pageBtns').innerHTML = html;
+}
 
-  function applyFiltersAndSort() {
-    const q = document.getElementById('searchInput').value.toLowerCase();
-    filtered = PATIENTS.filter(p => {
-      const matchFilter = currentFilter === 'all' || p.triage === currentFilter;
-      const matchSearch = !q || p.name.toLowerCase().includes(q)
-        || p.id.toLowerCase().includes(q)
-        || p.ward.toLowerCase().includes(q)
-        || p.finding.toLowerCase().includes(q);
-      return matchFilter && matchSearch;
-    });
+function showSkeletonRows() {
+  document.getElementById('tableBody').innerHTML = Array(6).fill(0).map(()=>`
+    <tr class="skeleton-row">
+      <td><div style="display:flex;align-items:center;gap:10px;">
+        <div class="skeleton" style="width:30px;height:30px;border-radius:50%;flex-shrink:0;"></div>
+        <div><div class="skeleton skeleton-cell" style="width:120px;margin-bottom:5px;"></div>
+        <div class="skeleton skeleton-cell" style="width:70px;height:9px;"></div></div></div></td>
+      <td><div class="skeleton skeleton-cell" style="width:80px;"></div></td>
+      <td><div class="skeleton skeleton-cell" style="width:90px;"></div></td>
+      <td><div class="skeleton skeleton-cell" style="width:40px;"></div></td>
+      <td><div class="skeleton skeleton-cell" style="width:55px;"></div></td>
+      <td><div class="skeleton skeleton-cell" style="width:75px;"></div></td>
+      <td><div class="skeleton skeleton-cell" style="width:80px;"></div></td>
+      <td><div class="skeleton skeleton-cell" style="width:70px;"></div></td>
+    </tr>`).join('');
+}
 
-    filtered.sort((a, b) => {
-      let av = a[sortKey], bv = b[sortKey];
-      if (typeof av === 'string') av = av.toLowerCase(), bv = bv.toLowerCase();
-      return sortAsc ? (av > bv ? 1 : -1) : (av < bv ? 1 : -1);
-    });
+function changePage(dir) {
+  const pages = Math.ceil(filtered.length / PAGE_SIZE);
+  currentPage = Math.max(1, Math.min(pages, currentPage+dir));
+  renderTable();
+}
+function goPage(n) { currentPage = n; renderTable(); }
 
-    currentPage = 1;
-    renderTable();
-  }
+function openPatient(id) {
+  localStorage.setItem('selected_patient_id', id);
+  window.location.href = 'dashbord.html';
+}
+function flagPatient(id, name) {
+  alert(`Patient "${name}" (ID #${id}) flagged for radiologist review.`);
+}
 
-  function filterTable() { applyFiltersAndSort(); }
-
-  function setFilter(f) {
-    currentFilter = f;
-    ['filterAll','filterHigh','filterMed','filterLow'].forEach(id => {
-      document.getElementById(id).classList.remove('active');
-    });
-    const map = { all:'filterAll', HIGH:'filterHigh', MED:'filterMed', LOW:'filterLow' };
-    document.getElementById(map[f]).classList.add('active');
-    applyFiltersAndSort();
-  }
-
-  function sortTable(key) {
-    if (sortKey === key) sortAsc = !sortAsc;
-    else { sortKey = key; sortAsc = false; }
-    applyFiltersAndSort();
-  }
-
-  function changePage(dir) {
-    const pages = Math.ceil(filtered.length / PAGE_SIZE);
-    currentPage = Math.max(1, Math.min(pages, currentPage + dir));
-    renderTable();
-  }
-
-  function goPage(n) { currentPage = n; renderTable(); }
-
-  function openPatient(id) {
-    window.location.href = 'dashboard.html';
-  }
-
-  function flagPatient(id) {
-    alert(`Patient ${id} flagged for radiologist review.`);
-  }
-
-  /* initial render */
-  applyFiltersAndSort();
+loadPatients();
 </script>
 </body>
 </html>

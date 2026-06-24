@@ -3,636 +3,863 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>PneumoScan AI · Analytics</title>
+<title>MedSight AI · Analytics</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css"/>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="styles.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
-  *{margin:0;padding:0;box-sizing:border-box;}
-  html,body{height:100%;background:#0a0c10;color:#e2e8f0;font-family:'DM Sans',sans-serif;overflow:hidden;}
+:root{
+  --bg:#061528;--surface:#0F1F34;--surface-soft:#132942;--surface-strong:#183156;
+  --border:rgba(96,165,250,0.14);--border-bright:rgba(96,165,250,0.30);
+  --accent:#60A5FA;--accent-strong:#3B82F6;--accent-glow:rgba(59,130,246,0.15);
+  --text:#E2EFFF;--muted-strong:#CBD5E6;--muted:#94A3B8;--muted-dim:#4A6080;
+  --danger:#F87171;--warning:#FBBF24;--success:#34D399;
+  --danger-bg:rgba(248,113,113,0.10);--success-bg:rgba(52,211,153,0.10);--warning-bg:rgba(251,191,36,0.10);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;overflow:hidden;}
 
-  /* NAV */
-  .topnav{background:#0d1017;border-bottom:1px solid #1e2530;display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:48px;flex-shrink:0;}
-  .logo{display:flex;align-items:center;gap:8px;font-family:'Space Mono',monospace;font-size:12px;color:#60c8f5;letter-spacing:.5px;}
-  .logo-dot{width:7px;height:7px;border-radius:50%;background:#60c8f5;}
-  .nav-pills{display:flex;gap:4px;}
-  .nav-pill{padding:4px 14px;border-radius:6px;font-size:11px;color:#64748b;cursor:pointer;transition:all .15s;}
-  .nav-pill:hover{color:#94a3b8;}
-  .nav-pill.active{background:#1a2235;color:#60c8f5;}
-  .badge{background:#1a2235;border:1px solid #1e2d45;border-radius:20px;padding:3px 10px;font-size:10px;color:#60c8f5;font-family:'Space Mono',monospace;}
-  .avatar{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#2563eb,#7c3aed);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#fff;}
-  .nav-right{display:flex;align-items:center;gap:12px;}
+.topnav{background:rgba(15,31,52,0.97);border-bottom:1px solid var(--border);backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:52px;flex-shrink:0;}
+.logo{display:flex;align-items:center;gap:10px;font-family:'Space Mono',monospace;font-size:13px;color:var(--accent);letter-spacing:.5px;font-weight:700;}
+.logo-icon{width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,var(--accent-strong),#1D4ED8);display:flex;align-items:center;justify-content:center;font-size:14px;color:#fff;}
+.nav-pills{display:flex;gap:2px;}
+.nav-pill{padding:5px 16px;border-radius:8px;font-size:12px;font-weight:500;color:var(--muted);cursor:pointer;transition:all .15s;}
+.nav-pill:hover{color:var(--muted-strong);background:var(--surface-soft);}
+.nav-pill.active{background:var(--accent-glow);color:var(--accent);border:1px solid var(--border-bright);}
+.badge{background:var(--surface-soft);border:1px solid var(--border-bright);border-radius:20px;padding:3px 12px;font-size:10px;color:var(--accent);font-family:'Space Mono',monospace;}
+.nav-right{display:flex;align-items:center;gap:14px;}
+.avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--accent-strong),#1D4ED8);border:2px solid var(--border-bright);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;font-family:'Space Mono',monospace;}
+.demo-banner{background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.25);border-radius:6px;padding:4px 12px;font-size:10px;color:var(--warning);display:flex;align-items:center;gap:6px;}
 
-  /* LAYOUT */
-  .app{display:flex;flex-direction:column;height:100vh;}
-  .main{display:grid;grid-template-columns:240px 1fr;flex:1;overflow:hidden;}
+.app{display:flex;flex-direction:column;height:100vh;}
+.main{display:grid;grid-template-columns:240px 1fr;flex:1;overflow:hidden;min-height:0;}
 
-  /* SIDEBAR */
-.sidebar{background:#0d1017;border-right:1px solid #1e2530;padding:16px 12px;display:flex;flex-direction:column;gap:16px;overflow:hidden;}
-  .section-label{font-size:9px;font-weight:500;color:#334155;letter-spacing:1.2px;text-transform:uppercase;margin-bottom:6px;}
-  .patient-card{background:#131822;border:1px solid #1e2530;border-radius:10px;padding:12px;}
-  .patient-name{font-size:13px;font-weight:600;color:#e2e8f0;margin-bottom:2px;}
-  .patient-meta{font-size:10px;color:#475569;margin-bottom:10px;}
-  .prow{display:flex;justify-content:space-between;font-size:10px;color:#64748b;margin-bottom:3px;}
-  .prow span:last-child{color:#94a3b8;}
-  .scan-item{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;cursor:pointer;border:1px solid transparent;transition:all .15s;margin-bottom:4px;}
-  .scan-item:hover{background:#131822;}
-  .scan-item.active{background:#0f1e35;border-color:#1e3a5f;}
-  .scan-thumb{width:32px;height:32px;background:radial-gradient(ellipse at 40% 40%,#2a3a4a,#0d1520);border-radius:5px;flex-shrink:0;}
-  .scan-info{flex:1;}
-  .scan-date{font-size:11px;color:#94a3b8;font-weight:500;}
-  .scan-finding{font-size:9px;color:#475569;}
-  .dot{width:6px;height:6px;border-radius:50%;}
-  .trend-legend{display:flex;flex-direction:column;gap:6px;}
-  .legend-item{display:flex;align-items:center;gap:8px;font-size:10px;color:#64748b;}
-  .legend-dot{width:8px;height:3px;border-radius:2px;flex-shrink:0;}
+.sidebar{background:var(--surface);border-right:1px solid var(--border);padding:16px 12px;display:flex;flex-direction:column;gap:16px;overflow-y:auto;}
+.section-label{font-size:9px;font-weight:600;color:var(--muted-dim);letter-spacing:1.2px;text-transform:uppercase;margin-bottom:6px;}
 
-  /* MAIN CONTENT */
-.content{overflow:hidden;padding:20px;display:flex;flex-direction:column;gap:16px;background:#080b0f;}
+.patient-search-wrap{position:relative;}
+.patient-search-input{width:100%;background:var(--surface-soft);border:1px solid var(--border);border-radius:8px;padding:8px 12px 8px 32px;font-size:12px;color:var(--text);outline:none;font-family:'Inter',sans-serif;transition:border .15s;}
+.patient-search-input:focus{border-color:var(--accent);}
+.patient-search-input::placeholder{color:var(--muted-dim);}
+.patient-search-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:14px;color:var(--muted-dim);}
+.patient-dropdown{background:var(--surface-soft);border:1px solid var(--border-bright);border-radius:8px;margin-top:4px;overflow:hidden;display:none;max-height:200px;overflow-y:auto;box-shadow:0 8px 24px rgba(0,0,0,0.4);position:absolute;width:100%;z-index:100;}
+.patient-dropdown.show{display:block;}
+.patient-dropdown-item{padding:9px 12px;cursor:pointer;transition:background .12s;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border);}
+.patient-dropdown-item:last-child{border-bottom:none;}
+.patient-dropdown-item:hover{background:var(--surface-strong);}
+.pdi-avatar{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,var(--accent-strong),#1D4ED8);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff;flex-shrink:0;}
+.pdi-name{font-size:11px;color:var(--muted-strong);font-weight:500;}
+.pdi-meta{font-size:9px;color:var(--muted-dim);}
+.pdi-badge{font-size:8px;font-family:'Space Mono',monospace;padding:1px 5px;border-radius:3px;margin-left:auto;flex-shrink:0;}
+.dropdown-empty{padding:12px;font-size:11px;color:var(--muted-dim);text-align:center;}
 
-  /* STAT CARDS */
-  .stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
-  .stat-card{background:#0d1017;border:1px solid #1e2530;border-radius:10px;padding:12px 14px;}
-  .stat-label{font-size:9px;color:#334155;margin-bottom:4px;letter-spacing:.8px;text-transform:uppercase;}
-  .stat-val{font-size:22px;font-weight:700;font-family:'Space Mono',monospace;}
-  .stat-sub{font-size:9px;color:#475569;margin-top:2px;display:flex;align-items:center;gap:4px;}
-  .trend-up{color:#ef4444;}
-  .trend-dn{color:#22c55e;}
+.date-filter{display:flex;gap:4px;flex-wrap:wrap;}
+.df-btn{flex:1;padding:5px 6px;border-radius:6px;font-size:10px;background:var(--surface-soft);border:1px solid var(--border);color:var(--muted);cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s;text-align:center;}
+.df-btn:hover{border-color:var(--accent);color:var(--accent);}
+.df-btn.active{background:var(--accent-glow);border-color:var(--border-bright);color:var(--accent);}
 
-  /* CHART CARDS */
-  .chart-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;flex:1;min-height:0;}
-  .chart-card{background:#0d1017;border:1px solid #1e2530;border-radius:10px;padding:6px;overflow:hidden;display:flex;flex-direction:column;cursor:pointer;transition:all .12s;position:relative;min-height:70px;font-size:12px;}
-  .chart-card:hover{border-color:#2563eb;box-shadow:0 0 12px rgba(37,99,235,.15);}
-  .chart-card.full{grid-column:1/-1;}
-  /* Make main trend chart take a visible viewport slice so it's always above the fold */
-  .trend-main{height:auto;min-height:200px;flex:0 0 auto;grid-column:1 / span 2;}
+.patient-card{background:var(--surface-soft);border:1px solid var(--border);border-radius:10px;padding:12px;}
+.patient-name{font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px;}
+.patient-meta{font-size:10px;color:var(--muted-dim);margin-bottom:10px;}
+.prow{display:flex;justify-content:space-between;font-size:10px;color:var(--muted-dim);margin-bottom:3px;}
+.prow span:last-child{color:var(--muted-strong);}
+.patient-divider{border:none;border-top:1px solid var(--border);margin:8px 0;}
 
-  /* table card sits in right column */
-  .table-card{grid-column:3 / span 1;padding:6px;}
+/* detailed patient info rows */
+.prow-full{display:flex;justify-content:space-between;font-size:10px;color:var(--muted-dim);margin-bottom:5px;align-items:flex-start;}
+.prow-full span:last-child{color:var(--muted-strong);text-align:right;max-width:60%;}
+.patient-triage-pill{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:20px;font-size:9px;font-weight:700;font-family:'Space Mono',monospace;}
 
-  /* compact comparison table so it fits without internal scroll */
-  .comp-table{width:100%;border-collapse:collapse;font-size:9px;}
-  .comp-table thead th{padding:3px 4px;font-size:8px;color:#334155;}
-  .comp-table tbody td{padding:3px 4px;font-size:8px;color:#64748b;border-bottom:1px solid #131822;}
-  .comp-table tr{height:22px;}
-  .chart-expand-icon{position:absolute;top:12px;right:12px;width:24px;height:24px;background:rgba(96,200,245,.1);border:1px solid #1e3a5f;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;color:#60c8f5;opacity:0;transition:opacity .2s;}
-  .chart-card:hover .chart-expand-icon{opacity:1;}
-  .chart-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px;flex-shrink:0;padding-right:28px;}
-  .chart-title{font-size:12px;font-weight:500;color:#94a3b8;}
-  .chart-sub{font-size:10px;color:#475569;margin-top:2px;}
-  .chart-badge{font-size:9px;font-family:'Space Mono',monospace;padding:3px 8px;border-radius:5px;}
-  .badge-danger{background:#2d1010;border:1px solid #5a1f1f;color:#f87171;}
-  .badge-ok{background:#0d2a14;border:1px solid #1a5228;color:#4ade80;}
-  .badge-warn{background:#2d1f08;border:1px solid #5a3f10;color:#fbbf24;}
+.scan-item{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;cursor:pointer;border:1px solid transparent;transition:all .15s;margin-bottom:4px;}
+.scan-item:hover{background:var(--surface-soft);}
+.scan-item.active{background:var(--surface-strong);border-color:var(--border-bright);}
+.scan-thumb{width:32px;height:32px;background:var(--surface-soft);border-radius:5px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--muted-dim);font-family:'Space Mono',monospace;}
+.scan-info{flex:1;min-width:0;}
+.scan-date{font-size:11px;color:var(--muted-strong);font-weight:500;}
+.scan-finding{font-size:9px;color:var(--muted-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sdot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
 
-  /* MODAL OVERLAY */
-  .chart-modal{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.85);display:none;align-items:center;justify-content:center;z-index:1000;padding:20px;}
-  .chart-modal.active{display:flex;}
-  .chart-modal-content{background:#0d1017;border:1px solid #1e2530;border-radius:16px;width:100%;max-width:90%;height:90vh;display:flex;flex-direction:column;padding:24px;position:relative;box-shadow:0 20px 60px rgba(0,0,0,.6);}
-  .chart-modal-close{position:absolute;top:16px;right:16px;background:transparent;border:1px solid #1e2530;border-radius:8px;padding:8px;font-size:18px;color:#64748b;cursor:pointer;transition:all .2s;}
-  .chart-modal-close:hover{background:#131822;color:#94a3b8;border-color:#2d3a4a;}
-  .chart-modal-header{flex-shrink:0;margin-bottom:20px;padding-right:40px;}
-  .chart-modal-body{flex:1;overflow:hidden;position:relative;display:flex;align-items:center;justify-content:center;}
+.export-btn{width:100%;background:var(--surface-soft);border:1px solid var(--border-bright);border-radius:8px;padding:9px;font-size:11px;color:var(--accent);cursor:pointer;font-family:'Inter',sans-serif;display:flex;align-items:center;justify-content:center;gap:6px;transition:all .15s;}
+.export-btn:hover{background:var(--accent-glow);}
 
-  /* TIMELINE */
-  .timeline{display:flex;align-items:center;gap:0;width:100%;margin-top:8px;height:90px;}
-  .tl-item{flex:1;display:flex;flex-direction:column;align-items:center;position:relative;justify-content:center;}
-  .tl-item:not(:last-child)::after{content:'';position:absolute;top:16px;left:50%;width:100%;height:1.5px;background:#1e2530;z-index:0;}
-  .tl-dot{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;z-index:1;position:relative;border:1.5px solid;flex-shrink:0;}
-  .tl-dot.danger{background:#2d1010;border-color:#ef4444;color:#f87171;}
-  .tl-dot.warning{background:#2d1f08;border-color:#f59e0b;color:#fbbf24;}
-  .tl-dot.ok{background:#0d2a14;border-color:#22c55e;color:#4ade80;}
-  .tl-date{font-size:9px;color:#475569;margin-top:6px;font-family:'Space Mono',monospace;}
-  .tl-finding{font-size:10px;color:#64748b;margin-top:2px;text-align:center;}
-  .tl-conf{font-size:10px;font-family:'Space Mono',monospace;font-weight:700;margin-top:1px;}
+.state-box{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:24px;text-align:center;color:var(--muted-dim);}
+.state-icon{font-size:32px;opacity:.4;}
+.state-text{font-size:12px;}
+.state-sub{font-size:10px;opacity:.6;}
 
-  /* COMPARISON TABLE */
-  .comp-table{width:100%;border-collapse:collapse;}
-  .comp-table th{font-size:9px;color:#334155;letter-spacing:.8px;text-transform:uppercase;padding:8px 10px;text-align:left;border-bottom:1px solid #1e2530;}
-  .comp-table td{font-size:11px;color:#64748b;padding:8px 10px;border-bottom:1px solid #131822;}
-  .comp-table tr:last-child td{border-bottom:none;}
-  .comp-table td:first-child{color:#94a3b8;}
-  .pill{display:inline-flex;align-items:center;padding:2px 8px;border-radius:4px;font-size:9px;font-family:'Space Mono',monospace;font-weight:700;}
-  .pill.high{background:#2d1010;color:#f87171;}
-  .pill.medium{background:#2d1f08;color:#fbbf24;}
-  .pill.low{background:#0d2a14;color:#4ade80;}
+.skeleton{background:linear-gradient(90deg,var(--surface-soft) 25%,var(--surface-strong) 50%,var(--surface-soft) 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;border-radius:6px;}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.skeleton-stat{height:60px;border-radius:10px;margin-bottom:0;}
+.skeleton-chart{flex:1;border-radius:10px;}
 
-  /* POPULATION STATS */
-  .pop-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
-  .pop-card{background:#0d1017;border:1px solid #1e2530;border-radius:10px;padding:12px 14px;}
+.content{overflow:hidden;padding:16px;display:flex;flex-direction:column;gap:12px;background:var(--bg);min-height:0;}
 
-  ::-webkit-scrollbar{width:4px;}
-  ::-webkit-scrollbar-track{background:transparent;}
-  ::-webkit-scrollbar-thumb{background:#1e2530;border-radius:2px;}
+.global-stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;flex-shrink:0;}
+.global-stat{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:9px 12px;opacity:0.75;}
+.global-stat-label{font-size:8px;color:var(--muted-dim);letter-spacing:.8px;text-transform:uppercase;margin-bottom:3px;}
+.global-stat-val{font-size:17px;font-weight:600;font-family:'Space Mono',monospace;color:var(--muted-strong);}
+.global-stat-sub{font-size:8px;color:var(--muted-dim);margin-top:2px;}
+
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;flex-shrink:0;}
+.stat-card{background:var(--surface-strong);border:1px solid var(--border-bright);border-radius:12px;padding:14px 18px;position:relative;overflow:hidden;transition:border-color .15s;}
+.stat-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(59,130,246,0.07) 0%,transparent 60%);pointer-events:none;}
+.stat-card:hover{border-color:var(--accent);}
+.stat-label{font-size:9px;color:var(--muted);margin-bottom:6px;letter-spacing:1px;text-transform:uppercase;font-weight:600;}
+.stat-val{font-size:26px;font-weight:700;font-family:'Space Mono',monospace;line-height:1;}
+.stat-sub{font-size:9px;color:var(--muted);margin-top:5px;}
+
+.chart-grid{display:grid;grid-template-columns:2fr 1fr;grid-template-rows:1fr auto;gap:10px;flex:1;min-height:0;}
+.chart-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px;overflow:hidden;display:flex;flex-direction:column;cursor:pointer;transition:all .12s;position:relative;}
+.chart-card:hover{border-color:var(--accent);box-shadow:0 0 12px var(--accent-glow);}
+.symptom-card{grid-column:1;grid-row:1;cursor:default;}
+.symptom-card:hover{border-color:var(--border);}
+.dist-card{grid-column:2;grid-row:1;}
+
+.sx-scroll-wrap{flex:1;overflow-y:auto;overflow-x:hidden;display:flex;flex-direction:column;gap:1px;margin:0 -12px;padding:0 12px;}
+.sx-scroll-wrap::-webkit-scrollbar{width:3px;}
+.sx-scroll-wrap::-webkit-scrollbar-thumb{background:var(--border-bright);border-radius:2px;}
+.sx-row{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid var(--surface-soft);}
+.sx-row:last-child{border-bottom:none;}
+.sx-date-col{flex-shrink:0;width:52px;padding-top:2px;}
+.sx-date{font-size:9px;font-family:'Space Mono',monospace;color:var(--muted-dim);line-height:1.3;}
+.sx-dot{width:6px;height:6px;border-radius:50%;margin-top:6px;flex-shrink:0;}
+.sx-tags{display:flex;flex-wrap:wrap;gap:4px;flex:1;}
+.sx-tag{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:20px;font-size:9px;font-weight:500;border:1px solid;white-space:nowrap;}
+.sx-tag.severity-high{background:var(--danger-bg);border-color:rgba(248,113,113,0.3);color:var(--danger);}
+.sx-tag.severity-medium{background:var(--warning-bg);border-color:rgba(251,191,36,0.25);color:var(--warning);}
+.sx-tag.severity-low{background:rgba(96,165,250,0.08);border-color:rgba(96,165,250,0.2);color:var(--accent);}
+.sx-none{font-size:10px;color:var(--muted-dim);font-style:italic;padding-top:2px;}
+
+.timeline-card{grid-column:1 / -1;grid-row:2;cursor:default;min-height:110px;}
+.timeline-card:hover{border-color:var(--border);}
+.expand-icon{position:absolute;top:10px;right:10px;width:22px;height:22px;background:var(--accent-glow);border:1px solid var(--border-bright);border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--accent);opacity:0;transition:opacity .2s;}
+.chart-card:hover .expand-icon{opacity:1;}
+.chart-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px;flex-shrink:0;padding-right:28px;}
+.chart-title{font-size:11px;font-weight:500;color:var(--muted-strong);}
+.chart-sub{font-size:9px;color:var(--muted-dim);margin-top:2px;}
+.chart-badge{font-size:9px;font-family:'Space Mono',monospace;padding:2px 7px;border-radius:4px;white-space:nowrap;}
+.badge-danger{background:var(--danger-bg);border:1px solid rgba(248,113,113,0.3);color:var(--danger);}
+.badge-ok{background:var(--success-bg);border:1px solid rgba(52,211,153,0.3);color:var(--success);}
+.badge-warn{background:var(--warning-bg);border:1px solid rgba(251,191,36,0.3);color:var(--warning);}
+.badge-neutral{background:var(--surface-soft);border:1px solid var(--border);color:var(--muted);}
+.chart-body{flex:1;min-height:0;position:relative;}
+
+.tl-scroll-wrap{overflow-x:auto;overflow-y:visible;padding:4px 0 8px;flex:1;}
+.tl-scroll-wrap::-webkit-scrollbar{height:3px;}
+.tl-scroll-wrap::-webkit-scrollbar-thumb{background:var(--border-bright);border-radius:2px;}
+.tl-track{display:flex;align-items:flex-start;min-width:max-content;padding:6px 2px 2px;}
+.tl-item{display:flex;flex-direction:column;align-items:center;min-width:72px;position:relative;}
+.tl-item:not(:last-child)::after{content:'';position:absolute;top:13px;left:calc(50% + 14px);width:calc(100% - 28px);height:1px;background:var(--border);}
+.tl-dot{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;z-index:1;position:relative;border:1.5px solid;flex-shrink:0;transition:transform .15s;}
+.tl-item:hover .tl-dot{transform:scale(1.2);}
+.tl-dot.danger{background:var(--danger-bg);border-color:var(--danger);color:var(--danger);}
+.tl-dot.warning{background:var(--warning-bg);border-color:var(--warning);color:var(--warning);}
+.tl-dot.ok{background:var(--success-bg);border-color:var(--success);color:var(--success);}
+.tl-dot i{font-size:10px;}
+.tl-date{font-size:8px;color:var(--muted-dim);margin-top:5px;font-family:'Space Mono',monospace;text-align:center;}
+.tl-finding{font-size:9px;color:var(--muted);margin-top:1px;text-align:center;max-width:68px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.tl-conf{font-size:9px;font-family:'Space Mono',monospace;font-weight:700;margin-top:1px;text-align:center;}
+
+.chart-modal{position:fixed;inset:0;background:rgba(0,0,0,.85);display:none;align-items:center;justify-content:center;z-index:1000;padding:20px;}
+.chart-modal.active{display:flex;}
+.chart-modal-content{background:var(--surface);border:1px solid var(--border-bright);border-radius:16px;width:100%;max-width:90%;height:88vh;display:flex;flex-direction:column;padding:24px;position:relative;box-shadow:0 20px 60px rgba(0,0,0,.6);}
+.chart-modal-close{position:absolute;top:14px;right:14px;background:transparent;border:1px solid var(--border);border-radius:8px;padding:7px;font-size:16px;color:var(--muted);cursor:pointer;transition:all .2s;line-height:1;}
+.chart-modal-close:hover{background:var(--surface-soft);color:var(--text);}
+.chart-modal-header{flex-shrink:0;margin-bottom:18px;padding-right:40px;}
+.chart-modal-title{font-size:15px;font-weight:500;color:var(--muted-strong);}
+.chart-modal-sub{font-size:11px;color:var(--muted-dim);margin-top:3px;}
+.chart-modal-body{flex:1;overflow:auto;position:relative;}
+
+::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:var(--border-bright);border-radius:2px;}
 </style>
 </head>
 <body>
 <div class="app">
 
-<!-- NAV -->
 <div class="topnav">
-  <div class="logo"><div class="logo-dot"></div>PNEUMOSCAN · AI</div>
-<div class="nav-pills">
+  <div class="logo"><div class="logo-icon"><i class="ti ti-brain"></i></div>MEDSIGHT · AI</div>
+  <div class="nav-pills">
     <div class="nav-pill" onclick="window.location.href='dashbord.html'">Screening</div>
     <div class="nav-pill" onclick="window.location.href='records.html'">Patient Records</div>
     <div class="nav-pill active">Analytics</div>
-
     <div class="nav-pill" onclick="window.location.href='settings.html'">Settings</div>
   </div>
   <div class="nav-right">
+    <div class="demo-banner" id="demoBanner" style="display:none;"><i class="ti ti-flask"></i> Demo data</div>
     <div class="badge">Model v2.4.1</div>
-    <div class="avatar">DR</div>
+    <div class="avatar" id="navAvatar">DR</div>
   </div>
 </div>
 
 <div class="main">
 
-  <!-- SIDEBAR -->
   <div class="sidebar">
-
     <div>
-      <div class="section-label">Patient</div>
-      <div class="patient-card">
-        <div class="patient-name">Rajan Mehta</div>
-        <div class="patient-meta">Male · 54 yrs · #PT-00421</div>
-        <div class="prow"><span>Ward</span><span>Pulmonology</span></div>
-        <div class="prow"><span>Referred by</span><span>Dr. S. Anand</span></div>
-        <div class="prow"><span>Total scans</span><span>3</span></div>
+      <div class="section-label">Search Patient</div>
+      <div class="patient-search-wrap">
+        <i class="ti ti-search patient-search-icon"></i>
+        <input class="patient-search-input" type="text" id="patientSearchInput"
+               placeholder="Name or patient ID…" autocomplete="off"
+               oninput="onPatientSearch(this.value)"/>
+        <div class="patient-dropdown" id="patientDropdown"></div>
       </div>
     </div>
 
     <div>
+      <div class="section-label">Date Range</div>
+      <div class="date-filter">
+        <button class="df-btn active" id="df-all"  onclick="setDateFilter('all')">All</button>
+        <button class="df-btn"        id="df-180"  onclick="setDateFilter(180)">6M</button>
+        <button class="df-btn"        id="df-90"   onclick="setDateFilter(90)">90D</button>
+        <button class="df-btn"        id="df-30"   onclick="setDateFilter(30)">30D</button>
+      </div>
+    </div>
+
+    <div id="patientCardWrap">
+      <div class="state-box">
+        <div class="state-icon"><i class="ti ti-user-search"></i></div>
+        <div class="state-text">No patient selected</div>
+        <div class="state-sub">Search above to load analytics</div>
+      </div>
+    </div>
+
+    <div id="scanHistoryWrap" style="display:none;">
       <div class="section-label">Scan History</div>
-      <div class="scan-item active">
-        <div class="scan-thumb"></div>
-        <div class="scan-info">
-          <div class="scan-date">20 May 2026</div>
-          <div class="scan-finding">Pneumonia · RUL</div>
-        </div>
-        <div class="dot" style="background:#ef4444;"></div>
-      </div>
-      <div class="scan-item">
-        <div class="scan-thumb"></div>
-        <div class="scan-info">
-          <div class="scan-date">02 Mar 2026</div>
-          <div class="scan-finding">Pleural effusion</div>
-        </div>
-        <div class="dot" style="background:#f59e0b;"></div>
-      </div>
-      <div class="scan-item">
-        <div class="scan-thumb"></div>
-        <div class="scan-info">
-          <div class="scan-date">14 Oct 2025</div>
-          <div class="scan-finding">Normal</div>
-        </div>
-        <div class="dot" style="background:#22c55e;"></div>
-      </div>
+      <div id="scanList"></div>
     </div>
 
-    <div>
-      <div class="section-label">Chart Legend</div>
-      <div class="trend-legend">
-        <div class="legend-item"><div class="legend-dot" style="background:#ef4444;"></div>Pneumonia confidence</div>
-        <div class="legend-item"><div class="legend-dot" style="background:#f59e0b;"></div>Pleural effusion</div>
-        <div class="legend-item"><div class="legend-dot" style="background:#60c8f5;"></div>Overall risk score</div>
-        <div class="legend-item"><div class="legend-dot" style="background:#22c55e;"></div>Normal probability</div>
-      </div>
-    </div>
-
-<div style="margin-top:auto;">
-      <button onclick="window.location.href='dashbord.html'" style="width:100%;background:#1a3a6a;border:1px solid #2563eb;border-radius:8px;padding:9px;font-size:11px;color:#60c8f5;cursor:pointer;font-family:'DM Sans',sans-serif;">
-        <i class="ti ti-layout-dashboard" aria-hidden="true"></i> Open Dashboard
+    <div style="margin-top:auto;display:flex;flex-direction:column;gap:8px;">
+      <button class="export-btn" id="exportBtn" onclick="exportCSV()" style="display:none;">
+        <i class="ti ti-download"></i> Export CSV
+      </button>
+      <button onclick="window.location.href='dashbord.html'"
+              style="width:100%;background:var(--accent-glow);border:1px solid var(--border-bright);border-radius:8px;padding:9px;font-size:11px;color:var(--accent);cursor:pointer;font-family:'Inter',sans-serif;display:flex;align-items:center;justify-content:center;gap:6px;">
+        <i class="ti ti-layout-dashboard"></i> Open Dashboard
       </button>
     </div>
-
   </div>
 
-  <!-- MAIN CONTENT -->
   <div class="content">
 
-    <!-- POPULATION STATS -->
-    <div class="pop-row">
-      <div class="pop-card">
-        <div class="stat-label">Scans today</div>
-        <div class="stat-val" style="color:#60c8f5;">48</div>
-        <div class="stat-sub" style="color:#475569;">Across all patients</div>
+    <div class="global-stat-row" id="globalStatRow">
+      <div class="global-stat">
+        <div class="global-stat-label">Total Patients</div>
+        <div class="global-stat-val" id="gStatPatients">—</div>
+        <div class="global-stat-sub">in database</div>
       </div>
-      <div class="pop-card">
-        <div class="stat-label">High triage flags</div>
-        <div class="stat-val" style="color:#f87171;">12</div>
-        <div class="stat-sub trend-up"><i class="ti ti-trending-up" style="font-size:11px;"></i> 3 new today</div>
+      <div class="global-stat">
+        <div class="global-stat-label">Total Scans</div>
+        <div class="global-stat-val" id="gStatScans">—</div>
+        <div class="global-stat-sub">all time</div>
       </div>
-      <div class="pop-card">
-        <div class="stat-label">Model AUC-ROC</div>
-        <div class="stat-val" style="color:#4ade80;">0.924</div>
-        <div class="stat-sub trend-dn"><i class="ti ti-trending-up" style="font-size:11px;color:#22c55e;"></i> Above benchmark</div>
+      <div class="global-stat">
+        <div class="global-stat-label">High Priority</div>
+        <div class="global-stat-val" id="gStatHigh" style="color:var(--danger);">—</div>
+        <div class="global-stat-sub">scans flagged HIGH</div>
       </div>
-    </div>
-
-    <!-- PATIENT STAT CARDS -->
-    <div class="stat-row">
-      <div class="stat-card">
-        <div class="stat-label">Latest confidence</div>
-        <div class="stat-val" style="color:#ef4444;">91.3%</div>
-        <div class="stat-sub trend-up"><i class="ti ti-trending-up" style="font-size:11px;"></i> +29.8% since Oct</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">Total scans</div>
-        <div class="stat-val" style="color:#60c8f5;">3</div>
-        <div class="stat-sub" style="color:#475569;">Over 7 months</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">Current triage</div>
-        <div class="stat-val" style="font-size:16px;color:#f87171;margin-top:4px;">HIGH</div>
-        <div class="stat-sub trend-up"><i class="ti ti-trending-up" style="font-size:11px;"></i> Escalated from MED</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">Primary finding</div>
-        <div class="stat-val" style="font-size:15px;color:#fbbf24;margin-top:4px;">Pneumonia</div>
-        <div class="stat-sub" style="color:#475569;">Right upper lobe</div>
+      <div class="global-stat">
+        <div class="global-stat-label">Most Common Finding</div>
+        <div class="global-stat-val" id="gStatCond" style="font-size:13px;margin-top:4px;">—</div>
+        <div class="global-stat-sub" id="gStatCondSub">across all scans</div>
       </div>
     </div>
 
-    <!-- BOTTOM ROW -->
-    <div class="chart-grid">
-      <!-- MAIN TREND CHART -->
-      <div class="chart-card trend-main" onclick="expandChart(this)">
-        <div class="chart-expand-icon"><i class="ti ti-maximize-2"></i></div>
-        <div class="chart-header">
-          <div>
-            <div class="chart-title">Condition confidence over time</div>
-            <div class="chart-sub">AI model confidence per finding across all 3 scans · Rajan Mehta</div>
-          </div>
-          <span class="chart-badge badge-danger">Worsening trend</span>
+    <div id="contentEmpty" style="flex:1;display:flex;align-items:center;justify-content:center;">
+      <div class="state-box">
+        <div class="state-icon"><i class="ti ti-chart-line"></i></div>
+        <div class="state-text" style="font-size:14px;color:var(--muted);">Select a patient to view analytics</div>
+        <div class="state-sub">Scan trends, triage history, and condition breakdown will appear here</div>
+      </div>
+    </div>
+
+    <div id="contentLoading" style="display:none;flex-direction:column;gap:12px;flex:1;min-height:0;">
+      <div class="stat-row">
+        <div class="skeleton skeleton-stat"></div>
+        <div class="skeleton skeleton-stat"></div>
+        <div class="skeleton skeleton-stat"></div>
+        <div class="skeleton skeleton-stat"></div>
+      </div>
+      <div style="display:grid;grid-template-columns:2fr 1fr;grid-template-rows:1fr auto;gap:10px;flex:1;min-height:0;">
+        <div class="skeleton skeleton-chart"></div>
+        <div class="skeleton skeleton-chart"></div>
+        <div class="skeleton skeleton-chart" style="grid-column:span 2;height:90px;flex:none;"></div>
+      </div>
+    </div>
+
+    <div id="analyticsContent" style="display:none;flex-direction:column;gap:12px;flex:1;min-height:0;">
+
+      <div class="stat-row">
+        <div class="stat-card">
+          <div class="stat-label">Latest Confidence</div>
+          <div class="stat-val" id="statConf">—</div>
+          <div class="stat-sub" id="statConfSub">—</div>
         </div>
-        <div style="height:100%;flex:1;">
-          <canvas id="trendChart"></canvas>
+        <div class="stat-card">
+          <div class="stat-label">Scans in Range</div>
+          <div class="stat-val" id="statTotal" style="color:var(--accent);">—</div>
+          <div class="stat-sub" id="statTotalSub">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Current Triage</div>
+          <div class="stat-val" id="statTriage" style="font-size:16px;margin-top:4px;">—</div>
+          <div class="stat-sub" id="statTriageSub">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Primary Finding</div>
+          <div class="stat-val" id="statFinding" style="font-size:14px;color:var(--warning);margin-top:4px;">—</div>
+          <div class="stat-sub" id="statFindingSub">—</div>
         </div>
       </div>
 
-      <!-- RISK SCORE -->
-      <div class="chart-card" onclick="expandChart(this)">
-        <div class="chart-expand-icon"><i class="ti ti-maximize-2"></i></div>
-        <div class="chart-header">
-          <div>
-            <div class="chart-title">Overall risk score</div>
-            <div class="chart-sub">Composite triage score per scan</div>
-          </div>
-          <span class="chart-badge badge-danger">↑ High</span>
-        </div>
-        <div style="height:90px;flex:1;">
-          <canvas id="riskChart"></canvas>
-        </div>
-      </div>
+      <div class="chart-grid">
 
-      <!-- FINDING DISTRIBUTION -->
-      <div class="chart-card" onclick="expandChart(this)">
-        <div class="chart-expand-icon"><i class="ti ti-maximize-2"></i></div>
-        <div class="chart-header">
-          <div>
-            <div class="chart-title">Finding distribution</div>
-            <div class="chart-sub">Most common findings · all patients today</div>
+        <div class="chart-card symptom-card" id="symptomCard">
+          <div class="chart-header">
+            <div><div class="chart-title">Patient symptoms</div><div class="chart-sub" id="symptomSub">—</div></div>
+            <span class="chart-badge badge-neutral" id="symptomBadge">—</span>
           </div>
+          <div class="sx-scroll-wrap" id="symptomBody"></div>
         </div>
-        <div style="height:65px;flex:1;overflow:hidden;">
-          <canvas id="distChart"></canvas>
-        </div>
-      </div>
 
-      <!-- SCAN TIMELINE -->
-      <div class="chart-card" onclick="expandChart(this)">
-        <div class="chart-expand-icon"><i class="ti ti-maximize-2"></i></div>
-        <div class="chart-header">
-          <div>
-            <div class="chart-title">Scan timeline</div>
-            <div class="chart-sub">Findings and confidence at each visit</div>
+        <div class="chart-card dist-card" onclick="expandChart('distCard')" id="distCard">
+          <div class="expand-icon"><i class="ti ti-maximize-2"></i></div>
+          <div class="chart-header">
+            <div><div class="chart-title">Finding distribution</div><div class="chart-sub">Condition breakdown</div></div>
           </div>
+          <div class="chart-body"><canvas id="distChart"></canvas></div>
         </div>
-        <div class="timeline">
-          <div class="tl-item">
-            <div class="tl-dot ok"><i class="ti ti-check" style="font-size:13px;" aria-hidden="true"></i></div>
-            <div class="tl-date">Oct 2025</div>
-            <div class="tl-finding">Normal</div>
-            <div class="tl-conf" style="color:#4ade80;">61.5%</div>
-          </div>
-          <div class="tl-item">
-            <div class="tl-dot warning"><i class="ti ti-alert-triangle" style="font-size:11px;" aria-hidden="true"></i></div>
-            <div class="tl-date">Mar 2026</div>
-            <div class="tl-finding">Pl. effusion</div>
-            <div class="tl-conf" style="color:#fbbf24;">61.2%</div>
-          </div>
-          <div class="tl-item">
-            <div class="tl-dot danger"><i class="ti ti-alert-circle" style="font-size:11px;" aria-hidden="true"></i></div>
-            <div class="tl-date">May 2026</div>
-            <div class="tl-finding">Pneumonia</div>
-            <div class="tl-conf" style="color:#f87171;">91.3%</div>
-          </div>
-        </div>
-      </div>
 
-      <!-- COMPARISON TABLE -->
-      <div class="chart-card table-card" onclick="expandChart(this)">
-        <div class="chart-expand-icon"><i class="ti ti-maximize-2"></i></div>
-        <div class="chart-header">
-          <div>
-            <div class="chart-title">Scan-by-scan comparison</div>
-            <div class="chart-sub">All findings across every visit</div>
+        <div class="chart-card timeline-card" id="timelineCard">
+          <div class="chart-header">
+            <div><div class="chart-title">Scan timeline</div><div class="chart-sub" id="timelineSub">Most recent first</div></div>
           </div>
+          <div class="tl-scroll-wrap" id="timelineBody"></div>
         </div>
-        <table class="comp-table">
-          <thead>
-            <tr>
-              <th>Finding</th>
-              <th>Oct 2025</th>
-              <th>Mar 2026</th>
-              <th>May 2026</th>
-              <th>Trend</th>
-              <th>Triage</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Pneumonia</td>
-              <td>4.1%</td>
-              <td>22.3%</td>
-              <td style="color:#f87171;font-weight:600;">91.3%</td>
-              <td style="color:#ef4444;font-size:9px;">↑ +87.2%</td>
-              <td><span class="pill high">HIGH</span></td>
-            </tr>
-            <tr>
-              <td>Pleural effusion</td>
-              <td>8.2%</td>
-              <td style="color:#fbbf24;font-weight:600;">61.2%</td>
-              <td>34.7%</td>
-              <td style="color:#22c55e;font-size:9px;">↓ −26.5%</td>
-              <td><span class="pill medium">MED</span></td>
-            </tr>
-            <tr>
-              <td>Cardiomegaly</td>
-              <td>6.1%</td>
-              <td>7.4%</td>
-              <td>8.2%</td>
-              <td style="color:#f59e0b;font-size:9px;">↑ +2.1%</td>
-              <td><span class="pill low">LOW</span></td>
-            </tr>
-            <tr>
-              <td>Tuberculosis</td>
-              <td>3.2%</td>
-              <td>4.1%</td>
-              <td>5.1%</td>
-              <td style="color:#f59e0b;font-size:9px;">↑ +1.9%</td>
-              <td><span class="pill low">LOW</span></td>
-            </tr>
-            <tr>
-              <td>Normal</td>
-              <td style="color:#4ade80;font-weight:600;">61.5%</td>
-              <td>18.4%</td>
-              <td>8.7%</td>
-              <td style="color:#ef4444;font-size:9px;">↓ −52.8%</td>
-              <td><span class="pill high">HIGH</span></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
 
+      </div>
     </div>
   </div>
 </div>
+</div>
 
-<!-- CHART MODAL -->
 <div class="chart-modal" id="chartModal">
   <div class="chart-modal-content">
-    <button class="chart-modal-close" onclick="closeChartModal()"><i class="ti ti-x"></i></button>
-    <div class="chart-modal-header" id="chartModalHeader"></div>
-    <div class="chart-modal-body" id="chartModalBody"></div>
+    <button class="chart-modal-close" onclick="closeModal()"><i class="ti ti-x"></i></button>
+    <div class="chart-modal-header">
+      <div class="chart-modal-title" id="modalTitle"></div>
+      <div class="chart-modal-sub" id="modalSub"></div>
+    </div>
+    <div class="chart-modal-body" id="modalBody"></div>
   </div>
-</div>
-
 </div>
 
 <script>
-  const dates     = ['Oct 2025', 'Mar 2026', 'May 2026'];
-  const gridColor = 'rgba(30,37,48,0.8)';
-  const tickColor = '#334155';
-  const ttBg      = '#0d1017';
-  const ttBdr     = '#1e2530';
-  Chart.defaults.font.family = "'DM Sans', sans-serif";
-  Chart.defaults.color = tickColor;
+// ── DEMO DATA ──────────────────────────────────────────────────────────────────
+// Used automatically when the API is unreachable (localhost:8000).
+// Reflects realistic patient records so the UI is fully explorable.
+const DEMO_PATIENTS = [
+  {
+    id: 1, name: 'Priya Ramachandran', age: 52, gender: 'Female',
+    total_scans: 5,
+    blood_group: 'B+', phone: '+91 98400 11234', department: 'Pulmonology',
+    scans: [
+      { id: 101, scan_date:'2024-11-04', top_condition:'Pneumonia',    confidence:0.91, triage:'HIGH',   department:'Pulmonology', doctor_name:'Dr. Senthil', symptoms:[{name:'Chest pain',severity:'high'},{name:'Fever',severity:'high'},{name:'Shortness of breath',severity:'medium'}] },
+      { id: 102, scan_date:'2024-09-18', top_condition:'Pneumonia',    confidence:0.84, triage:'HIGH',   department:'Pulmonology', doctor_name:'Dr. Senthil', symptoms:[{name:'Cough',severity:'medium'},{name:'Fatigue',severity:'medium'}] },
+      { id: 103, scan_date:'2024-07-02', top_condition:'Effusion',     confidence:0.76, triage:'MEDIUM', department:'Pulmonology', doctor_name:'Dr. Kavitha',  symptoms:[{name:'Chest tightness',severity:'medium'},{name:'Breathlessness',severity:'high'}] },
+      { id: 104, scan_date:'2024-04-14', top_condition:'No Finding',   confidence:0.95, triage:'LOW',    department:'General',      doctor_name:'Dr. Anand',    symptoms:[{name:'Mild cough',severity:'low'}] },
+      { id: 105, scan_date:'2024-02-27', top_condition:'Infiltration', confidence:0.68, triage:'MEDIUM', department:'Pulmonology', doctor_name:'Dr. Senthil', symptoms:[{name:'Night sweats',severity:'medium'},{name:'Wheezing',severity:'medium'},{name:'Fever',severity:'low'}] },
+    ]
+  },
+  {
+    id: 2, name: 'Arjun Krishnamurthy', age: 67, gender: 'Male',
+    total_scans: 4,
+    blood_group: 'O+', phone: '+91 94440 77890', department: 'Cardiology',
+    scans: [
+      { id: 201, scan_date:'2024-10-20', top_condition:'Cardiomegaly', confidence:0.88, triage:'HIGH',   department:'Cardiology',   doctor_name:'Dr. Meena',    symptoms:[{name:'Dyspnea',severity:'high'},{name:'Palpitations',severity:'high'},{name:'Leg swelling',severity:'medium'}] },
+      { id: 202, scan_date:'2024-08-05', top_condition:'Cardiomegaly', confidence:0.79, triage:'HIGH',   department:'Cardiology',   doctor_name:'Dr. Meena',    symptoms:[{name:'Chest pain',severity:'high'},{name:'Fatigue',severity:'medium'}] },
+      { id: 203, scan_date:'2024-05-11', top_condition:'Effusion',     confidence:0.72, triage:'MEDIUM', department:'Cardiology',   doctor_name:'Dr. Rajan',    symptoms:[{name:'Breathlessness',severity:'medium'},{name:'Cough',severity:'low'}] },
+      { id: 204, scan_date:'2024-01-30', top_condition:'No Finding',   confidence:0.93, triage:'LOW',    department:'General',      doctor_name:'Dr. Anand',    symptoms:[{name:'Routine check',severity:'low'}] },
+    ]
+  },
+  {
+    id: 3, name: 'Meenakshi Sundaram', age: 41, gender: 'Female',
+    total_scans: 3,
+    blood_group: 'A+', phone: '+91 87540 32100', department: 'General',
+    scans: [
+      { id: 301, scan_date:'2024-10-01', top_condition:'No Finding',   confidence:0.97, triage:'LOW',    department:'General',      doctor_name:'Dr. Pradeep',  symptoms:[{name:'Mild fatigue',severity:'low'}] },
+      { id: 302, scan_date:'2024-06-14', top_condition:'Infiltration', confidence:0.61, triage:'MEDIUM', department:'Pulmonology', doctor_name:'Dr. Kavitha',  symptoms:[{name:'Cough',severity:'medium'},{name:'Low-grade fever',severity:'medium'},{name:'Fatigue',severity:'low'}] },
+      { id: 303, scan_date:'2024-03-08', top_condition:'Pneumonia',    confidence:0.83, triage:'HIGH',   department:'Emergency',    doctor_name:'Dr. Senthil', symptoms:[{name:'High fever',severity:'high'},{name:'Chest pain',severity:'high'},{name:'Shortness of breath',severity:'high'}] },
+    ]
+  },
+  {
+    id: 4, name: 'Ravi Subramaniam', age: 58, gender: 'Male',
+    total_scans: 6,
+    blood_group: 'AB-', phone: '+91 99001 55432', department: 'Pulmonology',
+    scans: [
+      { id: 401, scan_date:'2024-11-10', top_condition:'Effusion',     confidence:0.85, triage:'HIGH',   department:'Pulmonology', doctor_name:'Dr. Kavitha',  symptoms:[{name:'Pleuritic pain',severity:'high'},{name:'Dyspnea',severity:'high'}] },
+      { id: 402, scan_date:'2024-09-22', top_condition:'Effusion',     confidence:0.78, triage:'MEDIUM', department:'Pulmonology', doctor_name:'Dr. Kavitha',  symptoms:[{name:'Breathlessness',severity:'medium'},{name:'Cough',severity:'low'}] },
+      { id: 403, scan_date:'2024-07-18', top_condition:'Pneumonia',    confidence:0.71, triage:'MEDIUM', department:'Pulmonology', doctor_name:'Dr. Senthil', symptoms:[{name:'Fever',severity:'medium'},{name:'Productive cough',severity:'medium'}] },
+      { id: 404, scan_date:'2024-05-03', top_condition:'No Finding',   confidence:0.92, triage:'LOW',    department:'General',      doctor_name:'Dr. Anand',    symptoms:[{name:'Follow-up',severity:'low'}] },
+      { id: 405, scan_date:'2024-02-19', top_condition:'Infiltration', confidence:0.65, triage:'MEDIUM', department:'Pulmonology', doctor_name:'Dr. Kavitha',  symptoms:[{name:'Night sweats',severity:'medium'},{name:'Weight loss',severity:'high'},{name:'Cough',severity:'medium'}] },
+      { id: 406, scan_date:'2023-11-30', top_condition:'Effusion',     confidence:0.80, triage:'HIGH',   department:'Emergency',    doctor_name:'Dr. Rajan',    symptoms:[{name:'Acute chest pain',severity:'high'},{name:'Fever',severity:'high'},{name:'Dyspnea',severity:'high'}] },
+    ]
+  },
+  {
+    id: 5, name: 'Lakshmi Venkataraman', age: 34, gender: 'Female',
+    total_scans: 2,
+    blood_group: 'O-', phone: '+91 81480 98765', department: 'General',
+    scans: [
+      { id: 501, scan_date:'2024-10-15', top_condition:'No Finding',   confidence:0.98, triage:'LOW',    department:'General',      doctor_name:'Dr. Pradeep',  symptoms:[{name:'Routine check',severity:'low'}] },
+      { id: 502, scan_date:'2024-04-22', top_condition:'No Finding',   confidence:0.96, triage:'LOW',    department:'General',      doctor_name:'Dr. Pradeep',  symptoms:[{name:'Mild cough',severity:'low'}] },
+    ]
+  },
+];
 
-  /* TREND LINE */
-  window.charts = window.charts || {};
-  window.charts.trendChart = new Chart(document.getElementById('trendChart'), {
-    type: 'line',
-    data: {
-      labels: dates,
-      datasets: [
-        { label:'Pneumonia',         data:[4.1,22.3,91.3], borderColor:'#ef4444', backgroundColor:'rgba(239,68,68,0.08)',  borderWidth:2, pointBackgroundColor:'#ef4444', pointRadius:5, pointHoverRadius:7, tension:0.4, fill:true },
-        { label:'Pleural effusion',  data:[8.2,61.2,34.7], borderColor:'#f59e0b', backgroundColor:'rgba(245,158,11,0.05)', borderWidth:2, pointBackgroundColor:'#f59e0b', pointRadius:5, pointHoverRadius:7, tension:0.4, fill:true },
-        { label:'Normal probability',data:[61.5,18.4,8.7], borderColor:'#22c55e', backgroundColor:'rgba(34,197,94,0.05)',  borderWidth:2, pointBackgroundColor:'#22c55e', pointRadius:5, pointHoverRadius:7, tension:0.4, fill:true, borderDash:[4,3] },
-      ],
-    },
-    options: {
-      responsive:true, maintainAspectRatio:false,
-      interaction:{ mode:'index', intersect:false },
-      plugins:{
-        legend:{ position:'top', align:'end', labels:{ boxWidth:12, boxHeight:3, padding:16, font:{size:10}, color:'#64748b' } },
-        tooltip:{ backgroundColor:ttBg, borderColor:ttBdr, borderWidth:1, titleColor:'#94a3b8', bodyColor:'#64748b', padding:10,
-          callbacks:{ label: ctx => ` ${ctx.dataset.label}: ${ctx.parsed.y.toFixed(1)}%` } },
-      },
-      scales:{
-        x:{ grid:{color:gridColor}, ticks:{color:tickColor,font:{size:10}} },
-        y:{ min:0, max:100, grid:{color:gridColor}, ticks:{color:tickColor,font:{size:10},callback:v=>v+'%'} },
-      },
-    },
-  });
+// ── CONFIG ──────────────────────────────────────────────────────────────────────
+const API   = 'http://localhost:8000';
+const token = () => localStorage.getItem('token') || localStorage.getItem('pneumoscan_token') || '';
+let usingDemo = false;
 
-  /* RISK BAR */
-  window.charts.riskChart = new Chart(document.getElementById('riskChart'), {
-    type:'bar',
-    data:{
-      labels:dates,
-      datasets:[{ label:'Risk score', data:[18,52,91],
-        backgroundColor:['rgba(34,197,94,0.25)','rgba(245,158,11,0.25)','rgba(239,68,68,0.25)'],
-        borderColor:['#22c55e','#f59e0b','#ef4444'], borderWidth:1.5, borderRadius:5 }],
-    },
-    options:{
-      responsive:true, maintainAspectRatio:false,
-      plugins:{ legend:{display:false},
-        tooltip:{ backgroundColor:ttBg, borderColor:ttBdr, borderWidth:1, titleColor:'#94a3b8', bodyColor:'#64748b', padding:10,
-          callbacks:{ label: ctx => ` Risk score: ${ctx.parsed.y}/100` } } },
-      scales:{
-        x:{ grid:{color:gridColor}, ticks:{color:tickColor,font:{size:10}} },
-        y:{ min:0, max:100, grid:{color:gridColor}, ticks:{color:tickColor,font:{size:10}} },
-      },
-    },
-  });
+Chart.defaults.font.family = "'Inter', sans-serif";
+const tickColor = '#4A6080';
+const ttBg  = '#0F1F34';
+const ttBdr = 'rgba(96,165,250,0.30)';
 
-  /* FINDING DISTRIBUTION DOUGHNUT */
-  window.charts.distChart = new Chart(document.getElementById('distChart'), {
-    type:'doughnut',
-    data:{
-      labels:['Pneumonia','Pleural effusion','Cardiomegaly','Tuberculosis','Normal'],
-      datasets:[{
-        data:[34,22,18,12,14],
-        backgroundColor:['rgba(239,68,68,0.7)','rgba(245,158,11,0.7)','rgba(96,200,245,0.7)','rgba(167,139,250,0.7)','rgba(34,197,94,0.7)'],
-        borderColor:['#ef4444','#f59e0b','#60c8f5','#a78bfa','#22c55e'],
-        borderWidth:1.5,
-      }],
-    },
-    options:{
-      responsive:true, maintainAspectRatio:false,
-      cutout:'65%',
-      plugins:{
-        legend:{ position:'right', labels:{ boxWidth:10, boxHeight:10, padding:10, font:{size:9}, color:'#64748b' } },
-        tooltip:{ backgroundColor:ttBg, borderColor:ttBdr, borderWidth:1, titleColor:'#94a3b8', bodyColor:'#64748b', padding:10,
-          callbacks:{ label: ctx => ` ${ctx.label}: ${ctx.parsed}%` } },
-      },
-    },
-  });
+let currentPatient = null;
+let allScans       = [];
+let filteredScans  = [];
+let dateFilter     = 'all';
+let charts = {};
 
-  /* SCAN ITEM CLICK */
-  document.querySelectorAll('.scan-item').forEach(item => {
-    item.addEventListener('click', () => {
-      document.querySelectorAll('.scan-item').forEach(i => i.classList.remove('active'));
-      item.classList.add('active');
+const COND_COLORS = {
+  Pneumonia:    { line:'#F87171' },
+  Effusion:     { line:'#FBBF24' },
+  Cardiomegaly: { line:'#60A5FA' },
+  Infiltration: { line:'#A78BFA' },
+  'No Finding': { line:'#34D399' },
+};
+const TRIAGE_COLOR = { HIGH:'#F87171', MEDIUM:'#FBBF24', LOW:'#34D399' };
+const TRIAGE_BG    = { HIGH:'rgba(248,113,113,0.15)', MEDIUM:'rgba(251,191,36,0.12)', LOW:'rgba(52,211,153,0.12)' };
+
+// ── PROFILE ─────────────────────────────────────────────────────────────────────
+(function(){
+  try {
+    const u = JSON.parse(localStorage.getItem('pneumoscan_user')||'{}');
+    if (u.full_name) document.getElementById('navAvatar').textContent =
+      u.full_name.replace(/^Dr\.?\s*/i,'').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+  } catch(e){}
+})();
+
+// ── DEMO HELPERS ─────────────────────────────────────────────────────────────────
+function setDemoMode(on) {
+  usingDemo = on;
+  document.getElementById('demoBanner').style.display = on ? 'flex' : 'none';
+}
+
+function demoSearch(q) {
+  q = q.toLowerCase();
+  return DEMO_PATIENTS.filter(p =>
+    p.name.toLowerCase().includes(q) || String(p.id).includes(q)
+  );
+}
+
+function demoGlobalStats() {
+  const totalScans = DEMO_PATIENTS.reduce((s,p)=>s+(p.total_scans||0),0);
+  const allScansFlat = DEMO_PATIENTS.flatMap(p=>p.scans||[]);
+  const highCount = allScansFlat.filter(s=>s.triage==='HIGH').length;
+  const condCounts = {};
+  allScansFlat.forEach(s=>{ condCounts[s.top_condition]=(condCounts[s.top_condition]||0)+1; });
+  const topCond = Object.entries(condCounts).sort((a,b)=>b[1]-a[1])[0];
+  document.getElementById('gStatPatients').textContent = DEMO_PATIENTS.length;
+  document.getElementById('gStatScans').textContent    = totalScans;
+  document.getElementById('gStatHigh').textContent     = highCount;
+  document.getElementById('gStatCond').textContent     = topCond[0];
+  document.getElementById('gStatCondSub').textContent  = `${topCond[1]} of ${totalScans} scans`;
+}
+
+// ── GLOBAL STATS ─────────────────────────────────────────────────────────────────
+async function loadGlobalStats() {
+  try {
+    const r = await fetch(`${API}/patients/search?name=`, {
+      headers:{'Authorization':'Bearer '+token()},
+      signal: AbortSignal.timeout(3000)
     });
-  });
+    const patients = await r.json();
+    if (!Array.isArray(patients)) throw new Error('bad response');
+    const totalScans = patients.reduce((s,p)=>s+(p.total_scans||0),0);
+    document.getElementById('gStatPatients').textContent = patients.length;
+    document.getElementById('gStatScans').textContent    = totalScans;
+    document.getElementById('gStatHigh').textContent = '—';
+    document.getElementById('gStatCond').textContent  = '—';
+    setDemoMode(false);
+  } catch(e) {
+    setDemoMode(true);
+    demoGlobalStats();
+  }
+}
+loadGlobalStats();
 
-  /* CHART EXPAND/COLLAPSE */
-  function expandChart(chartElement) {
-    const header = chartElement.querySelector('.chart-header');
-    const title = chartElement.querySelector('.chart-title').textContent;
-    const sub = chartElement.querySelector('.chart-sub')?.textContent || '';
-    const canvas = chartElement.querySelector('canvas');
-    const timeline = chartElement.querySelector('.timeline');
-    const table = chartElement.querySelector('table');
-    
-    const headerHTML = `
-      <div>
-        <div class="chart-title" style="font-size:16px;">${title}</div>
-        <div class="chart-sub">${sub}</div>
-      </div>
-    `;
-    
-    document.getElementById('chartModalHeader').innerHTML = headerHTML;
-    
-    const bodyDiv = document.getElementById('chartModalBody');
-    bodyDiv.innerHTML = '';
-    
-    if (canvas) {
-      // create a fresh canvas for the modal so Chart.js can render cleanly
-      const modalCanvas = document.createElement('canvas');
-      modalCanvas.style.width = '100%';
-      modalCanvas.style.height = '100%';
-      modalCanvas.style.maxHeight = '70vh';
-      modalCanvas.style.maxWidth = '100%';
-      modalCanvas.style.minWidth = '400px';
-      modalCanvas.style.minHeight = '300px';
-      modalCanvas.id = 'modalCanvas';
-      bodyDiv.style.display = 'flex';
-      bodyDiv.style.alignItems = 'center';
-      bodyDiv.style.justifyContent = 'center';
-      bodyDiv.appendChild(modalCanvas);
+// ── PATIENT SEARCH ────────────────────────────────────────────────────────────────
+let searchTimer;
+function onPatientSearch(q) {
+  clearTimeout(searchTimer);
+  const dd = document.getElementById('patientDropdown');
+  if (!q.trim()) { dd.classList.remove('show'); return; }
+  searchTimer = setTimeout(() => fetchPatients(q), 280);
+}
 
-      // try to find an existing Chart instance by the original canvas id
-      const origId = canvas.id;
-      const origChart = window.charts && window.charts[origId];
+async function fetchPatients(q) {
+  const dd = document.getElementById('patientDropdown');
+  dd.innerHTML = '<div class="dropdown-empty">Searching…</div>';
+  dd.classList.add('show');
 
-      setTimeout(() => {
-        try {
-          const ctx = modalCanvas.getContext('2d');
-          if (origChart) {
-            // destroy previous modal chart if present
-            if (window.modalChart) window.modalChart.destroy();
-            
-            // rebuild config safely without callbacks
-            const chartType = origChart.config.type;
-            const chartData = origChart.data;
-            
-            // build safe options object
-            const safeOptions = {
-              responsive: true,
-              maintainAspectRatio: false,
-            };
-            
-            // copy non-function options
-            if (origChart.options) {
-              if (origChart.options.interaction) safeOptions.interaction = origChart.options.interaction;
-              if (origChart.options.cutout) safeOptions.cutout = origChart.options.cutout;
-              if (origChart.options.scales) safeOptions.scales = origChart.options.scales;
-              
-              // rebuild plugins without callbacks
-              if (origChart.options.plugins) {
-                safeOptions.plugins = {};
-                if (origChart.options.plugins.legend) {
-                  safeOptions.plugins.legend = {
-                    position: origChart.options.plugins.legend.position,
-                    align: origChart.options.plugins.legend.align,
-                    display: origChart.options.plugins.legend.display,
-                  };
-                  if (origChart.options.plugins.legend.labels) {
-                    safeOptions.plugins.legend.labels = {
-                      boxWidth: origChart.options.plugins.legend.labels.boxWidth,
-                      boxHeight: origChart.options.plugins.legend.labels.boxHeight,
-                      padding: origChart.options.plugins.legend.labels.padding,
-                      font: origChart.options.plugins.legend.labels.font,
-                      color: origChart.options.plugins.legend.labels.color,
-                    };
-                  }
-                }
-                // simplified tooltip without callbacks
-                if (origChart.options.plugins.tooltip) {
-                  safeOptions.plugins.tooltip = {
-                    backgroundColor: origChart.options.plugins.tooltip.backgroundColor,
-                    borderColor: origChart.options.plugins.tooltip.borderColor,
-                    borderWidth: origChart.options.plugins.tooltip.borderWidth,
-                    titleColor: origChart.options.plugins.tooltip.titleColor,
-                    bodyColor: origChart.options.plugins.tooltip.bodyColor,
-                    padding: origChart.options.plugins.tooltip.padding,
-                  };
-                }
-              }
-            }
-            
-            // create new chart with safe config
-            window.modalChart = new Chart(ctx, {
-              type: chartType,
-              data: chartData,
-              options: safeOptions
-            });
-          } else {
-            console.warn('Chart not found in window.charts:', origId, 'Available:', Object.keys(window.charts || {}));
-          }
-        } catch (err) {
-          console.error('Failed to render modal chart', err);
-        }
-      }, 50);
-    } else if (timeline) {
-      bodyDiv.appendChild(timeline.cloneNode(true));
-      bodyDiv.style.padding = '20px';
-    } else if (table) {
-      bodyDiv.style.overflowY = 'auto';
-      bodyDiv.appendChild(table.cloneNode(true));
+  if (usingDemo) {
+    renderDropdown(demoSearch(q), dd);
+    return;
+  }
+
+  try {
+    const r = await fetch(`${API}/patients/search?name=${encodeURIComponent(q)}`, {
+      headers: {'Authorization':'Bearer '+token()},
+      signal: AbortSignal.timeout(3000)
+    });
+    if (!r.ok) throw new Error('API error');
+    const data = await r.json();
+    if (!Array.isArray(data)) throw new Error('bad data');
+    renderDropdown(data, dd);
+  } catch(e) {
+    setDemoMode(true);
+    renderDropdown(demoSearch(q), dd);
+  }
+}
+
+function renderDropdown(data, dd) {
+  if (!data.length) {
+    dd.innerHTML = '<div class="dropdown-empty">No patients found</div>';
+    return;
+  }
+  const allScansFlat = data.flatMap ? data : [];
+  dd.innerHTML = data.map(p => {
+    const triage = p.scans?.[0]?.triage || '';
+    const tColor = TRIAGE_COLOR[triage] || '';
+    const tbg    = TRIAGE_BG[triage] || '';
+    const pillHtml = triage
+      ? `<span class="pdi-badge" style="background:${tbg};color:${tColor};border:1px solid ${tColor+'44'}">${triage}</span>`
+      : '';
+    return `
+      <div class="patient-dropdown-item" onclick="selectPatient(${p.id})">
+        <div class="pdi-avatar">${p.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase()}</div>
+        <div style="flex:1;min-width:0;">
+          <div class="pdi-name">${p.name}</div>
+          <div class="pdi-meta">${p.age||'—'}y · ${p.gender||'—'} · ${p.total_scans} scan${p.total_scans!==1?'s':''}</div>
+        </div>
+        ${pillHtml}
+      </div>`;
+  }).join('');
+}
+
+document.addEventListener('click', e => {
+  if (!e.target.closest('.patient-search-wrap'))
+    document.getElementById('patientDropdown').classList.remove('show');
+});
+
+// ── SELECT PATIENT ─────────────────────────────────────────────────────────────────
+async function selectPatient(id) {
+  document.getElementById('patientDropdown').classList.remove('show');
+  document.getElementById('patientSearchInput').value = '';
+  showLoading();
+
+  let data;
+  if (usingDemo) {
+    await new Promise(r => setTimeout(r, 320)); // simulate load
+    data = DEMO_PATIENTS.find(p => p.id === id);
+    if (!data) { showEmpty(); return; }
+  } else {
+    try {
+      const r = await fetch(`${API}/patients/${id}`, {
+        headers:{'Authorization':'Bearer '+token()},
+        signal: AbortSignal.timeout(4000)
+      });
+      if (!r.ok) throw new Error('not found');
+      data = await r.json();
+    } catch(e) {
+      setDemoMode(true);
+      data = DEMO_PATIENTS.find(p => p.id === id);
+      if (!data) { showEmpty(); return; }
     }
-    
-    document.getElementById('chartModal').classList.add('active');
   }
 
-  function closeChartModal() {
-    document.getElementById('chartModal').classList.remove('active');
-    // destroy modal chart if created
-    if (window.modalChart) { try { window.modalChart.destroy(); } catch(e){} window.modalChart = null; }
-    document.getElementById('chartModalBody').innerHTML = '';
+  currentPatient = data;
+  // scans newest-first
+  allScans = (data.scans || []).slice().sort((a,b)=>new Date(b.scan_date)-new Date(a.scan_date));
+  applyDateFilter();
+  renderSidebar(data);
+  document.getElementById('exportBtn').style.display = 'flex';
+}
+
+// ── DATE FILTER ────────────────────────────────────────────────────────────────────
+function setDateFilter(val) {
+  dateFilter = val;
+  document.querySelectorAll('.df-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('df-' + val).classList.add('active');
+  if (allScans.length) applyDateFilter();
+}
+
+function applyDateFilter() {
+  if (dateFilter === 'all') {
+    filteredScans = [...allScans];
+  } else {
+    const cutoff = new Date();
+    cutoff.setDate(cutoff.getDate() - dateFilter);
+    filteredScans = allScans.filter(s => new Date(s.scan_date) >= cutoff);
+  }
+  if (!filteredScans.length) { showEmpty(); return; }
+  renderAnalytics(currentPatient, filteredScans);
+}
+
+// ── SIDEBAR ────────────────────────────────────────────────────────────────────────
+function renderSidebar(p) {
+  const scans  = p.scans || [];
+  const latest = scans[0] || {};
+  const tc     = TRIAGE_COLOR[latest.triage] || '#4A6080';
+  const tbg    = TRIAGE_BG[latest.triage]    || 'var(--surface-soft)';
+
+  document.getElementById('patientCardWrap').innerHTML = `
+    <div class="patient-card">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+        <div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--accent-strong),#1D4ED8);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0;">
+          ${p.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase()}
+        </div>
+        <div>
+          <div class="patient-name">${p.name}</div>
+          <div class="patient-meta">DB #${p.id}</div>
+        </div>
+      </div>
+
+      <div class="prow-full"><span>Age</span><span>${p.age||'—'} years</span></div>
+      <div class="prow-full"><span>Gender</span><span>${p.gender||'—'}</span></div>
+      ${p.blood_group ? `<div class="prow-full"><span>Blood Group</span><span>${p.blood_group}</span></div>` : ''}
+      ${p.phone ? `<div class="prow-full"><span>Phone</span><span>${p.phone}</span></div>` : ''}
+      ${p.department ? `<div class="prow-full"><span>Department</span><span>${p.department}</span></div>` : ''}
+
+      <hr class="patient-divider"/>
+
+      <div class="prow-full"><span>Total scans</span><span>${scans.length}</span></div>
+      <div class="prow-full"><span>Last scan</span><span>${formatDate(latest.scan_date||'')}</span></div>
+      <div class="prow-full"><span>Latest finding</span><span style="color:${COND_COLORS[latest.top_condition]?.line||'var(--muted-strong)'}">${latest.top_condition||'—'}</span></div>
+      ${latest.triage ? `
+      <div class="prow-full"><span>Current triage</span>
+        <span class="patient-triage-pill" style="background:${tbg};color:${tc};border:1px solid ${tc+'44'}">
+          ${latest.triage}
+        </span>
+      </div>` : ''}
+      ${latest.doctor_name ? `<div class="prow-full"><span>Physician</span><span>${latest.doctor_name}</span></div>` : ''}
+    </div>`;
+
+  document.getElementById('scanList').innerHTML = scans.slice(0,8).map((s,i) => `
+    <div class="scan-item ${i===0?'active':''}" onclick="highlightScan(this)">
+      <div class="scan-thumb">${String(s.id).slice(-3)}</div>
+      <div class="scan-info">
+        <div class="scan-date">${formatDate(s.scan_date)}</div>
+        <div class="scan-finding">${s.top_condition} · ${Math.round((s.confidence||0)*100)}%</div>
+      </div>
+      <div class="sdot" style="background:${TRIAGE_COLOR[s.triage]||'#4A6080'};"></div>
+    </div>`).join('');
+
+  document.getElementById('scanHistoryWrap').style.display = 'block';
+}
+
+function highlightScan(el) {
+  document.querySelectorAll('.scan-item').forEach(i=>i.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// ── ANALYTICS RENDER ───────────────────────────────────────────────────────────────
+function renderAnalytics(p, scans) {
+  Object.values(charts).forEach(c => { try{c.destroy();}catch(e){} });
+  charts = {};
+
+  // newest scan (scans are sorted newest-first)
+  const latest = scans[0];
+  const oldest = scans[scans.length - 1];
+  const confColor = TRIAGE_COLOR[latest.triage] || '#60A5FA';
+
+  document.getElementById('statConf').textContent = Math.round((latest.confidence||0)*100) + '%';
+  document.getElementById('statConf').style.color = confColor;
+  document.getElementById('statConfSub').textContent = `Latest · ${formatDate(latest.scan_date)}`;
+  document.getElementById('statTotal').textContent = scans.length;
+  document.getElementById('statTotalSub').textContent = `${formatDate(oldest.scan_date)} – ${formatDate(latest.scan_date)}`;
+  document.getElementById('statTriage').textContent = latest.triage;
+  document.getElementById('statTriage').style.color = confColor;
+  document.getElementById('statTriageSub').textContent = latest.department || '—';
+
+  const condCounts = {};
+  scans.forEach(s => { condCounts[s.top_condition] = (condCounts[s.top_condition]||0)+1; });
+  const topCond = Object.entries(condCounts).sort((a,b)=>b[1]-a[1])[0];
+  document.getElementById('statFinding').textContent = topCond[0];
+  document.getElementById('statFinding').style.color = COND_COLORS[topCond[0]]?.line || '#FBBF24';
+  document.getElementById('statFindingSub').textContent = `${topCond[1]} of ${scans.length} scans`;
+
+  const highCount = scans.filter(s=>s.triage==='HIGH').length;
+  document.getElementById('gStatHigh').textContent = highCount;
+  document.getElementById('gStatCond').textContent = topCond[0];
+  document.getElementById('gStatCondSub').textContent = `${topCond[1]}/${scans.length} scans · ${p.name}`;
+
+  // ── Symptom log (newest first = scans are already newest-first)
+  const allSxNames = new Set();
+  document.getElementById('symptomBody').innerHTML = scans.map((s) => {
+    const symptoms = Array.isArray(s.symptoms) && s.symptoms.length ? s.symptoms : [];
+    symptoms.forEach(sx => allSxNames.add(sx.name));
+    const dotColor = TRIAGE_COLOR[s.triage] || '#4A6080';
+    const tags = symptoms.length
+      ? symptoms.map(sx => `<span class="sx-tag severity-${sx.severity||'low'}">${sx.name}</span>`).join('')
+      : `<span class="sx-none">No symptoms recorded</span>`;
+    return `<div class="sx-row">
+      <div class="sx-date-col"><div class="sx-date">${formatDateShort(s.scan_date)}</div></div>
+      <div class="sx-dot" style="background:${dotColor};"></div>
+      <div class="sx-tags">${tags}</div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('symptomSub').textContent = `${p.name} · ${scans.length} visits`;
+  document.getElementById('symptomBadge').textContent = `${allSxNames.size} unique symptom${allSxNames.size!==1?'s':''}`;
+
+  // ── Doughnut ──
+  const condLabels = Object.keys(condCounts);
+  const condVals   = condLabels.map(c=>condCounts[c]);
+  const condColors = condLabels.map(c=>COND_COLORS[c]?.line||'#60A5FA');
+
+  charts.distChart = new Chart(document.getElementById('distChart'), {
+    type:'doughnut',
+    data:{ labels:condLabels, datasets:[{
+      data:condVals,
+      backgroundColor: condColors.map(c=>c+'22'),
+      borderColor: condColors,
+      borderWidth:2,
+      hoverBackgroundColor: condColors.map(c=>c+'44'),
+    }]},
+    options:{
+      responsive:true, maintainAspectRatio:false, cutout:'66%',
+      plugins:{
+        legend:{position:'bottom',labels:{boxWidth:8,boxHeight:8,padding:8,font:{size:9},color:tickColor}},
+        tooltip:{backgroundColor:ttBg,borderColor:ttBdr,borderWidth:1,titleColor:'#94A3B8',bodyColor:'#64748b',padding:10,
+          callbacks:{label:ctx=>` ${ctx.label}: ${ctx.parsed} scan${ctx.parsed!==1?'s':''}`}},
+      },
+    },
+  });
+
+  // ── Dot timeline (oldest → newest, left to right)
+  const displayScans = [...scans].reverse(); // oldest first
+  document.getElementById('timelineSub').textContent = `${displayScans.length} scans · oldest → newest`;
+  document.getElementById('timelineBody').innerHTML = `<div class="tl-track">${
+    displayScans.map(s => {
+      const cls  = s.triage==='HIGH'?'danger':s.triage==='MEDIUM'?'warning':'ok';
+      const icon = s.triage==='HIGH'?'ti-alert-circle':s.triage==='MEDIUM'?'ti-alert-triangle':'ti-check';
+      return `<div class="tl-item" title="${s.top_condition} · ${s.department||''}">
+        <div class="tl-dot ${cls}"><i class="ti ${icon}"></i></div>
+        <div class="tl-date">${formatDateShort(s.scan_date)}</div>
+        <div class="tl-finding">${s.top_condition}</div>
+        <div class="tl-conf" style="color:${TRIAGE_COLOR[s.triage]};">${Math.round((s.confidence||0)*100)}%</div>
+      </div>`;
+    }).join('')
+  }</div>`;
+
+  showAnalytics();
+}
+
+// ── EXPAND MODAL ────────────────────────────────────────────────────────────────────
+function expandChart(cardId) {
+  const card   = document.getElementById(cardId);
+  const title  = card.querySelector('.chart-title')?.textContent || '';
+  const sub    = card.querySelector('.chart-sub')?.textContent || '';
+  const canvas = card.querySelector('canvas');
+
+  document.getElementById('modalTitle').textContent = title;
+  document.getElementById('modalSub').textContent   = sub;
+  const body = document.getElementById('modalBody');
+  body.innerHTML = '';
+
+  if (canvas) {
+    const mc = document.createElement('canvas');
+    mc.style.cssText = 'width:100%;height:100%;min-height:400px;';
+    body.style.padding = '0';
+    body.appendChild(mc);
+    const orig = charts[canvas.id];
+    setTimeout(() => {
+      if (window.modalChart) { try{window.modalChart.destroy();}catch(e){} }
+      if (orig) {
+        window.modalChart = new Chart(mc, {
+          type:orig.config.type, data:orig.data,
+          options:{...orig.options,responsive:true,maintainAspectRatio:false}
+        });
+      }
+    }, 40);
   }
 
-  document.getElementById('chartModal').addEventListener('click', (e) => {
-    if (e.target.id === 'chartModal') closeChartModal();
-  });
+  document.getElementById('chartModal').classList.add('active');
+}
 
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') closeChartModal();
+function closeModal() {
+  document.getElementById('chartModal').classList.remove('active');
+  if (window.modalChart) { try{window.modalChart.destroy();}catch(e){} window.modalChart=null; }
+  document.getElementById('modalBody').innerHTML = '';
+}
+
+document.getElementById('chartModal').addEventListener('click', e => {
+  if (e.target.id==='chartModal') closeModal();
+});
+document.addEventListener('keydown', e => { if(e.key==='Escape') closeModal(); });
+
+// ── EXPORT CSV ──────────────────────────────────────────────────────────────────────
+function exportCSV() {
+  if (!filteredScans.length || !currentPatient) return;
+  const p = currentPatient;
+  const rows = [['Patient','Age','Gender','Scan Date','Department','Top Condition','Confidence %','Triage','Doctor','Symptoms']];
+  [...filteredScans].reverse().forEach(s => {
+    const sxList = (s.symptoms||[]).map(sx=>`${sx.name}(${sx.severity})`).join('; ');
+    rows.push([
+      p.name, p.age||'', p.gender||'',
+      s.scan_date, s.department||'',
+      s.top_condition,
+      Math.round((s.confidence||0)*100),
+      s.triage, s.doctor_name||'—',
+      sxList
+    ]);
   });
+  const csv = rows.map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob = new Blob([csv], {type:'text/csv'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `medsight_${p.name.replace(/\s+/g,'_')}_${new Date().toISOString().split('T')[0]}.csv`;
+  a.click();
+}
+
+// ── UI STATES ────────────────────────────────────────────────────────────────────────
+function showLoading() {
+  document.getElementById('contentEmpty').style.display     = 'none';
+  document.getElementById('contentLoading').style.display   = 'flex';
+  document.getElementById('analyticsContent').style.display = 'none';
+}
+function showEmpty() {
+  document.getElementById('contentEmpty').style.display     = 'flex';
+  document.getElementById('contentLoading').style.display   = 'none';
+  document.getElementById('analyticsContent').style.display = 'none';
+}
+function showAnalytics() {
+  document.getElementById('contentEmpty').style.display     = 'none';
+  document.getElementById('contentLoading').style.display   = 'none';
+  document.getElementById('analyticsContent').style.display = 'flex';
+}
+
+// ── DATE HELPERS ──────────────────────────────────────────────────────────────────────
+function formatDate(d) {
+  if (!d) return '—';
+  return new Date(d+'T00:00:00').toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
+}
+function formatDateShort(d) {
+  if (!d) return '—';
+  return new Date(d+'T00:00:00').toLocaleDateString('en-GB',{day:'2-digit',month:'short'});
+}
 </script>
 </body>
 </html>
