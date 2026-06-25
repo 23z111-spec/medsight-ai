@@ -20,6 +20,10 @@ class User(Base):
     role             = Column(String, default="doctor")
     created_at       = Column(DateTime(timezone=True), server_default=func.now())
 
+    # ── Password reset ────────────────────────────────────────────
+    reset_token        = Column(String, nullable=True, index=True)
+    reset_token_expiry = Column(DateTime(timezone=True), nullable=True)
+
     scans = relationship("Scan", back_populates="doctor")
 
 
@@ -47,29 +51,29 @@ class Scan(Base):
     patient           = relationship("Patient", back_populates="scans")
     doctor            = relationship("User", back_populates="scans")
 
-    # Intake details (filled by doctor before upload)
+    # Intake details
     department        = Column(String, nullable=False)
-    scan_date         = Column(Date, nullable=False)          # date the X-ray was physically taken
-    upload_date       = Column(DateTime(timezone=True), server_default=func.now())  # when entered into system
+    scan_date         = Column(Date, nullable=False)
+    upload_date       = Column(DateTime(timezone=True), server_default=func.now())
 
     # Image storage
-    image_path        = Column(String, nullable=False)        # path to original uploaded X-ray
-    gradcam_path       = Column(String, nullable=True)        # path to saved Grad-CAM overlay
+    image_path        = Column(String, nullable=False)
+    gradcam_path      = Column(String, nullable=True)
 
     # Model output
-    triage             = Column(String, nullable=True)        # HIGH / MEDIUM / LOW
-    top_condition      = Column(String, nullable=True)
-    confidence         = Column(Float, nullable=True)
+    triage            = Column(String, nullable=True)
+    top_condition     = Column(String, nullable=True)
+    confidence        = Column(Float, nullable=True)
 
-    no_finding_prob    = Column(Float, nullable=True)
-    pneumonia_prob     = Column(Float, nullable=True)
-    cardiomegaly_prob  = Column(Float, nullable=True)
-    effusion_prob      = Column(Float, nullable=True)
-    infiltration_prob  = Column(Float, nullable=True)
+    no_finding_prob   = Column(Float, nullable=True)
+    pneumonia_prob    = Column(Float, nullable=True)
+    cardiomegaly_prob = Column(Float, nullable=True)
+    effusion_prob     = Column(Float, nullable=True)
+    infiltration_prob = Column(Float, nullable=True)
 
     # Clinician review
-    doctor_notes       = Column(Text, nullable=True)
-    override           = Column(String, nullable=True)        # confirm / normal / abnormal / refer
-    reviewed_at        = Column(DateTime(timezone=True), nullable=True)
+    doctor_notes      = Column(Text, nullable=True)
+    override          = Column(String, nullable=True)
+    reviewed_at       = Column(DateTime(timezone=True), nullable=True)
 
-    created_at         = Column(DateTime(timezone=True), server_default=func.now())
+    created_at        = Column(DateTime(timezone=True), server_default=func.now())

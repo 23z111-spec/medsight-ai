@@ -168,7 +168,7 @@
             <input type="checkbox" id="rememberMe" checked/>
             <span>Remember me</span>
           </label>
-          <a class="forgot" onclick="alert('Password reset link sent to your email.')">Forgot password?</a>
+          <a class="forgot" onclick="openForgotModal()">Forgot password?</a>
         </div>
 
         <button class="login-btn" id="loginBtn" onclick="handleLogin()">
@@ -214,6 +214,33 @@
     </div>
   </div>
 
+</div>
+<!-- FORGOT PASSWORD MODAL -->
+<div class="modal-backdrop" id="forgotModal" style="display:none;position:fixed;inset:0;background:rgba(6,21,40,0.75);backdrop-filter:blur(4px);z-index:200;align-items:center;justify-content:center;">
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:24px;width:340px;box-shadow:0 24px 60px rgba(0,0,0,0.6);">
+    <div id="forgotStepEmail">
+      <div style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:4px;">Reset your password</div>
+      <div style="font-size:11px;color:var(--muted);margin-bottom:16px;">Enter your account email — we'll send a reset link if it exists.</div>
+      <div class="field-wrap" style="margin-bottom:6px;">
+        <i class="ti ti-mail field-icon"></i>
+        <input class="field-input" type="email" id="forgotEmailInput" placeholder="doctor@hospital.in" autocomplete="email"/>
+      </div>
+      <div id="forgotError" style="display:none;color:#f87171;font-size:10px;margin-bottom:6px;"></div>
+      <div style="display:flex;gap:8px;margin-top:14px;">
+        <button onclick="closeForgotModal()" style="flex:1;padding:9px;border-radius:7px;background:var(--surface-soft);border:1px solid var(--border);color:var(--muted-strong);font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;">Cancel</button>
+        <button id="forgotSubmitBtn" onclick="submitForgotPassword()" style="flex:1;padding:9px;border-radius:7px;background:var(--accent-strong);border:1px solid var(--accent);color:#fff;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;">Send reset link</button>
+      </div>
+    </div>
+
+    <div id="forgotStepDone" style="display:none;text-align:center;">
+      <i class="ti ti-mail-check" style="font-size:36px;color:var(--success);display:block;margin-bottom:10px;"></i>
+      <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:6px;">Check your inbox</div>
+      <div style="font-size:11px;color:var(--muted);line-height:1.6;margin-bottom:16px;">
+        If an account exists for that email, a reset link has been sent. It expires in 30 minutes.
+      </div>
+      <button onclick="closeForgotModal()" style="width:100%;padding:9px;border-radius:7px;background:var(--surface-soft);border:1px solid var(--border);color:var(--muted-strong);font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;">Close</button>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -354,6 +381,50 @@
   document.addEventListener('keydown', e => {
     if (e.key === 'Enter') handleLogin();
   });
+  function openForgotModal() {
+  document.getElementById('forgotModal').style.display = 'flex';
+  document.getElementById('forgotStepEmail').style.display = 'block';
+  document.getElementById('forgotStepDone').style.display = 'none';
+  document.getElementById('forgotError').style.display = 'none';
+  document.getElementById('forgotEmailInput').value = document.getElementById('emailInput').value || '';
+}
+function closeForgotModal() {
+  document.getElementById('forgotModal').style.display = 'none';
+}
+async function submitForgotPassword() {
+  const email   = document.getElementById('forgotEmailInput').value.trim();
+  const errBox  = document.getElementById('forgotError');
+  const btn     = document.getElementById('forgotSubmitBtn');
+  errBox.style.display = 'none';
+
+  if (!email) {
+    errBox.textContent = 'Please enter your email address.';
+    errBox.style.display = 'block';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Sending…';
+
+  try {
+    const res = await fetch(`${API_BASE}/auth/forgot-password`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.detail || 'Something went wrong.');
+
+    document.getElementById('forgotStepEmail').style.display = 'none';
+    document.getElementById('forgotStepDone').style.display = 'block';
+  } catch (err) {
+    errBox.textContent = err.message || 'Could not reach the server.';
+    errBox.style.display = 'block';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Send reset link';
+  }
+}
 </script>
 </body>
 </html>
