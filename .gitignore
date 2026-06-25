@@ -6,3 +6,25 @@ __pycache__/
 *.zipbackend/pneumoscan/models/*.pth 
 backend/pneumoscan/storage/ 
 backend/pneumoscan/pneumoscan.db 
+# Python
+__pycache__/
+*.pyc
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# Database
+*.db
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db

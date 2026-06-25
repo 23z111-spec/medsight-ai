@@ -30,7 +30,25 @@
 *{margin:0;padding:0;box-sizing:border-box;}
 html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;overflow:hidden;}
 
-.topnav{background:rgba(15,31,52,0.97);border-bottom:1px solid var(--border);backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:52px;flex-shrink:0;}
+/* ── FIX: topnav gets position + z-index to create a stacking context
+         that beats the right-panel's backdrop-filter stacking context ── */
+.topnav{
+  position:relative;
+  z-index:9999;
+  overflow:visible !important;
+  margin:18px;
+  height:72px;
+  padding:0 28px;
+  background:rgba(15,31,52,.72);
+  backdrop-filter:blur(22px);
+  border:1px solid rgba(96,165,250,.15);
+  border-radius:22px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  box-shadow:0 12px 35px rgba(0,0,0,.35);
+  flex-shrink:0;
+}
 .logo{display:flex;align-items:center;gap:10px;font-family:'Space Mono',monospace;font-size:13px;color:var(--accent);letter-spacing:.5px;font-weight:700;}
 .logo-icon{width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,var(--accent-strong),#1D4ED8);display:flex;align-items:center;justify-content:center;font-size:14px;color:#fff;}
 .nav-pills{display:flex;gap:2px;}
@@ -38,13 +56,13 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
 .nav-pill:hover{color:var(--muted-strong);background:var(--surface-soft);}
 .nav-pill.active{background:var(--accent-glow);color:var(--accent);border:1px solid var(--border-bright);}
 .badge{background:var(--surface-soft);border:1px solid var(--border-bright);border-radius:20px;padding:3px 12px;font-size:10px;color:var(--accent);font-family:'Space Mono',monospace;}
-.nav-right{display:flex;align-items:center;gap:14px;}
+.nav-right{overflow:visible !important;display:flex;align-items:center;gap:14px;}
 
 .app{display:flex;flex-direction:column;height:100vh;}
-.main{display:grid;grid-template-columns:260px 1fr 300px;flex:1;overflow:hidden;min-height:0;}
+.main{display:grid;grid-template-columns:290px 1fr 340px;gap:22px;padding:0 18px 18px;flex:1;overflow:hidden;min-height:0;}
 
 /* LEFT PANEL */
-.left-panel{background:var(--surface);border-right:1px solid var(--border);padding:16px 14px;display:flex;flex-direction:column;gap:14px;overflow-y:auto;}
+.left-panel{background:rgba(15,31,52,.72);backdrop-filter:blur(20px);border:1px solid rgba(96,165,250,.12);border-radius:28px;padding:20px 18px;box-shadow:0 10px 35px rgba(0,0,0,.28);}
 .action-btn-large{width:100%;padding:11px 14px;border-radius:10px;font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:8px;transition:all .2s;font-family:'Inter',sans-serif;border:none;}
 .btn-blue{background:linear-gradient(135deg,var(--accent-strong),#1D4ED8);color:#fff;box-shadow:0 4px 14px var(--accent-glow);}
 .btn-blue:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(59,130,246,0.3);}
@@ -78,6 +96,8 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
 .pli-avatar{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--accent-strong),#1D4ED8);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0;}
 .pli-name{font-size:12px;font-weight:500;color:var(--text);}
 .pli-meta{font-size:10px;color:var(--muted);}
+.pli-state{padding:16px 12px;text-align:center;font-size:11px;color:var(--muted-dim);font-style:italic;}
+.pli-spinner{display:inline-block;width:14px;height:14px;border:2px solid var(--surface-strong);border-top-color:var(--accent);border-radius:50%;animation:spin .6s linear infinite;vertical-align:middle;margin-right:6px;}
 .form-field{margin-bottom:10px;}
 .form-label{font-size:10px;font-weight:600;color:var(--muted-dim);text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px;}
 .form-input{width:100%;background:var(--surface-soft);border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-size:12px;color:var(--text);outline:none;font-family:'Inter',sans-serif;transition:border .15s;}
@@ -90,6 +110,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
 .modal-btn-cancel:hover{background:var(--surface-strong);}
 .modal-btn-confirm{background:var(--accent-strong);border:none;color:#fff;}
 .modal-btn-confirm:hover{background:#2563eb;}
+.modal-btn-confirm:disabled{opacity:.4;cursor:not-allowed;}
 
 /* PATIENT DISPLAY */
 .patient-display{background:var(--surface-soft);border:1px solid var(--border);border-radius:10px;padding:12px;animation:fadeIn .3s ease;}
@@ -112,7 +133,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
 .section-label{font-size:9px;font-weight:700;color:var(--muted-dim);letter-spacing:1.2px;text-transform:uppercase;margin-bottom:6px;}
 
 /* CENTER */
-.center{background:var(--bg);padding:14px;display:flex;flex-direction:column;gap:10px;flex:1;min-width:0;min-height:0;}
+.center{background:rgba(15,31,52,.55);backdrop-filter:blur(20px);border:1px solid rgba(96,165,250,.12);border-radius:28px;box-shadow:0 10px 35px rgba(0,0,0,.28);}
 .toolbar{display:flex;align-items:center;gap:6px;flex-shrink:0;}
 .tool-sep{flex:1;}
 .toggle-row{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--muted);font-weight:500;}
@@ -138,7 +159,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
 .loading-sub{font-size:10px;color:var(--muted-dim);}
 
 /* RIGHT PANEL */
-.right-panel{background:var(--surface);border-left:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto;}
+.right-panel{background:rgba(15,31,52,.72);backdrop-filter:blur(20px);border:1px solid rgba(96,165,250,.12);border-radius:28px;box-shadow:0 10px 35px rgba(0,0,0,.28);}
 .rp-sec{padding:18px;border-bottom:1px solid var(--border);flex-shrink:0;}
 .rp-title{font-size:9px;font-weight:700;color:var(--muted-dim);letter-spacing:1.4px;text-transform:uppercase;margin-bottom:14px;}
 .waiting-state{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:20px 0;text-align:center;}
@@ -168,11 +189,30 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
 .rp-action-danger:hover{background:rgba(248,113,113,0.15);}
 .disclaimer{background:var(--surface-soft);border-radius:8px;padding:10px 12px;font-size:9px;color:var(--muted-dim);line-height:1.7;border-left:2px solid var(--accent-strong);}
 
-/* PROFILE */
-.profile-menu-wrap{position:relative;display:inline-block;}
+/* PROFILE — all overflow:visible so dropdown escapes every ancestor */
+.profile-menu-wrap{
+  position:relative;
+  z-index:10002;
+  overflow:visible !important;
+}
 .profile-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--accent-strong),#1D4ED8);border:2px solid var(--border-bright);color:#fff;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;}
 .profile-avatar:hover{transform:scale(1.05);}
-.profile-dropdown{position:absolute;top:calc(100% + 10px);right:0;width:220px;background:var(--surface-soft);border:1px solid var(--border-bright);border-radius:12px;box-shadow:0 16px 40px rgba(0,0,0,0.5);padding:6px;opacity:0;transform:translateY(-6px);pointer-events:none;transition:all .15s ease;z-index:200;}
+.profile-dropdown{
+  position:fixed;                  /* FIX: fixed instead of absolute so it escapes ALL stacking contexts */
+  top:80px;                        /* sits just below the topnav (18px margin + 72px height - 10px) */
+  right:24px;
+  width:220px;
+  background:var(--surface-soft);
+  border:1px solid var(--border-bright);
+  border-radius:12px;
+  box-shadow:0 16px 40px rgba(0,0,0,0.5);
+  padding:6px;
+  opacity:0;
+  transform:translateY(-6px);
+  pointer-events:none;
+  transition:all .15s ease;
+  z-index:99999;                   /* highest z on the page */
+}
 .profile-dropdown.open{opacity:1;transform:translateY(0);pointer-events:auto;}
 .profile-dropdown-header{padding:10px 12px 8px;}
 .profile-dropdown-name{font-size:12px;font-weight:600;color:var(--text);}
@@ -181,7 +221,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
 .profile-dropdown-item{width:100%;display:flex;align-items:center;gap:8px;padding:9px 12px;background:none;border:none;border-radius:8px;color:var(--muted-strong);font-family:'Inter',sans-serif;font-size:12px;cursor:pointer;text-align:left;transition:background .15s;}
 .profile-dropdown-item:hover{background:var(--surface-strong);}
 .logout-item:hover{background:rgba(248,113,113,0.12);color:#FDA4AF;}
-.logout-modal-backdrop{position:fixed;inset:0;background:rgba(6,21,40,0.75);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:999;}
+.logout-modal-backdrop{position:fixed;inset:0;background:rgba(6,21,40,0.75);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:99998;}
 .logout-modal-backdrop.show{display:flex;}
 .logout-modal{width:320px;background:var(--surface);border:1px solid var(--border-bright);border-radius:16px;padding:28px 24px 20px;text-align:center;box-shadow:0 24px 60px rgba(0,0,0,0.6);animation:modalIn .18s ease;}
 .logout-modal-icon{width:48px;height:48px;border-radius:50%;background:rgba(253,164,175,0.12);color:#FDA4AF;display:flex;align-items:center;justify-content:center;font-size:22px;margin:0 auto 14px;}
@@ -335,8 +375,8 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
             <div class="pd-meta" id="pdMeta">—</div>
           </div>
         </div>
-        <div class="pd-row"><span>Department</span><span id="pdDept">—</span></div>
-        <div class="pd-row"><span>Age / Sex</span><span id="pdAgeSex">—</span></div>
+        <div class="pd-row"><span>Age / Gender</span><span id="pdAgeSex">—</span></div>
+        <div class="pd-row"><span>Scans</span><span id="pdScans">—</span></div>
         <div class="pd-row"><span>Patient ID</span><span id="pdId">—</span></div>
         <button class="pd-change" onclick="openPatientModal()"><i class="ti ti-edit" style="font-size:12px;"></i> Change patient</button>
       </div>
@@ -537,15 +577,17 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
     <div id="step2existing" style="display:none;">
       <button class="modal-back" onclick="showStep('step1')"><i class="ti ti-arrow-left" style="font-size:13px;"></i> Back</button>
       <div class="modal-title">Search Patient</div>
-      <div class="modal-sub">Search by name or patient ID</div>
+      <div class="modal-sub">Search by name</div>
       <div class="search-wrap">
         <i class="ti ti-search" aria-hidden="true"></i>
-        <input class="search-input" type="text" placeholder="e.g. Rajan Mehta or PT-00421" id="patientSearch" oninput="filterPatients()"/>
+        <input class="search-input" type="text" placeholder="e.g. Rajan Mehta" id="patientSearch" oninput="onPatientSearch()"/>
       </div>
-      <div class="patient-list" id="patientList"></div>
+      <div class="patient-list" id="patientList">
+        <div class="pli-state">Start typing to search patients</div>
+      </div>
       <div class="modal-actions" style="margin-top:12px;">
         <button class="modal-btn modal-btn-cancel" onclick="closePatientModal()">Cancel</button>
-        <button class="modal-btn modal-btn-confirm" onclick="confirmExistingPatient()">Select Patient</button>
+        <button class="modal-btn modal-btn-confirm" id="confirmExistingBtn" onclick="confirmExistingPatient()" disabled>Select Patient</button>
       </div>
     </div>
 
@@ -557,18 +599,14 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
         <div class="form-label">Full Name</div>
         <input class="form-input" type="text" id="newName" placeholder="e.g. Priya Sharma"/>
       </div>
-      <div class="form-field">
-        <div class="form-label">Department / Ward</div>
-        <input class="form-input" type="text" id="newDept" placeholder="e.g. Pulmonology"/>
-      </div>
       <div class="form-row">
         <div class="form-field">
           <div class="form-label">Age</div>
           <input class="form-input" type="number" id="newAge" placeholder="e.g. 45" min="1" max="120"/>
         </div>
         <div class="form-field">
-          <div class="form-label">Sex</div>
-          <select class="form-input" id="newSex">
+          <div class="form-label">Gender</div>
+          <select class="form-input" id="newGender">
             <option value="">Select</option>
             <option>Male</option>
             <option>Female</option>
@@ -578,7 +616,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
       </div>
       <div class="modal-actions">
         <button class="modal-btn modal-btn-cancel" onclick="closePatientModal()">Cancel</button>
-        <button class="modal-btn modal-btn-confirm" onclick="confirmNewPatient()">Add Patient</button>
+        <button class="modal-btn modal-btn-confirm" id="confirmNewBtn" onclick="confirmNewPatient()">Add Patient</button>
       </div>
     </div>
   </div>
@@ -619,35 +657,89 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
 </div>
 
 <script>
-/* ─────────────────────────────────────────────
-   KEY FIX: Two separate variables
-   selectedPatient  = temp selection inside modal (reset on close)
-   confirmedPatient = persists after modal confirm (used for upload guard)
-───────────────────────────────────────────── */
-const PATIENTS = [
-  { id:'PT-00421', name:'Rajan Mehta',    age:54, sex:'Male',   dept:'Pulmonology' },
-  { id:'PT-00398', name:'Priya Sharma',   age:42, sex:'Female', dept:'General' },
-  { id:'PT-00415', name:'Arun Krishnan',  age:67, sex:'Male',   dept:'ICU' },
-  { id:'PT-00402', name:'Sunita Patel',   age:38, sex:'Female', dept:'Pulmonology' },
-  { id:'PT-00388', name:'Vikram Nair',    age:59, sex:'Male',   dept:'Emergency' },
-  { id:'PT-00376', name:'Kavitha Reddy',  age:45, sex:'Female', dept:'General' },
-  { id:'PT-00361', name:'Mohan Das',      age:71, sex:'Male',   dept:'Pulmonology' },
-  { id:'PT-00349', name:'Ananya Singh',   age:29, sex:'Female', dept:'General' },
-];
+const API_BASE = 'http://127.0.0.1:8000';
 
-let selectedPatient  = null; // temp — inside modal only
-let confirmedPatient = null; // ← persists after modal closes
-let cdScanResult     = null;
-let cdChatHistory    = [];
-let cdIsStreaming     = false;
-let cdGreeted        = false;
+let selectedPatient  = null;
+let confirmedPatient = null;
+let _lastPatients    = [];
 
-/* ── MODAL ── */
+let cdScanResult  = null;
+let cdChatHistory = [];
+let cdIsStreaming  = false;
+let cdGreeted     = false;
+
+function getToken() {
+  return localStorage.getItem('token') || localStorage.getItem('pneumoscan_token') || '';
+}
+function authHeaders() {
+  return { 'Authorization': 'Bearer ' + getToken() };
+}
+
+let _searchTimer = null;
+
+function onPatientSearch() {
+  const q = document.getElementById('patientSearch').value.trim();
+  selectedPatient = null;
+  document.getElementById('confirmExistingBtn').disabled = true;
+  clearTimeout(_searchTimer);
+  _searchTimer = setTimeout(() => fetchPatients(q), 280);
+}
+
+async function fetchPatients(q) {
+  const list = document.getElementById('patientList');
+  if (!q) {
+    list.innerHTML = '<div class="pli-state">Start typing to search patients</div>';
+    return;
+  }
+  list.innerHTML = '<div class="pli-state"><span class="pli-spinner"></span>Searching…</div>';
+  try {
+    const res = await fetch(
+      `${API_BASE}/patients/search?name=${encodeURIComponent(q)}`,
+      { headers: authHeaders() }
+    );
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const patients = await res.json();
+    _lastPatients = patients;
+    renderPatientList(patients);
+  } catch (err) {
+    console.error('Patient search error:', err);
+    list.innerHTML = '<div class="pli-state" style="color:var(--danger);">Could not load patients — check the backend is running.</div>';
+  }
+}
+
+function renderPatientList(patients) {
+  const list = document.getElementById('patientList');
+  if (!patients.length) {
+    list.innerHTML = '<div class="pli-state">No patients found</div>';
+    return;
+  }
+  list.innerHTML = patients.map(p => {
+    const initials = p.name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
+    const scanLabel = `${p.total_scans} scan${p.total_scans !== 1 ? 's' : ''}`;
+    const parts = [p.age ? `${p.age} yrs` : null, p.gender || null, scanLabel].filter(Boolean);
+    return `
+      <div class="patient-list-item" id="pli-${p.id}" onclick="selectPatientItem(${p.id})">
+        <div class="pli-avatar">${initials}</div>
+        <div>
+          <div class="pli-name">${p.name}</div>
+          <div class="pli-meta">${parts.join(' · ')} · #PT-${p.id}</div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function selectPatientItem(id) {
+  document.querySelectorAll('.patient-list-item').forEach(el => el.classList.remove('selected'));
+  const el = document.getElementById('pli-' + id);
+  if (el) el.classList.add('selected');
+  selectedPatient = _lastPatients.find(p => p.id === id) || null;
+  document.getElementById('confirmExistingBtn').disabled = !selectedPatient;
+}
+
 function showStep(id) {
-  ['step1','step2existing','step2new'].forEach(s => {
+  ['step1', 'step2existing', 'step2new'].forEach(s => {
     document.getElementById(s).style.display = s === id ? 'block' : 'none';
   });
-  if (id === 'step2existing') renderPatientList('');
 }
 
 function openPatientModal() {
@@ -658,101 +750,72 @@ function openPatientModal() {
 function closePatientModal() {
   document.getElementById('patientModal').classList.remove('show');
   document.getElementById('patientSearch').value = '';
-  selectedPatient = null; // only reset the MODAL temp variable
-  // ← confirmedPatient is NOT touched here
-}
-
-/* ── EXISTING PATIENT ── */
-function renderPatientList(q) {
-  const filtered = PATIENTS.filter(p =>
-    p.name.toLowerCase().includes(q.toLowerCase()) ||
-    p.id.toLowerCase().includes(q.toLowerCase())
-  );
-  document.getElementById('patientList').innerHTML = filtered.map(p => `
-    <div class="patient-list-item ${selectedPatient?.id === p.id ? 'selected' : ''}"
-         id="pli-${p.id}" onclick="selectPatientItem('${p.id}')">
-      <div class="pli-avatar">${p.name.split(' ').map(w=>w[0]).join('').slice(0,2)}</div>
-      <div>
-        <div class="pli-name">${p.name}</div>
-        <div class="pli-meta">${p.age} · ${p.sex} · ${p.dept} · ${p.id}</div>
-      </div>
-    </div>
-  `).join('');
-}
-
-function filterPatients() {
-  renderPatientList(document.getElementById('patientSearch').value);
+  document.getElementById('patientList').innerHTML = '<div class="pli-state">Start typing to search patients</div>';
+  document.getElementById('confirmExistingBtn').disabled = true;
   selectedPatient = null;
 }
 
-function selectPatientItem(id) {
-  document.querySelectorAll('.patient-list-item').forEach(el => el.classList.remove('selected'));
-  const el = document.getElementById('pli-' + id);
-  if (el) el.classList.add('selected');
-  selectedPatient = PATIENTS.find(p => p.id === id);
-}
-
 function confirmExistingPatient() {
-  if (!selectedPatient) { alert('Please select a patient from the list.'); return; }
-  confirmedPatient = selectedPatient; // ← SAVE to persistent variable
+  if (!selectedPatient) return;
+  confirmedPatient = selectedPatient;
   displayPatient(confirmedPatient);
   closePatientModal();
 }
 
-/* ── NEW PATIENT ── */
-function confirmNewPatient() {
-  const name = document.getElementById('newName').value.trim();
-  const dept = document.getElementById('newDept').value.trim();
-  const age  = document.getElementById('newAge').value.trim();
-  const sex  = document.getElementById('newSex').value;
-  if (!name || !dept || !age || !sex) { alert('Please fill in all fields.'); return; }
-  const id = 'PT-' + Math.floor(10000 + Math.random() * 90000);
-  const p = { id, name, age: parseInt(age), sex, dept };
-  PATIENTS.unshift(p);
-  confirmedPatient = p; // ← SAVE to persistent variable
-  displayPatient(confirmedPatient);
-  closePatientModal();
+async function confirmNewPatient() {
+  const name   = document.getElementById('newName').value.trim();
+  const age    = parseInt(document.getElementById('newAge').value.trim(), 10);
+  const gender = document.getElementById('newGender').value;
+  if (!name || !age || !gender) { alert('Please fill in all fields.'); return; }
+  const btn = document.getElementById('confirmNewBtn');
+  btn.disabled = true; btn.textContent = 'Saving…';
+  try {
+    const res = await fetch(`${API_BASE}/patients/`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...authHeaders() },
+      body: JSON.stringify({ name, age, gender }),
+    });
+    if (!res.ok) { const err = await res.json().catch(() => ({})); throw new Error(err.detail || `HTTP ${res.status}`); }
+    const patient = await res.json();
+    confirmedPatient = patient;
+    displayPatient(confirmedPatient);
+    closePatientModal();
+    document.getElementById('newName').value = '';
+    document.getElementById('newAge').value = '';
+    document.getElementById('newGender').value = '';
+  } catch (err) {
+    console.error('Create patient error:', err);
+    alert('Could not create patient: ' + err.message);
+  } finally {
+    btn.disabled = false; btn.textContent = 'Add Patient';
+  }
 }
 
-/* ── DISPLAY PATIENT ── */
 function displayPatient(p) {
-  const initials = p.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
-  document.getElementById('pdAvatar').textContent = initials;
-  document.getElementById('pdName').textContent = p.name;
-  document.getElementById('pdMeta').textContent = `${p.sex} · ${p.age} yrs · #${p.id}`;
-  document.getElementById('pdDept').textContent = p.dept;
-  document.getElementById('pdAgeSex').textContent = `${p.age} · ${p.sex}`;
-  document.getElementById('pdId').textContent = `#${p.id}`;
+  const initials = p.name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
+  document.getElementById('pdAvatar').textContent  = initials;
+  document.getElementById('pdName').textContent    = p.name;
+  document.getElementById('pdMeta').textContent    = [p.gender, p.age ? p.age + ' yrs' : null].filter(Boolean).join(' · ') || '—';
+  document.getElementById('pdAgeSex').textContent  = [p.age ? p.age : '—', p.gender || '—'].join(' · ');
+  document.getElementById('pdScans').textContent   = p.total_scans != null ? `${p.total_scans} scan${p.total_scans !== 1 ? 's' : ''}` : '—';
+  document.getElementById('pdId').textContent      = `#PT-${p.id}`;
   document.getElementById('patientDisplay').style.display = 'block';
 }
 
-/* ── UPLOAD ── */
 function handleUpload(event) {
   const file = event.target.files[0];
   if (!file) return;
-
-  // ← USE confirmedPatient (persists after modal close)
-  if (!confirmedPatient) {
-    alert('Please select a patient first.');
-    event.target.value = '';
-    return;
-  }
-
-  // preview in left panel
+  if (!confirmedPatient) { alert('Please select a patient first.'); event.target.value = ''; return; }
   document.getElementById('xpbName').textContent = file.name;
   document.getElementById('xpbSize').textContent = (file.size / 1024).toFixed(0) + ' KB';
   const reader = new FileReader();
   reader.onload = e => { document.getElementById('xpbImg').src = e.target.result; };
   reader.readAsDataURL(file);
   document.getElementById('xrayPreviewBox').style.display = 'block';
-
-  // show viewer
   document.getElementById('xrayEmpty').style.display = 'none';
-  document.getElementById('xraySvg').style.display = 'block';
+  document.getElementById('xraySvg').style.display   = 'block';
   document.getElementById('hmOverlay').style.display = 'block';
-  document.getElementById('zoomTag').style.display = 'block';
-
-  // show actual image
+  document.getElementById('zoomTag').style.display   = 'block';
   const reader2 = new FileReader();
   reader2.onload = e => {
     const img = document.getElementById('xrayImage');
@@ -761,62 +824,36 @@ function handleUpload(event) {
     document.getElementById('staticLung').style.display = 'none';
   };
   reader2.readAsDataURL(file);
-
   const today = new Date();
   document.getElementById('scanDateText').textContent =
     `PA CHEST · ${String(today.getDate()).padStart(2,'0')}.${String(today.getMonth()+1).padStart(2,'0')}.${today.getFullYear()}`;
-
   runInference(file);
 }
 
-/* ── INFERENCE ── */
 function runInference(file) {
-  const token = localStorage.getItem('token') || localStorage.getItem('pneumoscan_token');
   const today = new Date().toISOString().split('T')[0];
-
   const formData = new FormData();
-  formData.append('file', file);
-  formData.append('patient_id', '1'); // hardcoded to DB patient id=1 for now
-  formData.append('scan_date', today);
-  formData.append('department', confirmedPatient?.dept || 'General');
-
+  formData.append('file',       file);
+  formData.append('patient_id', confirmedPatient.id);
+  formData.append('scan_date',  today);
+  formData.append('department', 'General');
   document.getElementById('loadingOverlay').classList.add('active');
   const steps = ['Preprocessing image…','Running EfficientNet inference…','Computing class probabilities…','Generating Grad-CAM heatmap…'];
   let si = 0;
   const stepInterval = setInterval(() => {
-    document.getElementById('loadingStep').textContent = steps[si % steps.length];
-    si++;
+    document.getElementById('loadingStep').textContent = steps[si % steps.length]; si++;
   }, 900);
-
-  fetch('http://127.0.0.1:8000/scans/predict', {
-    method: 'POST',
-    headers: { 'Authorization': 'Bearer ' + token },
-    body: formData
-  })
+  fetch(`${API_BASE}/scans/predict`, { method: 'POST', headers: authHeaders(), body: formData })
   .then(r => r.json())
-  .then(data => {
-    clearInterval(stepInterval);
-    document.getElementById('loadingOverlay').classList.remove('active');
-    showResults(data);
-  })
-  .catch(err => {
-    clearInterval(stepInterval);
-    document.getElementById('loadingOverlay').classList.remove('active');
-    console.error(err);
-    showResults(getMockResult()); // fallback to mock
-  });
+  .then(data => { clearInterval(stepInterval); document.getElementById('loadingOverlay').classList.remove('active'); showResults(data); })
+  .catch(err => { clearInterval(stepInterval); document.getElementById('loadingOverlay').classList.remove('active'); console.error(err); showResults(getMockResult()); });
 }
 
 function getMockResult() {
-  return {
-    top_condition:'Pneumonia', confidence:0.913, triage:'HIGH', mock_mode:true,
-    scan_id:'SCN-MOCK001',
-    findings:{ Pneumonia:0.913, Effusion:0.347, Cardiomegaly:0.082, Infiltration:0.051, 'No Finding':0.087 },
-    gradcam_base64:null
-  };
+  return { top_condition:'Pneumonia', confidence:0.913, triage:'HIGH', mock_mode:true, scan_id:'SCN-MOCK001',
+    findings:{ Pneumonia:0.913, Effusion:0.347, Cardiomegaly:0.082, Infiltration:0.051, 'No Finding':0.087 }, gradcam_base64:null };
 }
 
-/* ── SHOW RESULTS ── */
 const EXPLANATIONS = {
   Pneumonia:    'The model detected focal consolidation in the right upper lobe (RUL) with increased radio-opacity. Grad-CAM activation is concentrated in the RUL region, consistent with bacterial pneumonia. The opacification pattern and lobe-specific involvement are key predictors.',
   Effusion:     'Blunting of the costophrenic angles was detected bilaterally, with the left side showing greater attenuation. The Grad-CAM heatmap highlights the lower lung zones where fluid accumulation is visible, consistent with pleural effusion.',
@@ -826,128 +863,117 @@ const EXPLANATIONS = {
 };
 
 function showResults(data) {
-  cdScanResult = data; // sync to chat
-
-  // ── normalise field names ──
-  // backend may return: top_condition OR primary_finding OR condition
-  const cond = data.top_condition || data.primary_finding || data.condition || 'Unknown';
-  // confidence may be 0-1 float OR already a 0-100 percentage string
-  const rawConf = data.confidence ?? data.confidence_score ?? 0;
+  cdScanResult = data;
+  const cond      = data.top_condition || data.primary_finding || data.condition || 'Unknown';
+  const rawConf   = data.confidence ?? data.confidence_score ?? 0;
   const confFloat = rawConf > 1 ? rawConf / 100 : rawConf;
-  const conf = (confFloat * 100).toFixed(1);
-  // triage may be: triage OR risk_level OR severity
-  const triage = data.triage || data.risk_level || data.severity || (confFloat >= 0.75 ? 'HIGH' : confFloat >= 0.40 ? 'MEDIUM' : 'LOW');
-  // findings may be: findings OR probabilities OR predictions
-  const findings = data.findings || data.probabilities || data.predictions || {};
-  const col    = triage === 'HIGH' ? 'var(--danger)' : triage === 'MEDIUM' ? 'var(--warning)' : 'var(--success)';
-  const bg     = triage === 'HIGH' ? 'var(--danger-bg)' : triage === 'MEDIUM' ? 'rgba(251,191,36,0.1)' : 'var(--success-bg)';
-  const bdr    = triage === 'HIGH' ? 'rgba(248,113,113,0.3)' : triage === 'MEDIUM' ? 'rgba(251,191,36,0.3)' : 'rgba(52,211,153,0.3)';
-
+  const conf      = (confFloat * 100).toFixed(1);
+  const triage    = data.triage || data.risk_level || data.severity || (confFloat >= 0.75 ? 'HIGH' : confFloat >= 0.40 ? 'MEDIUM' : 'LOW');
+  const findings  = data.findings || data.probabilities || data.predictions || {};
+  const col = triage === 'HIGH' ? 'var(--danger)' : triage === 'MEDIUM' ? 'var(--warning)' : 'var(--success)';
+  const bg  = triage === 'HIGH' ? 'var(--danger-bg)' : triage === 'MEDIUM' ? 'rgba(251,191,36,0.1)' : 'var(--success-bg)';
+  const bdr = triage === 'HIGH' ? 'rgba(248,113,113,0.3)' : triage === 'MEDIUM' ? 'rgba(251,191,36,0.3)' : 'rgba(52,211,153,0.3)';
   document.getElementById('findingDisease').textContent = cond;
   document.getElementById('findingDisease').style.color = col;
-  document.getElementById('findingConf').textContent = `${conf}% confidence · ${triage === 'HIGH' ? 'High' : triage === 'MEDIUM' ? 'Medium' : 'Low'} risk`;
-  document.getElementById('findingTriage').textContent = `● ${triage} PRIORITY`;
+  document.getElementById('findingConf').textContent    = `${conf}% confidence · ${triage === 'HIGH' ? 'High' : triage === 'MEDIUM' ? 'Medium' : 'Low'} risk`;
+  document.getElementById('findingTriage').textContent  = `● ${triage} PRIORITY`;
   Object.assign(document.getElementById('findingTriage').style, { color:col, background:bg, borderColor:bdr });
-
-  const sorted = Object.entries(findings).filter(([c])=>c!=='No Finding').sort((a,b)=>b[1]-a[1]);
-  document.getElementById('findingBars').innerHTML = sorted.map(([c, prob]) => {
-    const pct = (prob * 100).toFixed(1);
+  const sorted = Object.entries(findings).filter(([c]) => c !== 'No Finding').sort((a,b) => b[1]-a[1]);
+  document.getElementById('findingBars').innerHTML = sorted.map(([c,prob]) => {
+    const pct = (prob*100).toFixed(1);
     const fc  = prob >= 0.6 ? '#F87171' : prob >= 0.3 ? '#FBBF24' : '#34D399';
-    return `<div class="fbar-row">
-      <div class="fbar-label-row"><span class="fbar-label">${c}</span><span class="fbar-val" style="color:${fc};">${pct}%</span></div>
-      <div class="fbar-track"><div class="fbar-fill" style="width:${pct}%;background:${fc};"></div></div>
-    </div>`;
+    return `<div class="fbar-row"><div class="fbar-label-row"><span class="fbar-label">${c}</span><span class="fbar-val" style="color:${fc};">${pct}%</span></div><div class="fbar-track"><div class="fbar-fill" style="width:${pct}%;background:${fc};"></div></div></div>`;
   }).join('');
-
-  document.getElementById('findingWaiting').style.display = 'none';
-  document.getElementById('findingResult').style.display = 'block';
-
-  document.getElementById('explanationText').textContent = EXPLANATIONS[cond] || 'AI analysis complete. Refer to the Grad-CAM heatmap for visual explanation.';
+  document.getElementById('findingWaiting').style.display     = 'none';
+  document.getElementById('findingResult').style.display      = 'block';
+  document.getElementById('explanationText').textContent      = EXPLANATIONS[cond] || 'AI analysis complete. Refer to the Grad-CAM heatmap for visual explanation.';
   document.getElementById('explanationWaiting').style.display = 'none';
-  document.getElementById('explanationResult').style.display = 'block';
-
+  document.getElementById('explanationResult').style.display  = 'block';
   const regionMap = { Pneumonia:'⚠ Pneumonia detected · RUL', Effusion:'⚠ Effusion detected · Base', Cardiomegaly:'⚠ Cardiomegaly detected · Cardiac', Infiltration:'⚠ Infiltration detected · Bilateral', 'No Finding':'✓ No abnormality detected' };
   const annTag = document.getElementById('annTag');
-  annTag.textContent = regionMap[cond] || '⚠ Abnormality detected';
-  annTag.style.display = 'block';
-
+  annTag.textContent = regionMap[cond] || '⚠ Abnormality detected'; annTag.style.display = 'block';
   if (data.gradcam_base64) {
     document.getElementById('hmOverlay').innerHTML = `<img src="data:image/png;base64,${data.gradcam_base64}" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;opacity:0.75;">`;
     const gc = document.getElementById('gradcamImage');
-    gc.setAttribute('href', `data:image/png;base64,${data.gradcam_base64}`);
-    gc.style.display = 'block';
+    gc.setAttribute('href', `data:image/png;base64,${data.gradcam_base64}`); gc.style.display = 'block';
   }
-
-  // update chat context badge
   const badge = document.getElementById('cdContextBadge');
-  if (badge) {
-    badge.className = `cd-context-badge ${(data.triage||'LOW').toLowerCase()}`;
-    badge.textContent = `${cond} · ${conf}% · ${triage}`;
-  }
+  if (badge) { badge.className = `cd-context-badge ${triage.toLowerCase()}`; badge.textContent = `${cond} · ${conf}% · ${triage}`; }
   cdGreeted = false;
 }
 
-/* ── HEATMAP TOGGLE ── */
 function toggleHeatmap() {
   document.getElementById('hmToggle').classList.toggle('on');
   document.getElementById('hmOverlay').classList.toggle('visible');
 }
 
-/* ── ACTIONS ── */
 function flagForReview() { alert('Case flagged for radiologist review.'); }
 
-/* ── PROFILE / LOGOUT ── */
 const AUTH_TOKEN_KEY = 'pneumoscan_token';
 const AUTH_USER_KEY  = 'pneumoscan_user';
 const LOGIN_PAGE_URL = 'login.html';
-(function() {
+
+(function initProfile() {
   const raw = localStorage.getItem(AUTH_USER_KEY);
   if (!raw) return;
   try {
-    const user = JSON.parse(raw);
-    const initials = (user.full_name||'Dr').replace(/^Dr\.?\s*/i,'').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase()||'DR';
+    const user     = JSON.parse(raw);
+    const initials = (user.full_name || 'Dr').replace(/^Dr\.?\s*/i,'').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase() || 'DR';
     document.getElementById('avatarInitials').textContent = initials;
-    document.getElementById('dropdownName').textContent = user.full_name||'Doctor';
-    document.getElementById('dropdownEmail').textContent = user.email||'';
+    document.getElementById('dropdownName').textContent   = user.full_name || 'Doctor';
+    document.getElementById('dropdownEmail').textContent  = user.email || '';
   } catch(e) {}
 })();
+
 function toggleProfileMenu() { document.getElementById('profileDropdown').classList.toggle('open'); }
-document.addEventListener('click', e => { const w = document.getElementById('profileMenuWrap'); if (w && !w.contains(e.target)) document.getElementById('profileDropdown').classList.remove('open'); });
-function requestLogout() { document.getElementById('profileDropdown').classList.remove('open'); document.getElementById('logoutModalBackdrop').classList.add('show'); }
-function cancelLogout() { document.getElementById('logoutModalBackdrop').classList.remove('show'); }
-function confirmLogout() { try{localStorage.removeItem('token');}catch(e){} try{localStorage.removeItem(AUTH_TOKEN_KEY);}catch(e){} try{localStorage.removeItem(AUTH_USER_KEY);}catch(e){} window.location.href=LOGIN_PAGE_URL; }
+document.addEventListener('click', e => {
+  const w = document.getElementById('profileMenuWrap');
+  if (w && !w.contains(e.target)) document.getElementById('profileDropdown').classList.remove('open');
+});
+function requestLogout() {
+  document.getElementById('profileDropdown').classList.remove('open');
+  document.getElementById('logoutModalBackdrop').classList.add('show');
+}
+function cancelLogout()  { document.getElementById('logoutModalBackdrop').classList.remove('show'); }
+function confirmLogout() {
+  ['token', AUTH_TOKEN_KEY, AUTH_USER_KEY].forEach(k => { try { localStorage.removeItem(k); } catch(e) {} });
+  window.location.href = LOGIN_PAGE_URL;
+}
 
-/* ── NAV ── */
-document.querySelectorAll('.nav-pill').forEach(pill => { pill.addEventListener('click', () => { document.querySelectorAll('.nav-pill').forEach(p=>p.classList.remove('active')); pill.classList.add('active'); }); });
-document.addEventListener('keydown', e => { if (e.key==='Escape') { cancelLogout(); closePatientModal(); closeChatDrawer(); } });
+document.querySelectorAll('.nav-pill').forEach(pill => {
+  pill.addEventListener('click', () => {
+    document.querySelectorAll('.nav-pill').forEach(p => p.classList.remove('active'));
+    pill.classList.add('active');
+  });
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { cancelLogout(); closePatientModal(); closeChatDrawer(); }
+});
 
-/* ── CHAT DRAWER ── */
-const CD_API_BASE = 'http://localhost:8000';
 function openChatDrawer() {
   document.getElementById('chatDrawer').classList.add('open');
   document.getElementById('chatBackdrop').classList.add('open');
   syncChatContext();
-  setTimeout(()=>document.getElementById('cdInput').focus(), 300);
+  setTimeout(() => document.getElementById('cdInput').focus(), 300);
 }
 function closeChatDrawer() {
   document.getElementById('chatDrawer').classList.remove('open');
   document.getElementById('chatBackdrop').classList.remove('open');
 }
 function syncChatContext() {
-  const badge = document.getElementById('cdContextBadge');
-  const input = document.getElementById('cdInput');
+  const badge   = document.getElementById('cdContextBadge');
+  const input   = document.getElementById('cdInput');
   const sendBtn = document.getElementById('cdSendBtn');
   if (cdScanResult) {
-    const t = (cdScanResult.triage||'LOW').toLowerCase();
-    badge.className = `cd-context-badge ${t}`;
-    const _cond = cdScanResult.top_condition || cdScanResult.primary_finding || cdScanResult.condition || 'Unknown';
-    const _raw = cdScanResult.confidence ?? cdScanResult.confidence_score ?? 0;
-    const _conf = (_raw > 1 ? _raw : _raw * 100).toFixed(1);
+    const _cond   = cdScanResult.top_condition || cdScanResult.primary_finding || cdScanResult.condition || 'Unknown';
+    const _raw    = cdScanResult.confidence ?? cdScanResult.confidence_score ?? 0;
+    const _conf   = (_raw > 1 ? _raw : _raw * 100).toFixed(1);
     const _triage = cdScanResult.triage || cdScanResult.risk_level || cdScanResult.severity || 'LOW';
+    badge.className = `cd-context-badge ${_triage.toLowerCase()}`;
     badge.textContent = `${_cond} · ${_conf}% · ${_triage}`;
     input.disabled = false; sendBtn.disabled = false;
     document.getElementById('cdSuggestions').style.display = 'flex';
-    document.getElementById('cdWelcome').style.display = 'none';
+    document.getElementById('cdWelcome').style.display     = 'none';
     if (!cdGreeted) { showCdScanMessage(cdScanResult); cdGreeted = true; }
   } else {
     badge.className = 'cd-context-badge none';
@@ -955,122 +981,106 @@ function syncChatContext() {
     input.disabled = true; sendBtn.disabled = true;
   }
 }
+
 function showCdScanMessage(data) {
-  const conf = (data.confidence*100).toFixed(1);
+  const conf = (data.confidence * 100).toFixed(1);
   const triageText = { HIGH:'⚠️ <strong>High-priority</strong> finding. Please see a doctor today.', MEDIUM:'⚡ <strong>Medium-priority</strong> finding. See a doctor within 1–2 days.', LOW:'✅ <strong>Low-priority</strong> finding. Routine follow-up recommended.' }[data.triage] || '';
-  const rows = Object.entries(data.findings||data.probabilities||{}).filter(([c])=>c!=='No Finding').sort((a,b)=>b[1]-a[1]).map(([c,p])=>`<li>${c}: <strong>${(p*100).toFixed(1)}%</strong></li>`).join('');
-  cdAddBotMessage(`<span class="cd-tag">SCAN LOADED · ${data.scan_id||'—'}</span>
+  const rows = Object.entries(data.findings || data.probabilities || {}).filter(([c]) => c !== 'No Finding').sort((a,b) => b[1]-a[1]).map(([c,p]) => `<li>${c}: <strong>${(p*100).toFixed(1)}%</strong></li>`).join('');
+  cdAddBotMessage(`<span class="cd-tag">SCAN LOADED · ${data.scan_id || '—'}</span>
     Primary finding: <strong>${data.top_condition}</strong> (${conf}% confidence)<br>
-    ${triageText}${rows?`<ul style="margin-top:6px">${rows}</ul>`:''}
+    ${triageText}${rows ? `<ul style="margin-top:6px">${rows}</ul>` : ''}
     <div class="cd-disclaimer">Ask me anything about this result in plain language.</div>`);
 }
-function cdNowTime() { return new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}); }
+
+function cdNowTime() { return new Date().toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' }); }
 function cdEscape(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
 function cdAddUserMessage(text) {
   const msgs = document.getElementById('cdMessages');
-  const d = document.createElement('div'); d.className='cd-msg user';
-  d.innerHTML=`<div class="cd-avatar user">👤</div><div style="display:flex;flex-direction:column;gap:3px;align-items:flex-end;"><div class="cd-bubble">${cdEscape(text)}</div><div class="cd-ts">${cdNowTime()}</div></div>`;
-  msgs.appendChild(d); msgs.scrollTop=msgs.scrollHeight;
+  const d = document.createElement('div'); d.className = 'cd-msg user';
+  d.innerHTML = `<div class="cd-avatar user">👤</div><div style="display:flex;flex-direction:column;gap:3px;align-items:flex-end;"><div class="cd-bubble">${cdEscape(text)}</div><div class="cd-ts">${cdNowTime()}</div></div>`;
+  msgs.appendChild(d); msgs.scrollTop = msgs.scrollHeight;
 }
 function cdAddBotMessage(html) {
   const msgs = document.getElementById('cdMessages');
-  const d = document.createElement('div'); d.className='cd-msg bot';
-  const bubble = document.createElement('div'); bubble.className='cd-bubble'; bubble.innerHTML=html;
-  const wrap = document.createElement('div'); wrap.style.cssText='display:flex;flex-direction:column;gap:3px;';
+  const d = document.createElement('div'); d.className = 'cd-msg bot';
+  const bubble = document.createElement('div'); bubble.className = 'cd-bubble'; bubble.innerHTML = html;
+  const wrap = document.createElement('div'); wrap.style.cssText = 'display:flex;flex-direction:column;gap:3px;';
   wrap.appendChild(bubble);
-  const ts = document.createElement('div'); ts.className='cd-ts'; ts.textContent=cdNowTime();
-  wrap.appendChild(ts); d.innerHTML=`<div class="cd-avatar bot">AI</div>`; d.appendChild(wrap);
-  msgs.appendChild(d); msgs.scrollTop=msgs.scrollHeight; return bubble;
+  const ts = document.createElement('div'); ts.className = 'cd-ts'; ts.textContent = cdNowTime();
+  wrap.appendChild(ts);
+  d.innerHTML = `<div class="cd-avatar bot">AI</div>`; d.appendChild(wrap);
+  msgs.appendChild(d); msgs.scrollTop = msgs.scrollHeight;
+  return bubble;
 }
 function cdShowTyping() {
-  const msgs=document.getElementById('cdMessages');
-  const d=document.createElement('div'); d.className='cd-msg bot'; d.id='cdTypingMsg';
-  d.innerHTML=`<div class="cd-avatar bot">AI</div><div class="cd-bubble"><div class="cd-typing"><span></span><span></span><span></span></div></div>`;
-  msgs.appendChild(d); msgs.scrollTop=msgs.scrollHeight;
+  const msgs = document.getElementById('cdMessages');
+  const d = document.createElement('div'); d.className = 'cd-msg bot'; d.id = 'cdTypingMsg';
+  d.innerHTML = `<div class="cd-avatar bot">AI</div><div class="cd-bubble"><div class="cd-typing"><span></span><span></span><span></span></div></div>`;
+  msgs.appendChild(d); msgs.scrollTop = msgs.scrollHeight;
 }
 function cdRemoveTyping() { document.getElementById('cdTypingMsg')?.remove(); }
+
 async function cdCallAPI(userMsg) {
-  const res = await fetch(`${CD_API_BASE}/chat/`, {
+  const res = await fetch(`${API_BASE}/chat/`, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + (localStorage.getItem('token') || localStorage.getItem('pneumoscan_token'))
-    },
-    body: JSON.stringify({
-  message:      userMsg,
-  question:     userMsg,
-  scan_result:  cdScanResult,
-  chat_history: cdChatHistory.slice(-6)
-})
+    headers: { 'Content-Type': 'application/json', ...authHeaders() },
+    body: JSON.stringify({ message:userMsg, question:userMsg, scan_result:cdScanResult, chat_history:cdChatHistory.slice(-6) }),
   });
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
-
   const contentType = res.headers.get('content-type') || '';
-
-  // ── NON-STREAMING JSON response ──
   if (contentType.includes('application/json')) {
     const data = await res.json();
-    // handle common response shapes
-const text = data.reply || data.response || data.answer || data.text || data.output || '';
-if (!text) {
-  cdAddBotMessage('<span class="cd-tag">NOTE</span>Received an empty reply. Check your <code>/chat/</code> endpoint.');
-  return '';
-}    const bubble = cdAddBotMessage(text.replace(/\n/g,'<br>') + '<div class="cd-disclaimer">AI-generated response. Verify with a qualified healthcare professional.</div>');
+    const text = data.reply || data.response || data.answer || data.text || data.output || '';
+    if (!text) { cdAddBotMessage('<span class="cd-tag">NOTE</span>Received an empty reply. Check your <code>/chat/</code> endpoint.'); return ''; }
+    cdAddBotMessage(text.replace(/\n/g,'<br>') + '<div class="cd-disclaimer">AI-generated response. Verify with a qualified healthcare professional.</div>');
     return text;
   }
-
-  // ── STREAMING SSE response ──
   const bubble = cdAddBotMessage('');
-  const reader = res.body.getReader();
-  const decoder = new TextDecoder();
+  const reader = res.body.getReader(); const decoder = new TextDecoder();
   let fullText = '', buffer = '';
-
   while (true) {
-    const { done, value } = await reader.read();
-    if (done) break;
-    buffer += decoder.decode(value, { stream: true });
-    const lines = buffer.split('\n');
-    buffer = lines.pop();
+    const { done, value } = await reader.read(); if (done) break;
+    buffer += decoder.decode(value, { stream:true });
+    const lines = buffer.split('\n'); buffer = lines.pop();
     for (const line of lines) {
       if (!line.startsWith('data: ')) continue;
-      try {
-        const chunk = JSON.parse(line.slice(6));
-        const token = chunk.token || chunk.text || chunk.delta || chunk.content || '';
-        if (token) {
-          fullText += token;
-          bubble.innerHTML = fullText.replace(/\n/g,'<br>');
-          document.getElementById('cdMessages').scrollTop = document.getElementById('cdMessages').scrollHeight;
-        }
-      } catch {}
+      try { const chunk = JSON.parse(line.slice(6)); const token = chunk.token || chunk.text || chunk.delta || chunk.content || ''; if (token) { fullText += token; bubble.innerHTML = fullText.replace(/\n/g,'<br>'); document.getElementById('cdMessages').scrollTop = document.getElementById('cdMessages').scrollHeight; } } catch {}
     }
   }
-
-  if (fullText) {
-    bubble.innerHTML += '<div class="cd-disclaimer">AI-generated response. Verify with a qualified healthcare professional.</div>';
-  } else {
-    bubble.innerHTML = 'No response received. Check that your chat endpoint is running.';
-  }
+  if (fullText) { bubble.innerHTML += '<div class="cd-disclaimer">AI-generated response. Verify with a qualified healthcare professional.</div>'; }
+  else { bubble.innerHTML = 'No response received. Check that your chat endpoint is running.'; }
   return fullText;
 }
+
 async function cdSend() {
-  const input=document.getElementById('cdInput');
-  const text=input.value.trim(); if (!text||cdIsStreaming) return;
-  input.value=''; input.style.height='auto';
-  cdAddUserMessage(text); cdChatHistory.push({role:'user',content:text});
-  cdIsStreaming=true; document.getElementById('cdSendBtn').disabled=true; cdShowTyping();
+  const input = document.getElementById('cdInput');
+  const text  = input.value.trim();
+  if (!text || cdIsStreaming) return;
+  input.value = ''; input.style.height = 'auto';
+  cdAddUserMessage(text);
+  cdChatHistory.push({ role:'user', content:text });
+  cdIsStreaming = true;
+  document.getElementById('cdSendBtn').disabled = true;
+  cdShowTyping();
   try {
-    await new Promise(r=>setTimeout(r,280)); cdRemoveTyping();
-    const reply=await cdCallAPI(text);
-    if (reply) cdChatHistory.push({role:'assistant',content:reply});
-  } catch(err) {
+    await new Promise(r => setTimeout(r, 280));
+    cdRemoveTyping();
+    const reply = await cdCallAPI(text);
+    if (reply) cdChatHistory.push({ role:'assistant', content:reply });
+  } catch (err) {
     cdRemoveTyping();
     cdAddBotMessage(`<span class="cd-tag">ERROR</span>Could not reach chat API: <strong>${cdEscape(err.message)}</strong>. Make sure uvicorn is running.`);
-  } finally { cdIsStreaming=false; document.getElementById('cdSendBtn').disabled=false; document.getElementById('cdInput').focus(); }
+  } finally {
+    cdIsStreaming = false;
+    document.getElementById('cdSendBtn').disabled = false;
+    document.getElementById('cdInput').focus();
+  }
 }
-function cdSendSuggestion(text) { document.getElementById('cdInput').value=text; cdSend(); }
+function cdSendSuggestion(text) { document.getElementById('cdInput').value = text; cdSend(); }
 document.getElementById('cdSendBtn').addEventListener('click', cdSend);
-document.getElementById('cdInput').addEventListener('keydown', e => { if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();cdSend();} });
-document.getElementById('cdInput').addEventListener('input', function(){this.style.height='auto';this.style.height=Math.min(this.scrollHeight,100)+'px';});
+document.getElementById('cdInput').addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); cdSend(); } });
+document.getElementById('cdInput').addEventListener('input', function() { this.style.height = 'auto'; this.style.height = Math.min(this.scrollHeight, 100) + 'px'; });
 </script>
 </body>
 </html>
