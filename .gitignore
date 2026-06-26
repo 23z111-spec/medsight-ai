@@ -1,9 +1,25 @@
+# Model files
 backend/models/*.pth
+backend/pneumoscan/models/*.pth
+
+# Virtual environments
+venv/
 backend/venv/
+backend/pneumoscan/venv/
+backend/pneumoscan/.venv/
+
+# Python
 __pycache__/
 *.pyc
+
+# Environment variables
 .env
-*.zipbackend/pneumoscan/models/*.pth 
-backend/pneumoscan/storage/ 
-backend/pneumoscan/pneumoscan.db 
-backend/pneumoscan/.venv/ 
+
+# Database
+backend/pneumoscan/pneumoscan.db
+
+# Storage
+backend/pneumoscan/storage/
+
+# Archives
+*.zip
