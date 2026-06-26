@@ -16,6 +16,7 @@ from app.routes import predict, health, patients, auth, scans, chat
 from app.model_loader import load_models
 from app.database import engine, Base
 from app import models_db  # noqa: F401 — ensures User table is registered
+from app.routes.auth_password_reset import router as password_router
 
 print("MAIN FILE:", os.path.abspath(__file__))
 
@@ -48,7 +49,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Root endpoint (returns basic project metadata)
+# Root endpoint
 @app.get("/")
 def root():
     return {
@@ -61,10 +62,11 @@ def root():
         "disclaimer":  "AI screening tool — not for clinical use without physician review."
     }
 
-# Register all routes precisely once
-app.include_router(auth.router,     prefix="/auth",      tags=["Authentication"])
-app.include_router(health.router,   prefix="/health",    tags=["Health"])
-app.include_router(predict.router,  prefix="/predict",   tags=["Prediction"])
-app.include_router(patients.router, prefix="/patients",  tags=["Patients"])
-app.include_router(scans.router,    prefix="/scans",     tags=["Scans"])
-app.include_router(chat.router,     prefix="/chat",      tags=["Chat"])
+# Register all routes
+app.include_router(auth.router,          prefix="/auth",      tags=["Authentication"])
+app.include_router(health.router,        prefix="/health",    tags=["Health"])
+app.include_router(predict.router,       prefix="/predict",   tags=["Prediction"])
+app.include_router(patients.router,      prefix="/patients",  tags=["Patients"])
+app.include_router(scans.router,         prefix="/scans",     tags=["Scans"])
+app.include_router(chat.router,          prefix="/chat",      tags=["Chat"])
+app.include_router(password_router)      # /auth/forgot-password  &  /auth/reset-password
