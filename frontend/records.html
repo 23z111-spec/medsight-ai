@@ -18,8 +18,7 @@
 *{margin:0;padding:0;box-sizing:border-box;}
 html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;overflow:hidden;}
 
-/* NAV */
-.topnav{background:rgba(15,31,52,0.97);border-bottom:1px solid var(--border);backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:52px;flex-shrink:0;}
+.topnav{background:rgba(15,31,52,0.97);border-bottom:1px solid var(--border);backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:52px;flex-shrink:0;position:relative;z-index:9999;}
 .logo{display:flex;align-items:center;gap:10px;font-family:'Space Mono',monospace;font-size:13px;color:var(--accent);letter-spacing:.5px;font-weight:700;}
 .logo-icon{width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,var(--accent-strong),#1D4ED8);display:flex;align-items:center;justify-content:center;font-size:14px;color:#fff;}
 .nav-pills{display:flex;gap:2px;}
@@ -28,27 +27,50 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
 .nav-pill.active{background:var(--accent-glow);color:var(--accent);border:1px solid var(--border-bright);}
 .nav-badge{background:var(--surface-soft);border:1px solid var(--border-bright);border-radius:20px;padding:3px 12px;font-size:10px;color:var(--accent);font-family:'Space Mono',monospace;}
 .nav-right{display:flex;align-items:center;gap:14px;}
-.avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--accent-strong),#1D4ED8);border:2px solid var(--border-bright);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;font-family:'Space Mono',monospace;}
 .demo-banner{background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.25);border-radius:6px;padding:4px 12px;font-size:10px;color:var(--warning);display:none;align-items:center;gap:6px;}
 
-/* LAYOUT */
+/* PROFILE DROPDOWN — identical to dashboard */
+.profile-menu-wrap{position:relative;display:inline-block;z-index:99999;}
+.profile-avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--accent-strong),#1D4ED8);border:2px solid var(--border-bright);color:#fff;font-family:'Space Mono',monospace;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;}
+.profile-avatar:hover{transform:scale(1.05);}
+.profile-dropdown{position:absolute;top:calc(100% + 10px);right:0;width:220px;background:var(--surface-soft);border:1px solid var(--border-bright);border-radius:12px;box-shadow:0 16px 40px rgba(0,0,0,0.5);padding:6px;opacity:0;transform:translateY(-6px);pointer-events:none;transition:all .15s ease;z-index:99999;}
+.profile-dropdown.open{opacity:1;transform:translateY(0);pointer-events:auto;}
+.profile-dropdown-header{padding:10px 12px 8px;}
+.profile-dropdown-name{font-size:12px;font-weight:600;color:var(--text);}
+.profile-dropdown-email{font-size:10px;color:var(--muted);margin-top:2px;}
+.profile-dropdown-divider{height:1px;background:var(--border);margin:4px 0;}
+.profile-dropdown-item{width:100%;display:flex;align-items:center;gap:8px;padding:9px 12px;background:none;border:none;border-radius:8px;color:var(--muted-strong);font-family:'Inter',sans-serif;font-size:12px;cursor:pointer;text-align:left;transition:background .15s;}
+.profile-dropdown-item:hover{background:var(--surface-strong);}
+.logout-item:hover{background:rgba(248,113,113,0.12);color:#FDA4AF;}
+
+/* LOGOUT MODAL — identical to dashboard */
+.logout-modal-backdrop{position:fixed;inset:0;background:rgba(6,21,40,0.75);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:99999;}
+.logout-modal-backdrop.show{display:flex;}
+.logout-modal{width:320px;background:var(--surface);border:1px solid var(--border-bright);border-radius:16px;padding:28px 24px 20px;text-align:center;box-shadow:0 24px 60px rgba(0,0,0,0.6);animation:modalIn .18s ease;}
+@keyframes modalIn{from{opacity:0;transform:scale(0.95);}to{opacity:1;transform:scale(1);}}
+.logout-modal-icon{width:48px;height:48px;border-radius:50%;background:rgba(253,164,175,0.12);color:#FDA4AF;display:flex;align-items:center;justify-content:center;font-size:22px;margin:0 auto 14px;}
+.logout-modal-title{font-size:16px;font-weight:700;color:var(--text);margin-bottom:6px;}
+.logout-modal-text{font-size:11px;color:var(--muted);line-height:1.6;margin-bottom:20px;}
+.logout-modal-actions{display:flex;gap:8px;}
+.logout-modal-btn{flex:1;padding:10px;border-radius:9px;font-size:12px;font-weight:600;font-family:'Inter',sans-serif;cursor:pointer;transition:all .15s;}
+.logout-modal-btn.cancel{background:var(--surface-soft);border:1px solid var(--border);color:var(--muted-strong);}
+.logout-modal-btn.confirm{background:#FDA4AF;border:1px solid #FDA4AF;color:#1a0506;}
+.logout-modal-btn.confirm:hover{background:#f87171;border-color:#f87171;}
+
 .app{display:flex;flex-direction:column;height:100vh;}
 .body{flex:1;display:flex;flex-direction:column;overflow:hidden;padding:16px;gap:12px;background:var(--bg);}
 
-/* STAT CARDS */
 .stat-row{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;flex-shrink:0;}
-.stat-card{background:var(--surface-strong);border:1px solid var(--border-bright);border-radius:12px;padding:14px 18px;position:relative;overflow:hidden;transition:border-color .15s;}
+.stat-card{background:var(--surface-strong);border:1px solid var(--border-bright);border-radius:12px;padding:14px 18px;position:relative;overflow:hidden;transition:border-color .15s;z-index:0;isolation:isolate;}
 .stat-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(59,130,246,0.07) 0%,transparent 60%);pointer-events:none;}
 .stat-card:hover{border-color:var(--accent);}
 .stat-label{font-size:9px;color:var(--muted);margin-bottom:6px;letter-spacing:1px;text-transform:uppercase;font-weight:600;}
 .stat-val{font-size:26px;font-weight:700;font-family:'Space Mono',monospace;line-height:1;}
 .stat-sub{font-size:9px;color:var(--muted);margin-top:5px;}
 
-/* skeleton */
 .skeleton{background:linear-gradient(90deg,var(--surface-soft) 25%,var(--surface-strong) 50%,var(--surface-soft) 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;border-radius:6px;}
 @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
 
-/* TOOLBAR */
 .toolbar{display:flex;align-items:center;gap:8px;flex-shrink:0;}
 .search-wrap{flex:1;position:relative;}
 .search-wrap i{position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:14px;color:var(--muted-dim);}
@@ -61,7 +83,6 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
 .add-btn{background:var(--accent-glow);border:1px solid var(--border-bright);border-radius:8px;padding:7px 16px;font-size:11px;color:var(--accent);cursor:pointer;display:flex;align-items:center;gap:6px;font-family:'Inter',sans-serif;transition:all .15s;white-space:nowrap;}
 .add-btn:hover{background:rgba(59,130,246,0.25);}
 
-/* TABLE */
 .table-wrap{flex:1;overflow-y:auto;background:var(--surface);border:1px solid var(--border);border-radius:12px;}
 table{width:100%;border-collapse:collapse;}
 thead{position:sticky;top:0;z-index:2;}
@@ -74,37 +95,29 @@ tbody tr{cursor:pointer;transition:background .12s;}
 tbody tr:hover td{background:var(--surface-soft);}
 tbody tr:last-child td{border-bottom:none;}
 
-/* CELLS */
 .patient-cell{display:flex;align-items:center;gap:10px;}
 .initials{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--accent-strong),#1D4ED8);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0;}
 .patient-name-cell{font-size:12px;color:var(--muted-strong);font-weight:500;}
 .patient-id-cell{font-size:9px;color:var(--muted-dim);font-family:'Space Mono',monospace;margin-top:1px;}
-
 .triage-pill{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:4px;font-size:9px;font-family:'Space Mono',monospace;font-weight:700;}
 .triage-HIGH{background:var(--danger-bg);border:1px solid rgba(248,113,113,0.3);color:var(--danger);}
 .triage-MEDIUM{background:var(--warning-bg);border:1px solid rgba(251,191,36,0.3);color:var(--warning);}
 .triage-LOW{background:var(--success-bg);border:1px solid rgba(52,211,153,0.3);color:var(--success);}
-
 .finding-cell{display:flex;align-items:center;gap:6px;}
 .finding-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
 .conf-cell{font-family:'Space Mono',monospace;font-size:10px;font-weight:700;}
 .date-cell{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted-dim);}
-
 .action-cell{display:flex;align-items:center;gap:6px;}
 .icon-btn{background:transparent;border:1px solid var(--border);border-radius:6px;padding:4px 8px;font-size:12px;color:var(--muted-dim);cursor:pointer;transition:all .15s;}
 .icon-btn:hover{background:var(--surface-soft);color:var(--accent);border-color:var(--border-bright);}
 
-/* EMPTY */
 .empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px;gap:8px;color:var(--muted-dim);}
 .empty-icon{font-size:36px;opacity:.4;}
 .empty-title{font-size:13px;color:var(--muted);}
 .empty-sub{font-size:11px;}
-
-/* skeleton rows */
 .skeleton-row td{padding:13px 14px;}
 .skeleton-cell{height:11px;border-radius:4px;}
 
-/* PAGINATION */
 .pagination{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-top:1px solid var(--border);flex-shrink:0;background:var(--surface);border-radius:0 0 12px 12px;}
 .page-info{font-size:10px;color:var(--muted-dim);font-family:'Space Mono',monospace;}
 .page-btns{display:flex;gap:4px;}
@@ -113,9 +126,7 @@ tbody tr:last-child td{border-bottom:none;}
 .page-btn.active{background:var(--accent-glow);border-color:var(--border-bright);color:var(--accent);}
 .page-btn:disabled{opacity:.3;cursor:not-allowed;}
 
-::-webkit-scrollbar{width:4px;}
-::-webkit-scrollbar-track{background:transparent;}
-::-webkit-scrollbar-thumb{background:var(--border-bright);border-radius:2px;}
+::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:var(--border-bright);border-radius:2px;}
 </style>
 </head>
 <body>
@@ -124,64 +135,67 @@ tbody tr:last-child td{border-bottom:none;}
 <div class="topnav">
   <div class="logo"><div class="logo-icon"><i class="ti ti-brain"></i></div>MEDSIGHT · AI</div>
   <div class="nav-pills">
-    <div class="nav-pill" onclick="window.location.href='dashbord.html'">Screening</div>
+    <div class="nav-pill" onclick="window.location.href='/dashbord.html'">Screening</div>
     <div class="nav-pill active">Patient Records</div>
-    <div class="nav-pill" onclick="window.location.href='analytics.html'">Analytics</div>
-    <div class="nav-pill" onclick="window.location.href='settings.html'">Settings</div>
+    <div class="nav-pill" onclick="window.location.href='/analytics.html'">Analytics</div>
+    <div class="nav-pill" onclick="window.location.href='/settings.html'">Settings</div>
   </div>
   <div class="nav-right">
     <div class="demo-banner" id="demoBanner"><i class="ti ti-flask"></i> Demo data</div>
     <div class="nav-badge">Model v2.4.1</div>
-    <div class="avatar" id="navAvatar">DR</div>
+
+    <!-- PROFILE MENU — same as dashboard -->
+    <div class="profile-menu-wrap" id="profileMenuWrap">
+      <button class="profile-avatar" id="profileAvatarBtn" onclick="toggleProfileMenu()">
+        <span id="avatarInitials">DR</span>
+      </button>
+      <div class="profile-dropdown" id="profileDropdown">
+        <div class="profile-dropdown-header">
+          <div class="profile-dropdown-name" id="dropdownName">Dr. —</div>
+          <div class="profile-dropdown-email" id="dropdownEmail">—</div>
+        </div>
+        <div class="profile-dropdown-divider"></div>
+        <button class="profile-dropdown-item logout-item" onclick="requestLogout()">
+          <i class="ti ti-logout" style="font-size:15px;"></i><span>Log out</span>
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- LOGOUT MODAL — moved outside topnav -->
+<div class="logout-modal-backdrop" id="logoutModalBackdrop">
+  <div class="logout-modal">
+    <div class="logout-modal-icon"><i class="ti ti-logout"></i></div>
+    <div class="logout-modal-title">Sign out?</div>
+    <div class="logout-modal-text">You'll need to sign in again to access patient records.</div>
+    <div class="logout-modal-actions">
+      <button class="logout-modal-btn cancel" onclick="cancelLogout()">Cancel</button>
+      <button class="logout-modal-btn confirm" onclick="confirmLogout()">Yes, sign out</button>
+    </div>
   </div>
 </div>
 
 <div class="body">
 
   <div class="stat-row">
-    <div class="stat-card">
-      <div class="stat-label">Total Patients</div>
-      <div class="stat-val" style="color:var(--accent);" id="statTotal">—</div>
-      <div class="stat-sub">In database</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">Total Scans</div>
-      <div class="stat-val" style="color:var(--muted-strong);" id="statScans">—</div>
-      <div class="stat-sub">All time</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">High Priority</div>
-      <div class="stat-val" style="color:var(--danger);" id="statHigh">—</div>
-      <div class="stat-sub">Needs review</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">Medium Priority</div>
-      <div class="stat-val" style="color:var(--warning);" id="statMed">—</div>
-      <div class="stat-sub">Monitor closely</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">Low / Normal</div>
-      <div class="stat-val" style="color:var(--success);" id="statLow">—</div>
-      <div class="stat-sub">No action needed</div>
-    </div>
+    <div class="stat-card"><div class="stat-label">Total Patients</div><div class="stat-val" style="color:var(--accent);" id="statTotal">—</div><div class="stat-sub">In database</div></div>
+    <div class="stat-card"><div class="stat-label">Total Scans</div><div class="stat-val" style="color:var(--muted-strong);" id="statScans">—</div><div class="stat-sub">All time</div></div>
+    <div class="stat-card"><div class="stat-label">High Priority</div><div class="stat-val" style="color:var(--danger);" id="statHigh">—</div><div class="stat-sub">Needs review</div></div>
+    <div class="stat-card"><div class="stat-label">Medium Priority</div><div class="stat-val" style="color:var(--warning);" id="statMed">—</div><div class="stat-sub">Monitor closely</div></div>
+    <div class="stat-card"><div class="stat-label">Low / Normal</div><div class="stat-val" style="color:var(--success);" id="statLow">—</div><div class="stat-sub">No action needed</div></div>
   </div>
 
   <div class="toolbar">
     <div class="search-wrap">
       <i class="ti ti-search"></i>
-      <input class="search-input" type="text" placeholder="Search by name, ID, department, or finding…"
-             id="searchInput" oninput="applyFilters()"/>
+      <input class="search-input" type="text" placeholder="Search by name, ID, department, or finding…" id="searchInput" oninput="applyFilters()"/>
     </div>
     <button class="filter-btn active" id="filterAll"    onclick="setFilter('all')">All</button>
-    <button class="filter-btn"        id="filterHigh"   onclick="setFilter('HIGH')">
-      <span style="width:6px;height:6px;border-radius:50%;background:var(--danger);display:inline-block;flex-shrink:0;"></span> High
-    </button>
-    <button class="filter-btn"        id="filterMedium" onclick="setFilter('MEDIUM')">
-      <span style="width:6px;height:6px;border-radius:50%;background:var(--warning);display:inline-block;flex-shrink:0;"></span> Medium
-    </button>
-    <button class="filter-btn"        id="filterLow"    onclick="setFilter('LOW')">
-      <span style="width:6px;height:6px;border-radius:50%;background:var(--success);display:inline-block;flex-shrink:0;"></span> Low
-    </button>
+    <button class="filter-btn"        id="filterHigh"   onclick="setFilter('HIGH')"><span style="width:6px;height:6px;border-radius:50%;background:var(--danger);display:inline-block;flex-shrink:0;"></span> High</button>
+    <button class="filter-btn"        id="filterMedium" onclick="setFilter('MEDIUM')"><span style="width:6px;height:6px;border-radius:50%;background:var(--warning);display:inline-block;flex-shrink:0;"></span> Medium</button>
+    <button class="filter-btn"        id="filterLow"    onclick="setFilter('LOW')"><span style="width:6px;height:6px;border-radius:50%;background:var(--success);display:inline-block;flex-shrink:0;"></span> Low</button>
     <button class="add-btn"><i class="ti ti-user-plus"></i> Add Patient</button>
   </div>
 
@@ -236,24 +250,45 @@ const FINDING_COLORS = {
   'Infiltration':'#C084FC','No Finding':'#34D399','Normal':'#34D399',
 };
 
-let ALL_PATIENTS   = [];
-let filtered       = [];
-let currentFilter  = 'all';
-let currentPage    = 1;
-const PAGE_SIZE    = 10;
-let sortKey        = 'scan_date';
-let sortAsc        = false;
-let usingDemo      = false;
+let ALL_PATIENTS  = [], filtered = [], currentFilter = 'all', currentPage = 1;
+const PAGE_SIZE   = 10;
+let sortKey = 'scan_date', sortAsc = false, usingDemo = false;
 
-// profile initials
+// ── PROFILE ───────────────────────────────────────────────────
 (function(){
   try {
     const u = JSON.parse(localStorage.getItem('pneumoscan_user')||'{}');
-    if (u.full_name) document.getElementById('navAvatar').textContent =
-      u.full_name.replace(/^Dr\.?\s*/i,'').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+    if (u.full_name) {
+      const i = u.full_name.replace(/^Dr\.?\s*/i,'').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+      document.getElementById('avatarInitials').textContent = i;
+      document.getElementById('dropdownName').textContent   = u.full_name;
+      document.getElementById('dropdownEmail').textContent  = u.email || '';
+    }
   } catch(e){}
 })();
 
+// ── PROFILE DROPDOWN ──────────────────────────────────────────
+function toggleProfileMenu() {
+  document.getElementById('profileDropdown').classList.toggle('open');
+}
+document.addEventListener('click', e => {
+  if (!document.getElementById('profileMenuWrap').contains(e.target))
+    document.getElementById('profileDropdown').classList.remove('open');
+});
+
+// ── LOGOUT ────────────────────────────────────────────────────
+function requestLogout() {
+  document.getElementById('profileDropdown').classList.remove('open');
+  document.getElementById('logoutModalBackdrop').classList.add('show');
+}
+function cancelLogout()  { document.getElementById('logoutModalBackdrop').classList.remove('show'); }
+function confirmLogout() {
+  ['token','pneumoscan_token','pneumoscan_user'].forEach(k => { try{localStorage.removeItem(k);}catch(e){} });
+  window.location.href = '/login.html';
+}
+document.addEventListener('keydown', e => { if(e.key==='Escape') cancelLogout(); });
+
+// ── LOAD PATIENTS ─────────────────────────────────────────────
 async function loadPatients() {
   showSkeletonRows();
   try {
@@ -265,17 +300,14 @@ async function loadPatients() {
     const data = await r.json();
     if (!Array.isArray(data)) throw new Error('bad response');
     ALL_PATIENTS = data.map(p => ({
-      id:            p.id,
-      name:          p.name,
-      age:           p.age,
-      gender:        p.gender,
-      total_scans:   p.total_scans || 0,
+      id: p.id, name: p.name, age: p.age, gender: p.gender,
+      total_scans:   p.total_scans   || 0,
       top_condition: p.top_condition || p.latest_condition || '—',
-      confidence:    p.confidence   || p.latest_confidence || 0,
-      triage:        p.triage       || p.latest_triage     || '—',
-      scan_date:     p.scan_date    || p.latest_scan_date  || '',
-      department:    p.department   || '—',
-      doctor_name:   p.doctor_name  || '—',
+      confidence:    p.confidence    || p.latest_confidence || 0,
+      triage:        p.triage        || p.latest_triage     || '—',
+      scan_date:     p.scan_date     || p.latest_scan_date  || '',
+      department:    p.department    || '—',
+      doctor_name:   p.doctor_name   || '—',
     }));
     usingDemo = false;
     document.getElementById('demoBanner').style.display = 'none';
@@ -300,20 +332,18 @@ function updateStats() {
 function applyFilters() {
   const q = document.getElementById('searchInput').value.toLowerCase().trim();
   filtered = ALL_PATIENTS.filter(p => {
-    const matchFilter = currentFilter === 'all' || p.triage === currentFilter;
-    const matchSearch = !q
-      || p.name.toLowerCase().includes(q)
-      || String(p.id).includes(q)
+    const mf = currentFilter === 'all' || p.triage === currentFilter;
+    const ms = !q || p.name.toLowerCase().includes(q) || String(p.id).includes(q)
       || (p.department||'').toLowerCase().includes(q)
       || (p.top_condition||'').toLowerCase().includes(q)
       || (p.doctor_name||'').toLowerCase().includes(q);
-    return matchFilter && matchSearch;
+    return mf && ms;
   });
   filtered.sort((a,b) => {
-    let av = a[sortKey] ?? '', bv = b[sortKey] ?? '';
-    if (typeof av === 'string') { av = av.toLowerCase(); bv = bv.toLowerCase(); }
-    if (av < bv) return sortAsc ? -1 : 1;
-    if (av > bv) return sortAsc ? 1 : -1;
+    let av=a[sortKey]??'', bv=b[sortKey]??'';
+    if(typeof av==='string'){av=av.toLowerCase();bv=bv.toLowerCase();}
+    if(av<bv) return sortAsc?-1:1;
+    if(av>bv) return sortAsc?1:-1;
     return 0;
   });
   currentPage = 1;
@@ -323,114 +353,66 @@ function applyFilters() {
 function setFilter(f) {
   currentFilter = f;
   document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
-  const map = { all:'filterAll', HIGH:'filterHigh', MEDIUM:'filterMedium', LOW:'filterLow' };
+  const map = {all:'filterAll',HIGH:'filterHigh',MEDIUM:'filterMedium',LOW:'filterLow'};
   document.getElementById(map[f])?.classList.add('active');
   applyFilters();
 }
 
 function sortBy(key) {
-  if (sortKey === key) sortAsc = !sortAsc;
-  else { sortKey = key; sortAsc = false; }
+  if(sortKey===key) sortAsc=!sortAsc; else{sortKey=key;sortAsc=false;}
   applyFilters();
 }
 
-function getInitials(name) {
-  return (name||'??').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
-}
-function confColor(c) {
-  const pct = c > 1 ? c : c * 100;
-  return pct >= 75 ? 'var(--danger)' : pct >= 50 ? 'var(--warning)' : 'var(--success)';
-}
-function formatDate(d) {
-  if (!d) return '—';
-  return new Date(d+'T00:00:00').toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
-}
+function getInitials(name){return(name||'??').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();}
+function confColor(c){const p=c>1?c:c*100;return p>=75?'var(--danger)':p>=50?'var(--warning)':'var(--success)';}
+function formatDate(d){if(!d)return'—';return new Date(d+'T00:00:00').toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});}
 
 function renderTable() {
-  const tbody = document.getElementById('tableBody');
-  const empty = document.getElementById('emptyState');
-
-  if (filtered.length === 0) {
-    tbody.innerHTML = '';
-    empty.style.display = 'flex';
-    document.getElementById('pageInfo').textContent = 'No results';
-    document.getElementById('pageBtns').innerHTML = '';
-    return;
-  }
-
-  empty.style.display = 'none';
-  const start = (currentPage-1) * PAGE_SIZE;
-  const slice = filtered.slice(start, start+PAGE_SIZE);
-  const confPct = p => p.confidence > 1 ? p.confidence : p.confidence * 100;
-
-  tbody.innerHTML = slice.map(p => {
-    const fc = FINDING_COLORS[p.top_condition] || 'var(--muted)';
+  const tbody=document.getElementById('tableBody'), empty=document.getElementById('emptyState');
+  if(!filtered.length){tbody.innerHTML='';empty.style.display='flex';document.getElementById('pageInfo').textContent='No results';document.getElementById('pageBtns').innerHTML='';return;}
+  empty.style.display='none';
+  const start=(currentPage-1)*PAGE_SIZE, slice=filtered.slice(start,start+PAGE_SIZE);
+  const confPct=p=>p.confidence>1?p.confidence:p.confidence*100;
+  tbody.innerHTML=slice.map(p=>{
+    const fc=FINDING_COLORS[p.top_condition]||'var(--muted)';
     return `<tr onclick="openPatient(${p.id})">
-      <td>
-        <div class="patient-cell">
-          <div class="initials">${getInitials(p.name)}</div>
-          <div>
-            <div class="patient-name-cell">${p.name}</div>
-            <div class="patient-id-cell">ID #${p.id} · ${p.age||'—'}y ${p.gender?p.gender[0]:'?'}</div>
-          </div>
-        </div>
-      </td>
+      <td><div class="patient-cell"><div class="initials">${getInitials(p.name)}</div><div>
+        <div class="patient-name-cell">${p.name}</div>
+        <div class="patient-id-cell">ID #${p.id} · ${p.age||'—'}y ${p.gender?p.gender[0]:'?'}</div>
+      </div></div></td>
       <td><span style="font-size:10px;color:var(--muted-dim);">${p.department||'—'}</span></td>
-      <td>
-        <div class="finding-cell">
-          <div class="finding-dot" style="background:${fc};"></div>
-          <span style="color:${fc};font-size:11px;">${p.top_condition||'—'}</span>
-        </div>
-      </td>
+      <td><div class="finding-cell"><div class="finding-dot" style="background:${fc};"></div><span style="color:${fc};font-size:11px;">${p.top_condition||'—'}</span></div></td>
       <td><span class="conf-cell" style="color:${confColor(p.confidence)};">${confPct(p).toFixed(1)}%</span></td>
       <td><span class="triage-pill triage-${p.triage||'LOW'}">● ${p.triage||'—'}</span></td>
       <td><span class="date-cell">${formatDate(p.scan_date)}</span></td>
       <td><span style="font-size:10px;color:var(--muted-dim);">${p.doctor_name||'—'}</span></td>
-      <td>
-        <div class="action-cell">
-          <button class="icon-btn" title="Open dashboard"
-            onclick="event.stopPropagation();openPatient(${p.id})">
-            <i class="ti ti-layout-dashboard"></i>
-          </button>
-          <button class="icon-btn" title="View analytics"
-            onclick="event.stopPropagation();window.location.href='analytics.html'">
-            <i class="ti ti-chart-line"></i>
-          </button>
-          <button class="icon-btn" title="Flag for review"
-            onclick="event.stopPropagation();flagPatient(${p.id},'${p.name}')">
-            <i class="ti ti-flag"></i>
-          </button>
-        </div>
-      </td>
+      <td><div class="action-cell">
+        <button class="icon-btn" title="Open dashboard" onclick="event.stopPropagation();openPatient(${p.id})"><i class="ti ti-layout-dashboard"></i></button>
+        <button class="icon-btn" title="View analytics" onclick="event.stopPropagation();window.location.href='/analytics.html'"><i class="ti ti-chart-line"></i></button>
+        <button class="icon-btn" title="Flag for review" onclick="event.stopPropagation();flagPatient(${p.id},'${p.name}')"><i class="ti ti-flag"></i></button>
+      </div></td>
     </tr>`;
   }).join('');
 
-  const total = filtered.length;
-  const pages = Math.ceil(total / PAGE_SIZE);
-  const s = start+1, e = Math.min(start+PAGE_SIZE, total);
-  document.getElementById('pageInfo').textContent = `Showing ${s}–${e} of ${total} patient${total!==1?'s':''}`;
+  const total=filtered.length, pages=Math.ceil(total/PAGE_SIZE);
+  const s=start+1, e=Math.min(start+PAGE_SIZE,total);
+  document.getElementById('pageInfo').textContent=`Showing ${s}–${e} of ${total} patient${total!==1?'s':''}`;
 
-  let html = `<button class="page-btn" onclick="changePage(-1)" ${currentPage===1?'disabled':''}>
-    <i class="ti ti-chevron-left" style="font-size:12px;"></i></button>`;
-  for (let i=1; i<=pages; i++) {
-    if (pages<=7 || i===1 || i===pages || Math.abs(i-currentPage)<=1) {
-      html += `<button class="page-btn ${i===currentPage?'active':''}" onclick="goPage(${i})">${i}</button>`;
-    } else if (Math.abs(i-currentPage)===2) {
-      html += `<button class="page-btn" disabled style="border:none;">…</button>`;
-    }
+  let html=`<button class="page-btn" onclick="changePage(-1)" ${currentPage===1?'disabled':''}><i class="ti ti-chevron-left" style="font-size:12px;"></i></button>`;
+  for(let i=1;i<=pages;i++){
+    if(pages<=7||i===1||i===pages||Math.abs(i-currentPage)<=1)
+      html+=`<button class="page-btn ${i===currentPage?'active':''}" onclick="goPage(${i})">${i}</button>`;
+    else if(Math.abs(i-currentPage)===2)
+      html+=`<button class="page-btn" disabled style="border:none;">…</button>`;
   }
-  html += `<button class="page-btn" onclick="changePage(1)" ${currentPage>=pages?'disabled':''}>
-    <i class="ti ti-chevron-right" style="font-size:12px;"></i></button>`;
-  document.getElementById('pageBtns').innerHTML = html;
+  html+=`<button class="page-btn" onclick="changePage(1)" ${currentPage>=pages?'disabled':''}><i class="ti ti-chevron-right" style="font-size:12px;"></i></button>`;
+  document.getElementById('pageBtns').innerHTML=html;
 }
 
 function showSkeletonRows() {
-  document.getElementById('tableBody').innerHTML = Array(6).fill(0).map(()=>`
+  document.getElementById('tableBody').innerHTML=Array(6).fill(0).map(()=>`
     <tr class="skeleton-row">
-      <td><div style="display:flex;align-items:center;gap:10px;">
-        <div class="skeleton" style="width:30px;height:30px;border-radius:50%;flex-shrink:0;"></div>
-        <div><div class="skeleton skeleton-cell" style="width:120px;margin-bottom:5px;"></div>
-        <div class="skeleton skeleton-cell" style="width:70px;height:9px;"></div></div></div></td>
+      <td><div style="display:flex;align-items:center;gap:10px;"><div class="skeleton" style="width:30px;height:30px;border-radius:50%;flex-shrink:0;"></div><div><div class="skeleton skeleton-cell" style="width:120px;margin-bottom:5px;"></div><div class="skeleton skeleton-cell" style="width:70px;height:9px;"></div></div></div></td>
       <td><div class="skeleton skeleton-cell" style="width:80px;"></div></td>
       <td><div class="skeleton skeleton-cell" style="width:90px;"></div></td>
       <td><div class="skeleton skeleton-cell" style="width:40px;"></div></td>
@@ -441,20 +423,10 @@ function showSkeletonRows() {
     </tr>`).join('');
 }
 
-function changePage(dir) {
-  const pages = Math.ceil(filtered.length / PAGE_SIZE);
-  currentPage = Math.max(1, Math.min(pages, currentPage+dir));
-  renderTable();
-}
-function goPage(n) { currentPage = n; renderTable(); }
-
-function openPatient(id) {
-  localStorage.setItem('selected_patient_id', id);
-  window.location.href = 'dashbord.html';
-}
-function flagPatient(id, name) {
-  alert(`Patient "${name}" (ID #${id}) flagged for radiologist review.`);
-}
+function changePage(dir){const pages=Math.ceil(filtered.length/PAGE_SIZE);currentPage=Math.max(1,Math.min(pages,currentPage+dir));renderTable();}
+function goPage(n){currentPage=n;renderTable();}
+function openPatient(id){localStorage.setItem('selected_patient_id',id);window.location.href='/dashbord.html';}
+function flagPatient(id,name){alert(`Patient "${name}" (ID #${id}) flagged for radiologist review.`);}
 
 loadPatients();
 </script>

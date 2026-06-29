@@ -316,7 +316,7 @@
       spinner.style.display = 'none';
       btn.style.borderColor = '#22c55e';
 
-      setTimeout(() => { window.location.href = 'dashbord.html'; }, 600);
+      setTimeout(() => { window.location.href = '/dashbord.html'; }, 600);
 
     } catch(err) {
       document.getElementById('emailInput').classList.add('error');
@@ -341,7 +341,7 @@
       const res = await fetch(`${API_BASE}/auth/me`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
-      if (res.ok) window.location.href = 'dashbord.html';
+      if (res.ok) window.location.href = '/dashbord.html';
       else { localStorage.removeItem('token'); localStorage.removeItem('pneumoscan_token'); }
     } catch(e) {
       // backend offline — stay on login page, don't crash
