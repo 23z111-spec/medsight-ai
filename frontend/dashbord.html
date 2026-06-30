@@ -103,6 +103,56 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
 .pd-change{background:transparent;border:none;color:var(--accent);font-size:10px;cursor:pointer;font-family:'Inter',sans-serif;margin-top:6px;display:flex;align-items:center;gap:4px;}
 .pd-change:hover{text-decoration:underline;}
 
+/* SYMPTOM CHIPS */
+.symptom-box{background:var(--surface-soft);border:1px solid var(--border);border-radius:10px;padding:12px;animation:fadeIn .3s ease;overflow:hidden;}
+.symptom-box-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;gap:8px;}
+.symptom-hint{font-size:9px;color:var(--muted-dim);line-height:1.5;}
+.symptom-count-badge{font-size:9px;font-family:'Space Mono',monospace;padding:2px 7px;border-radius:10px;background:var(--surface-strong);color:var(--muted);border:1px solid var(--border);flex-shrink:0;white-space:nowrap;}
+.symptom-chip-grid{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;}
+.symptom-chip{
+  padding:6px 11px;border-radius:20px;font-size:11px;font-weight:500;cursor:pointer;
+  border:1px solid var(--border);background:var(--surface-strong);color:var(--muted);
+  transition:all .15s;user-select:none;display:inline-flex;align-items:center;gap:5px;
+  max-width:100%;
+}
+.symptom-chip:hover{border-color:var(--border-bright);color:var(--muted-strong);}
+.symptom-chip .sev-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;display:none;}
+.symptom-chip.sev-low{background:rgba(96,165,250,0.10);border-color:rgba(96,165,250,0.35);color:var(--accent);}
+.symptom-chip.sev-low .sev-dot{display:inline-block;background:var(--accent);}
+.symptom-chip.sev-medium{background:rgba(251,191,36,0.10);border-color:rgba(251,191,36,0.4);color:var(--warning);}
+.symptom-chip.sev-medium .sev-dot{display:inline-block;background:var(--warning);}
+.symptom-chip.sev-high{background:var(--danger-bg);border-color:rgba(248,113,113,0.4);color:var(--danger);}
+.symptom-chip.sev-high .sev-dot{display:inline-block;background:var(--danger);}
+
+/* FIX: the custom-symptom row was overflowing its parent box because the
+   input had no min-width:0, so a flex child with default min-width:auto
+   refuses to shrink below its content size and pushes the Add button out
+   past the box's right edge. min-width:0 on the input lets it shrink
+   properly inside the flex row, and flex-shrink:0 + white-space:nowrap on
+   the button keeps it a fixed size so it never gets squeezed or pushed out. */
+.symptom-custom-row{display:flex;gap:6px;padding-top:10px;border-top:1px solid var(--border);width:100%;}
+.symptom-custom-input{
+  flex:1 1 auto;
+  min-width:0;                 /* <- the actual fix: allows shrinking inside flex row */
+  width:100%;
+  background:var(--surface-strong);border:1px solid var(--border);border-radius:6px;
+  padding:7px 10px;font-size:11px;color:var(--text);outline:none;font-family:'Inter',sans-serif;
+  transition:border .15s;
+}
+.symptom-custom-input:focus{border-color:var(--border-bright);}
+.symptom-custom-input::placeholder{color:var(--muted-dim);}
+.symptom-custom-add{
+  flex:0 0 auto;                /* <- never grow or shrink */
+  white-space:nowrap;
+  background:var(--accent-glow);border:1px solid var(--border-bright);border-radius:6px;
+  padding:7px 12px;font-size:11px;color:var(--accent);cursor:pointer;font-family:'Inter',sans-serif;
+  transition:all .15s;
+}
+.symptom-custom-add:hover{background:rgba(59,130,246,0.25);}
+.symptom-selected-summary{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);}
+.symptom-summary-tag{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:20px;font-size:9px;font-weight:600;max-width:100%;}
+.symptom-summary-empty{font-size:10px;color:var(--muted-dim);font-style:italic;}
+
 /* XRAY PREVIEW */
 .xray-preview-box{background:var(--surface-soft);border:1px solid var(--border);border-radius:10px;overflow:hidden;animation:fadeIn .3s ease;}
 .xpb-header{padding:8px 10px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
@@ -272,7 +322,6 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
 .cd-welcome h3{font-size:16px;font-weight:500;color:#d4e0e8;}
 .cd-welcome p{font-size:12px;line-height:1.7;max-width:280px;}
 
-/* Loading state for patient list */
 .list-loading{padding:12px;font-size:11px;color:var(--muted-dim);text-align:center;font-style:italic;}
 .list-error{padding:12px;font-size:11px;color:var(--danger);text-align:center;}
 </style>
@@ -280,7 +329,6 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
 <body>
 <div class="app">
 
-<!-- NAV -->
 <div class="topnav">
   <div class="logo">
     <div class="logo-icon"><i class="ti ti-brain"></i></div>
@@ -310,7 +358,6 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
 </div>
 
 <div class="main">
-  <!-- LEFT PANEL -->
   <div class="left-panel">
     <div>
       <div class="section-label">Patient</div>
@@ -335,12 +382,34 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
       </div>
     </div>
 
+    <div id="symptomsInput" style="display:none;">
+      <div class="section-label">Symptoms</div>
+      <div class="symptom-box">
+        <div class="symptom-box-header">
+          <div class="symptom-hint">Tap a symptom to cycle severity</div>
+          <span class="symptom-count-badge" id="symptomCountBadge">0 selected</span>
+        </div>
+
+        <div class="symptom-chip-grid" id="symptomChipGrid"></div>
+
+        <div class="symptom-custom-row">
+          <input id="customSymptomInput" class="symptom-custom-input" type="text"
+                 placeholder="Other symptom…"
+                 onkeydown="if(event.key==='Enter'){addCustomSymptomChip();event.preventDefault();}"/>
+          <button class="symptom-custom-add" onclick="addCustomSymptomChip()">Add</button>
+        </div>
+
+        <div class="symptom-selected-summary" id="symptomSelectedSummary">
+          <span class="symptom-summary-empty">No symptoms selected</span>
+        </div>
+      </div>
+    </div>
+
     <div>
       <div class="section-label">X-Ray</div>
       <button class="action-btn-large btn-outline" onclick="document.getElementById('fileInput').click()">
         <i class="ti ti-upload"></i> Upload X-Ray
       </button>
-      <!-- FIX: cleared after each use so onchange always fires -->
       <input type="file" id="fileInput" accept="image/*,.dcm" style="display:none;" onchange="handleUpload(event)"/>
     </div>
 
@@ -354,7 +423,6 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
       </div>
     </div>
 
-    <!-- AI ORB -->
     <div class="ai-orb-wrap" onclick="openChatDrawer()" title="Ask AI about this scan">
       <div class="ai-orb-label">Ask AI</div>
       <div class="ai-orb" id="orbEl">
@@ -376,7 +444,6 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
     </div>
   </div>
 
-  <!-- CENTER PANEL -->
   <div class="center">
     <div class="toolbar">
       <div class="tool-sep"></div>
@@ -450,7 +517,6 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
     </div>
   </div>
 
-  <!-- RIGHT PANEL -->
   <div class="right-panel">
     <div class="rp-sec">
       <div class="rp-title">Primary Finding</div>
@@ -505,7 +571,6 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
 </div>
 </div>
 
-<!-- LOGOUT MODAL — outside .main so it's never clipped -->
 <div class="logout-modal-backdrop" id="logoutModalBackdrop">
   <div class="logout-modal">
     <div class="logout-modal-icon"><i class="ti ti-logout"></i></div>
@@ -518,7 +583,6 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
   </div>
 </div>
 
-<!-- PATIENT MODAL -->
 <div class="modal-backdrop" id="patientModal">
   <div class="modal">
     <div id="step1">
@@ -591,7 +655,6 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
   </div>
 </div>
 
-<!-- CHAT DRAWER -->
 <div class="chat-drawer-backdrop" id="chatBackdrop" onclick="closeChatDrawer()"></div>
 <div class="chat-drawer" id="chatDrawer">
   <div class="cd-header">
@@ -630,24 +693,20 @@ const API_BASE = 'http://127.0.0.1:8000';
 const token    = () => localStorage.getItem('token') || localStorage.getItem('pneumoscan_token') || '';
 const authHdr  = () => ({ 'Authorization': 'Bearer ' + token() });
 
-// ── STATE ────────────────────────────────────────────────────────
-let apiPatients      = [];   // loaded from GET /patients/search
-let selectedPatient  = null; // temp — inside modal only
-let confirmedPatient = null; // persists after modal confirm; has real DB .id
+let apiPatients      = [];
+let selectedPatient  = null;
+let confirmedPatient = null;
 let cdScanResult     = null;
 let cdChatHistory    = [];
 let cdIsStreaming     = false;
 let cdGreeted        = false;
-let inferenceRunning = false; // FIX: prevents double-fire on file input
+let inferenceRunning = false;
 
-// ── PROFILE — load from localStorage + refresh from /auth/me ────
 (function initProfile() {
   try {
     const u = JSON.parse(localStorage.getItem('pneumoscan_user') || '{}');
     if (u.full_name) applyProfile(u);
   } catch(e) {}
-
-  // fresh fetch from API
   fetch(`${API_BASE}/auth/me`, { headers: authHdr() })
     .then(r => r.ok ? r.json() : null)
     .then(u => { if (u) { localStorage.setItem('pneumoscan_user', JSON.stringify(u)); applyProfile(u); } })
@@ -661,7 +720,6 @@ function applyProfile(u) {
   document.getElementById('dropdownEmail').textContent   = u.email || '';
 }
 
-// ── PATIENT MODAL ────────────────────────────────────────────────
 function showStep(id) {
   ['step1','step2existing','step2new'].forEach(s => {
     document.getElementById(s).style.display = s === id ? 'block' : 'none';
@@ -677,10 +735,9 @@ function openPatientModal() {
 function closePatientModal() {
   document.getElementById('patientModal').classList.remove('show');
   document.getElementById('patientSearch').value = '';
-  selectedPatient = null; // reset modal temp only — confirmedPatient untouched
+  selectedPatient = null;
 }
 
-// ── LOAD PATIENTS FROM API ───────────────────────────────────────
 async function loadPatients(query = '') {
   document.getElementById('patientList').innerHTML = '<div class="list-loading">Loading…</div>';
   try {
@@ -696,7 +753,6 @@ async function loadPatients(query = '') {
 function filterPatients() {
   const q = document.getElementById('patientSearch').value.trim();
   selectedPatient = null;
-  // debounce: search API after 300ms pause
   clearTimeout(window._ptTimer);
   window._ptTimer = setTimeout(() => loadPatients(q), 300);
 }
@@ -720,18 +776,17 @@ function selectPatientItem(id) {
   document.querySelectorAll('.patient-list-item').forEach(el => el.classList.remove('selected'));
   const el = document.getElementById('pli-' + id);
   if (el) el.classList.add('selected');
-  // FIX: use real API patient object — preserves the real DB .id
   selectedPatient = apiPatients.find(p => p.id === id) || null;
 }
 
 function confirmExistingPatient() {
   if (!selectedPatient) { alert('Please select a patient from the list.'); return; }
   confirmedPatient = selectedPatient;
+  resetSymptoms();
   displayPatient(confirmedPatient);
   closePatientModal();
 }
 
-// ── NEW PATIENT — POST to API ────────────────────────────────────
 async function confirmNewPatient() {
   const name = document.getElementById('newName').value.trim();
   const dept = document.getElementById('newDept').value.trim();
@@ -747,7 +802,8 @@ async function confirmNewPatient() {
     });
     if (!r.ok) throw new Error('Could not create patient');
     const newP = await r.json();
-    confirmedPatient = newP; // has real DB .id from response
+    confirmedPatient = newP;
+    resetSymptoms();
     displayPatient(confirmedPatient);
     closePatientModal();
   } catch(e) {
@@ -755,7 +811,6 @@ async function confirmNewPatient() {
   }
 }
 
-// ── DISPLAY PATIENT ──────────────────────────────────────────────
 function displayPatient(p) {
   const initials = (p.name || '?').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
   document.getElementById('pdAvatar').textContent   = initials;
@@ -765,24 +820,89 @@ function displayPatient(p) {
   document.getElementById('pdAgeSex').textContent   = `${p.age || '—'} · ${p.gender || '—'}`;
   document.getElementById('pdId').textContent       = `#${p.id}`;
   document.getElementById('patientDisplay').style.display = 'block';
+  document.getElementById('symptomsInput').style.display  = 'block';
 }
 
-// ── FILE UPLOAD ──────────────────────────────────────────────────
+const COMMON_SYMPTOMS = [
+  'Chest pain', 'Shortness of breath', 'Cough', 'Fever',
+  'Fatigue', 'Wheezing', 'Night sweats', 'Chest tightness',
+  'Dyspnea', 'Productive cough', 'Weight loss', 'Loss of appetite'
+];
+
+let symptomState   = {};
+let customChipList = [];
+
+const SEV_CYCLE = [null, 'low', 'medium', 'high'];
+
+function resetSymptoms() {
+  symptomState   = {};
+  customChipList = [];
+  renderSymptomChips();
+}
+
+function cycleSymptom(name) {
+  const current   = symptomState[name] || null;
+  const idx       = SEV_CYCLE.indexOf(current);
+  const nextState = SEV_CYCLE[(idx + 1) % SEV_CYCLE.length];
+  if (nextState === null) delete symptomState[name];
+  else symptomState[name] = nextState;
+  renderSymptomChips();
+}
+
+function addCustomSymptomChip() {
+  const input = document.getElementById('customSymptomInput');
+  const name  = input.value.trim();
+  if (!name) return;
+  if (!customChipList.includes(name) && !COMMON_SYMPTOMS.includes(name)) {
+    customChipList.push(name);
+  }
+  symptomState[name] = 'medium';
+  input.value = '';
+  renderSymptomChips();
+}
+
+function getCurrentSymptomsArray() {
+  return Object.entries(symptomState).map(([name, severity]) => ({ name, severity }));
+}
+
+function renderSymptomChips() {
+  const allChipNames = [...COMMON_SYMPTOMS, ...customChipList];
+  const grid = document.getElementById('symptomChipGrid');
+  grid.innerHTML = allChipNames.map(name => {
+    const sev      = symptomState[name] || null;
+    const sevClass = sev ? `sev-${sev}` : '';
+    return `<span class="symptom-chip ${sevClass}" onclick="cycleSymptom('${name.replace(/'/g,"\\'")}')">
+      <span class="sev-dot"></span>${name}
+    </span>`;
+  }).join('');
+
+  const count = Object.keys(symptomState).length;
+  document.getElementById('symptomCountBadge').textContent = `${count} selected`;
+
+  const summary = document.getElementById('symptomSelectedSummary');
+  if (!count) {
+    summary.innerHTML = '<span class="symptom-summary-empty">No symptoms selected</span>';
+  } else {
+    const SEV_COLOR = { high:'#F87171', medium:'#FBBF24', low:'#60A5FA' };
+    const SEV_BG    = { high:'rgba(248,113,113,0.12)', medium:'rgba(251,191,36,0.12)', low:'rgba(96,165,250,0.12)' };
+    summary.innerHTML = Object.entries(symptomState).map(([name, sev]) =>
+      `<span class="symptom-summary-tag" style="background:${SEV_BG[sev]};color:${SEV_COLOR[sev]};">
+        ${name} · ${sev}
+      </span>`
+    ).join('');
+  }
+}
+
+renderSymptomChips();
+
 function handleUpload(event) {
   const file = event.target.files[0];
-  // FIX: clear input value immediately so re-selecting same file always fires
   event.target.value = '';
 
   if (!file) return;
+  if (!confirmedPatient) { alert('Please select a patient first.'); return; }
+  if (inferenceRunning) return;
 
-  if (!confirmedPatient) {
-    alert('Please select a patient first.');
-    return;
-  }
-
-  if (inferenceRunning) return; // FIX: block double-fire
-
-  // Preview in left panel
   document.getElementById('xpbName').textContent = file.name;
   document.getElementById('xpbSize').textContent = (file.size / 1024).toFixed(0) + ' KB';
   const reader = new FileReader();
@@ -790,19 +910,19 @@ function handleUpload(event) {
   reader.readAsDataURL(file);
   document.getElementById('xrayPreviewBox').style.display = 'block';
 
-  // Show viewer
   document.getElementById('xrayEmpty').style.display   = 'none';
   document.getElementById('xraySvg').style.display     = 'block';
   document.getElementById('hmOverlay').style.display   = 'block';
   document.getElementById('zoomTag').style.display     = 'block';
 
-  // Show actual image in SVG viewer
   const reader2 = new FileReader();
   reader2.onload = e => {
+    const imageData = e.target.result;
     const img = document.getElementById('xrayImage');
-    img.setAttribute('href', e.target.result);
+    img.setAttribute('href', imageData);
     img.style.display = 'block';
     document.getElementById('staticLung').style.display = 'none';
+    localStorage.setItem('medsight_scan_image', imageData);
   };
   reader2.readAsDataURL(file);
 
@@ -813,17 +933,16 @@ function handleUpload(event) {
   runInference(file);
 }
 
-// ── INFERENCE ────────────────────────────────────────────────────
 function runInference(file) {
   inferenceRunning = true;
 
   const today = new Date().toISOString().split('T')[0];
   const formData = new FormData();
   formData.append('file', file);
-  // FIX: use real DB patient id, not the hardcoded '1'
   formData.append('patient_id', String(confirmedPatient.id));
   formData.append('scan_date', today);
   formData.append('department', confirmedPatient.department || confirmedPatient.dept || 'General');
+  formData.append('symptoms', JSON.stringify(getCurrentSymptomsArray()));
 
   document.getElementById('loadingOverlay').classList.add('active');
   const steps = ['Preprocessing image…','Running EfficientNet inference…','Computing class probabilities…','Generating Grad-CAM heatmap…'];
@@ -863,7 +982,6 @@ function getMockResult() {
   };
 }
 
-// ── SHOW RESULTS ─────────────────────────────────────────────────
 const EXPLANATIONS = {
   Pneumonia:    'The model detected focal consolidation in the right upper lobe (RUL) with increased radio-opacity. Grad-CAM activation is concentrated in the RUL region, consistent with bacterial pneumonia.',
   Effusion:     'Blunting of the costophrenic angles was detected bilaterally, with the left side showing greater attenuation. Consistent with pleural effusion.',
@@ -874,6 +992,12 @@ const EXPLANATIONS = {
 
 function showResults(data) {
   cdScanResult = data;
+
+  if (confirmedPatient) {
+    localStorage.setItem('medsight_patient', JSON.stringify(confirmedPatient));
+    localStorage.setItem('medsight_symptoms_' + confirmedPatient.id, JSON.stringify(getCurrentSymptomsArray()));
+  }
+  localStorage.setItem('medsight_scan_result', JSON.stringify(data));
 
   const cond      = data.top_condition || data.primary_finding || data.condition || 'Unknown';
   const rawConf   = data.confidence ?? data.confidence_score ?? 0;
@@ -928,16 +1052,13 @@ function showResults(data) {
   cdGreeted = false;
 }
 
-// ── HEATMAP TOGGLE ───────────────────────────────────────────────
 function toggleHeatmap() {
   document.getElementById('hmToggle').classList.toggle('on');
   document.getElementById('hmOverlay').classList.toggle('visible');
 }
 
-// ── ACTIONS ──────────────────────────────────────────────────────
 function flagForReview() { alert('Case flagged for radiologist review.'); }
 
-// ── PROFILE / LOGOUT ─────────────────────────────────────────────
 function toggleProfileMenu() { document.getElementById('profileDropdown').classList.toggle('open'); }
 document.addEventListener('click', e => {
   const w = document.getElementById('profileMenuWrap');
@@ -950,12 +1071,10 @@ function confirmLogout() {
   window.location.href = '/login.html';
 }
 
-// ── KEYBOARD & NAV ───────────────────────────────────────────────
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') { cancelLogout(); closePatientModal(); closeChatDrawer(); }
 });
 
-// ── CHAT DRAWER ──────────────────────────────────────────────────
 function openChatDrawer() {
   document.getElementById('chatDrawer').classList.add('open');
   document.getElementById('chatBackdrop').classList.add('open');
@@ -1041,7 +1160,6 @@ async function cdCallAPI(userMsg) {
     return text;
   }
 
-  // Streaming SSE
   const bubble = cdAddBotMessage('');
   const reader  = res.body.getReader();
   const decoder = new TextDecoder();

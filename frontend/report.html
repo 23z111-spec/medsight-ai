@@ -3,226 +3,197 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>PneumoScan AI · Clinical Report</title>
+<title>MedSight AI · Clinical Report</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css"/>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="styles.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
 <style>
-  *{margin:0;padding:0;box-sizing:border-box;}
-  html,body{height:100%;background:#0a0c10;color:#e2e8f0;font-family:'DM Sans',sans-serif;}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;background:#061528;color:#E2EFFF;font-family:'Inter',sans-serif;}
 
-  /* NAV */
-  .topnav{background:#0d1017;border-bottom:1px solid #1e2530;display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:48px;position:sticky;top:0;z-index:10;}
-  .logo{display:flex;align-items:center;gap:8px;font-family:'Space Mono',monospace;font-size:12px;color:#60c8f5;letter-spacing:.5px;}
-  .logo-dot{width:7px;height:7px;border-radius:50%;background:#60c8f5;}
-  .nav-pills{display:flex;gap:4px;}
-  .nav-pill{padding:4px 14px;border-radius:6px;font-size:11px;color:#64748b;cursor:pointer;transition:all .15s;}
-  .nav-pill:hover{color:#94a3b8;}
-  .nav-pill.active{background:#1a2235;color:#60c8f5;}
-  .badge{background:#1a2235;border:1px solid #1e2d45;border-radius:20px;padding:3px 10px;font-size:10px;color:#60c8f5;font-family:'Space Mono',monospace;}
-  .avatar{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#2563eb,#7c3aed);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#fff;}
-  .nav-right{display:flex;align-items:center;gap:12px;}
+.topnav{background:rgba(15,31,52,0.97);border-bottom:1px solid rgba(96,165,250,0.14);backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:52px;position:sticky;top:0;z-index:10;}
+.logo{display:flex;align-items:center;gap:10px;font-family:'Space Mono',monospace;font-size:13px;color:#60A5FA;letter-spacing:.5px;font-weight:700;}
+.logo-icon{width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,#3B82F6,#1D4ED8);display:flex;align-items:center;justify-content:center;font-size:14px;color:#fff;}
+.nav-pills{display:flex;gap:2px;}
+.nav-pill{padding:5px 16px;border-radius:8px;font-size:12px;font-weight:500;color:#94A3B8;cursor:pointer;transition:all .15s;}
+.nav-pill:hover{color:#CBD5E6;background:#132942;}
+.nav-badge{background:#132942;border:1px solid rgba(96,165,250,0.30);border-radius:20px;padding:3px 12px;font-size:10px;color:#60A5FA;font-family:'Space Mono',monospace;}
+.nav-right{display:flex;align-items:center;gap:14px;}
 
-  /* PAGE */
-  .page{display:grid;grid-template-columns:1fr 340px;gap:0;min-height:calc(100vh - 48px);}
+.page{display:grid;grid-template-columns:1fr 320px;gap:0;min-height:calc(100vh - 52px);}
 
-  /* REPORT AREA */
-  .report-area{padding:28px;background:#080b0f;overflow-y:auto;}
-  .report-toolbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
-  .toolbar-left{display:flex;flex-direction:column;gap:3px;}
-  .toolbar-title{font-size:16px;font-weight:500;color:#94a3b8;}
-  .toolbar-sub{font-size:11px;color:#475569;}
-  .toolbar-btns{display:flex;gap:8px;}
-  .tbtn{display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:8px;font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;}
-  .tbtn-primary{background:#1a3a6a;border:1px solid #2563eb;color:#60c8f5;}
-  .tbtn-primary:hover{background:#1e4480;}
-  .tbtn-secondary{background:transparent;border:1px solid #1e2530;color:#64748b;}
-  .tbtn-secondary:hover{background:#131822;color:#94a3b8;}
+.report-area{padding:24px;background:#061528;overflow-y:auto;}
+.report-toolbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
+.toolbar-title{font-size:16px;font-weight:600;color:#CBD5E6;}
+.toolbar-sub{font-size:11px;color:#4A6080;margin-top:2px;}
+.toolbar-btns{display:flex;gap:8px;}
+.tbtn{display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:8px;font-size:11px;cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s;font-weight:500;}
+.tbtn-primary{background:rgba(59,130,246,0.15);border:1px solid rgba(96,165,250,0.30);color:#60A5FA;}
+.tbtn-primary:hover{background:rgba(59,130,246,0.25);}
+.tbtn-secondary{background:transparent;border:1px solid rgba(96,165,250,0.14);color:#94A3B8;}
+.tbtn-secondary:hover{background:#132942;color:#CBD5E6;}
 
-  /* REPORT CARD — this is what gets printed */
-  .report-card{background:#0d1017;border:1px solid #1e2530;border-radius:14px;overflow:hidden;max-width:780px;margin:0 auto;}
+.report-card{background:#0F1F34;border:1px solid rgba(96,165,250,0.14);border-radius:14px;overflow:hidden;max-width:800px;margin:0 auto;}
 
-  /* REPORT HEADER */
-  .report-header{background:linear-gradient(135deg,#0d1a30,#0a1020);padding:24px 28px;border-bottom:1px solid #1e2530;display:flex;align-items:flex-start;justify-content:space-between;}
-  .report-brand{display:flex;align-items:center;gap:10px;}
-  .report-brand-dot{width:8px;height:8px;border-radius:50%;background:#60c8f5;}
-  .report-brand-name{font-family:'Space Mono',monospace;font-size:13px;color:#60c8f5;letter-spacing:.5px;}
-  .report-brand-sub{font-size:10px;color:#334155;margin-top:2px;}
-  .report-meta{text-align:right;}
-  .report-id{font-size:11px;font-family:'Space Mono',monospace;color:#475569;}
-  .report-date{font-size:10px;color:#334155;margin-top:3px;}
-  .report-status{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-size:10px;font-family:'Space Mono',monospace;font-weight:700;background:#2d1010;border:1px solid #5a1f1f;color:#f87171;margin-top:6px;}
+.report-header{background:linear-gradient(135deg,#0d1a30,#0a1020);padding:24px 28px;border-bottom:1px solid rgba(96,165,250,0.14);display:flex;align-items:flex-start;justify-content:space-between;}
+.report-brand-name{font-family:'Space Mono',monospace;font-size:13px;color:#60A5FA;letter-spacing:.5px;font-weight:700;}
+.report-brand-sub{font-size:10px;color:#4A6080;margin-top:2px;}
+.report-meta{text-align:right;}
+.report-id{font-size:11px;font-family:'Space Mono',monospace;color:#4A6080;}
+.report-date{font-size:10px;color:#4A6080;margin-top:3px;}
+.report-status{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-size:10px;font-family:'Space Mono',monospace;font-weight:700;margin-top:6px;}
+.status-high{background:rgba(248,113,113,0.10);border:1px solid rgba(248,113,113,0.3);color:#F87171;}
+.status-medium{background:rgba(251,191,36,0.10);border:1px solid rgba(251,191,36,0.3);color:#FBBF24;}
+.status-low{background:rgba(52,211,153,0.10);border:1px solid rgba(52,211,153,0.3);color:#34D399;}
 
-  /* SECTIONS */
-  .report-section{padding:20px 28px;border-bottom:1px solid #131822;}
-  .report-section:last-child{border-bottom:none;}
-  .section-title{font-size:9px;font-weight:500;color:#334155;letter-spacing:1.2px;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
-  .section-title::after{content:'';flex:1;height:1px;background:#1e2530;}
+.report-section{padding:20px 28px;border-bottom:1px solid rgba(96,165,250,0.08);}
+.report-section:last-child{border-bottom:none;}
+.section-title{font-size:9px;font-weight:600;color:#4A6080;letter-spacing:1.2px;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.section-title::after{content:'';flex:1;height:1px;background:rgba(96,165,250,0.14);}
 
-  /* PATIENT INFO GRID */
-  .info-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
-  .info-cell{background:#131822;border-radius:7px;padding:10px 12px;}
-  .info-label{font-size:9px;color:#334155;margin-bottom:3px;text-transform:uppercase;letter-spacing:.8px;}
-  .info-val{font-size:12px;color:#94a3b8;font-weight:500;}
+.info-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.info-cell{background:#132942;border-radius:7px;padding:10px 12px;}
+.info-label{font-size:9px;color:#4A6080;margin-bottom:3px;text-transform:uppercase;letter-spacing:.8px;}
+.info-val{font-size:12px;color:#94A3B8;font-weight:500;}
 
-  /* SCAN + HEATMAP ROW */
-  .scan-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
-  .scan-box{background:#080b0f;border:1px solid #1e2530;border-radius:10px;overflow:hidden;}
-  .scan-box-header{padding:8px 12px;border-bottom:1px solid #1e2530;display:flex;align-items:center;justify-content:space-between;}
-  .scan-box-title{font-size:9px;color:#334155;font-family:'Space Mono',monospace;}
-  .scan-box-body{padding:12px;display:flex;align-items:center;justify-content:center;min-height:180px;}
+.scan-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.scan-box{background:#040d18;border:1px solid rgba(96,165,250,0.14);border-radius:10px;overflow:hidden;}
+.scan-box-header{padding:8px 12px;border-bottom:1px solid rgba(96,165,250,0.14);display:flex;align-items:center;justify-content:space-between;}
+.scan-box-title{font-size:9px;color:#4A6080;font-family:'Space Mono',monospace;}
+.scan-box-body{padding:8px;display:flex;align-items:center;justify-content:center;min-height:180px;}
+.scan-box-body img{width:100%;height:180px;object-fit:contain;border-radius:6px;}
+.scan-placeholder{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;height:180px;color:#4A6080;}
+.scan-placeholder i{font-size:32px;opacity:.4;}
+.scan-placeholder span{font-size:10px;}
 
-  /* FINDINGS TABLE */
-  .findings-table{width:100%;border-collapse:collapse;}
-  .findings-table th{font-size:9px;color:#334155;letter-spacing:.8px;text-transform:uppercase;padding:8px 10px;text-align:left;border-bottom:1px solid #1e2530;}
-  .findings-table td{font-size:11px;padding:9px 10px;border-bottom:1px solid #131822;vertical-align:middle;}
-  .findings-table tr:last-child td{border-bottom:none;}
-  .fdot{width:7px;height:7px;border-radius:50%;display:inline-block;margin-right:6px;}
-  .conf-bar-wrap{height:4px;background:#131822;border-radius:2px;overflow:hidden;width:100px;}
-  .conf-bar-fill{height:100%;border-radius:2px;}
-  .triage-pill{display:inline-flex;align-items:center;padding:2px 8px;border-radius:4px;font-size:9px;font-family:'Space Mono',monospace;font-weight:700;}
-  .t-high{background:#2d1010;color:#f87171;}
-  .t-med{background:#2d1f08;color:#fbbf24;}
-  .t-low{background:#0d2a14;color:#4ade80;}
+.findings-table{width:100%;border-collapse:collapse;}
+.findings-table th{font-size:9px;color:#4A6080;letter-spacing:.8px;text-transform:uppercase;padding:8px 10px;text-align:left;border-bottom:1px solid rgba(96,165,250,0.14);}
+.findings-table td{font-size:11px;padding:9px 10px;border-bottom:1px solid #132942;vertical-align:middle;color:#94A3B8;}
+.findings-table tr:last-child td{border-bottom:none;}
+.fdot{width:7px;height:7px;border-radius:50%;display:inline-block;margin-right:6px;flex-shrink:0;}
+.conf-bar-wrap{height:4px;background:#183156;border-radius:2px;overflow:hidden;width:100px;}
+.conf-bar-fill{height:100%;border-radius:2px;}
+.triage-pill{display:inline-flex;align-items:center;padding:2px 8px;border-radius:4px;font-size:9px;font-family:'Space Mono',monospace;font-weight:700;}
+.t-high{background:rgba(248,113,113,0.10);color:#F87171;}
+.t-med{background:rgba(251,191,36,0.10);color:#FBBF24;}
+.t-low{background:rgba(52,211,153,0.10);color:#34D399;}
 
-  /* METRICS ROW */
-  .metrics-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
-  .metric-box{background:#131822;border-radius:8px;padding:10px 12px;text-align:center;}
-  .metric-val{font-size:18px;font-weight:700;font-family:'Space Mono',monospace;}
-  .metric-label{font-size:9px;color:#334155;margin-top:3px;}
+.metrics-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+.metric-box{background:#132942;border-radius:8px;padding:12px;text-align:center;}
+.metric-val{font-size:20px;font-weight:700;font-family:'Space Mono',monospace;}
+.metric-label{font-size:9px;color:#4A6080;margin-top:4px;}
 
-  /* DOCTOR SECTION */
-  .doctor-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
-  .doctor-box{background:#131822;border-radius:8px;padding:12px 14px;}
-  .doctor-label{font-size:9px;color:#334155;text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px;}
-  .doctor-name{font-size:13px;color:#94a3b8;font-weight:500;margin-bottom:4px;}
-  .doctor-role{font-size:10px;color:#475569;}
-  .sig-line{height:1px;background:#1e2530;margin:10px 0;}
-  .sig-text{font-size:9px;color:#334155;}
+.doctor-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.doctor-box{background:#132942;border-radius:8px;padding:12px 14px;}
+.doctor-label{font-size:9px;color:#4A6080;text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px;}
+.doctor-name{font-size:13px;color:#CBD5E6;font-weight:500;margin-bottom:4px;}
+.doctor-role{font-size:10px;color:#4A6080;}
+.sig-line{height:1px;background:rgba(96,165,250,0.14);margin:10px 0;}
+.sig-text{font-size:9px;color:#4A6080;}
+.override-box{background:#0F1F34;border:1px solid rgba(96,165,250,0.30);border-radius:8px;padding:12px 14px;}
+.override-label{font-size:9px;color:#60A5FA;margin-bottom:6px;text-transform:uppercase;letter-spacing:.8px;}
+.override-val{font-size:11px;color:#94A3B8;margin-bottom:10px;}
 
-  .override-box{background:#0f1e35;border:1px solid #1e3a5f;border-radius:8px;padding:10px 14px;}
-  .override-label{font-size:9px;color:#60c8f5;margin-bottom:4px;text-transform:uppercase;letter-spacing:.8px;}
-  .override-val{font-size:11px;color:#94a3b8;}
+.action-btn{width:100%;padding:8px;border-radius:7px;font-size:11px;font-weight:500;cursor:pointer;text-align:center;font-family:'Inter',sans-serif;margin-bottom:6px;display:flex;align-items:center;justify-content:center;gap:7px;transition:all .15s;}
+.action-primary{background:rgba(59,130,246,0.15);border:1px solid rgba(96,165,250,0.30);color:#60A5FA;}
+.action-primary:hover{background:rgba(59,130,246,0.25);}
+.action-secondary{background:transparent;border:1px solid rgba(96,165,250,0.14);color:#94A3B8;}
+.action-secondary:hover{background:#132942;color:#CBD5E6;}
+.action-danger{background:transparent;border:1px solid rgba(248,113,113,0.3);color:#F87171;}
+.action-danger:hover{background:rgba(248,113,113,0.10);}
 
-  /* DISCLAIMER */
-  .disclaimer-box{background:#131822;border-left:3px solid #1e3a5f;border-radius:0 8px 8px 0;padding:12px 14px;}
-  .disclaimer-text{font-size:10px;color:#334155;line-height:1.7;}
+.disclaimer-box{background:#132942;border-left:3px solid #3B82F6;border-radius:0 8px 8px 0;padding:12px 14px;}
+.disclaimer-text{font-size:10px;color:#4A6080;line-height:1.7;}
 
-  /* FOOTER */
-  .report-footer{background:#080b0f;padding:14px 28px;border-top:1px solid #1e2530;display:flex;align-items:center;justify-content:space-between;}
-  .footer-left{font-size:9px;color:#334155;font-family:'Space Mono',monospace;}
-  .footer-right{font-size:9px;color:#1e2530;font-family:'Space Mono',monospace;}
+.report-footer{background:#040d18;padding:14px 28px;border-top:1px solid rgba(96,165,250,0.14);display:flex;align-items:center;justify-content:space-between;}
+.footer-text{font-size:9px;color:#4A6080;font-family:'Space Mono',monospace;}
 
-  /* RIGHT PANEL */
-  .right-panel{background:#0d1017;border-left:1px solid #1e2530;padding:20px 16px;display:flex;flex-direction:column;gap:18px;overflow-y:auto;}
-  .panel-section-label{font-size:9px;font-weight:500;color:#334155;letter-spacing:1.2px;text-transform:uppercase;margin-bottom:8px;}
+.right-panel{background:#0F1F34;border-left:1px solid rgba(96,165,250,0.14);padding:20px 16px;display:flex;flex-direction:column;gap:16px;overflow-y:auto;}
+.panel-label{font-size:9px;font-weight:600;color:#4A6080;letter-spacing:1.2px;text-transform:uppercase;margin-bottom:8px;}
+.status-banner{background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.25);border-radius:10px;padding:12px;}
+.status-label{font-size:12px;font-weight:600;margin-bottom:3px;}
+.status-sub{font-size:10px;color:#4A6080;line-height:1.5;}
 
-  .status-banner{background:#1a0f0f;border:1px solid #3f1515;border-radius:10px;padding:12px;}
-  .status-label{font-size:12px;font-weight:600;color:#f87171;margin-bottom:3px;}
-  .status-sub{font-size:10px;color:#475569;line-height:1.5;}
+.checklist{display:flex;flex-direction:column;gap:6px;}
+.check-item{display:flex;align-items:center;gap:8px;font-size:11px;color:#4A6080;padding:6px 8px;border-radius:6px;background:#132942;}
+.check-item.done{color:#34D399;}
+.check-item i{font-size:13px;flex-shrink:0;}
 
-  .action-btn{width:100%;padding:9px;border-radius:7px;font-size:11px;font-weight:500;cursor:pointer;text-align:center;font-family:'DM Sans',sans-serif;margin-bottom:6px;display:flex;align-items:center;justify-content:center;gap:7px;transition:all .15s;}
-  .action-primary{background:#1a3a6a;border:1px solid #2563eb;color:#60c8f5;}
-  .action-primary:hover{background:#1e4480;}
-  .action-secondary{background:transparent;border:1px solid #1e2530;color:#64748b;}
-  .action-secondary:hover{background:#131822;color:#94a3b8;}
-  .action-danger{background:transparent;border:1px solid #5a1f1f;color:#f87171;}
-  .action-danger:hover{background:#2d1010;}
+.no-scan-banner{background:#132942;border:1px solid rgba(96,165,250,0.14);border-radius:10px;padding:20px;text-align:center;color:#4A6080;}
+.no-scan-banner i{font-size:32px;opacity:.4;display:block;margin-bottom:8px;}
+.no-scan-banner p{font-size:11px;line-height:1.6;}
 
-  .checklist{display:flex;flex-direction:column;gap:6px;}
-  .check-item{display:flex;align-items:center;gap:8px;font-size:11px;color:#64748b;padding:6px 8px;border-radius:6px;background:#131822;}
-  .check-item.done{color:#4ade80;}
-  .check-item i{font-size:13px;flex-shrink:0;}
+@media print {
+  .topnav,.right-panel,.report-toolbar{display:none!important;}
+  .page{grid-template-columns:1fr;display:block;}
+  .report-area{padding:0;background:white;}
+  .report-card{border:none;border-radius:0;background:white;color:#000;max-width:100%;}
+  body{background:white;color:#000;}
+}
 
-  /* PRINT STYLES */
-  @media print {
-    .topnav,.right-panel,.report-toolbar{display:none!important;}
-    .page{grid-template-columns:1fr;display:block;}
-    .report-area{padding:0;background:white;}
-    .report-card{border:none;border-radius:0;background:white;color:#000;max-width:100%;}
-    .report-header{background:#f8f9fa;border-bottom:2px solid #dee2e6;}
-    .report-brand-name{color:#1e40af;}
-    .report-brand-dot{background:#1e40af;}
-    .report-section{border-bottom:1px solid #e5e7eb;}
-    .section-title{color:#6b7280;}
-    .section-title::after{background:#e5e7eb;}
-    .info-cell,.metric-box,.doctor-box,.disclaimer-box,.scan-box{background:#f9fafb;border:1px solid #e5e7eb;}
-    .findings-table th{color:#6b7280;border-bottom:1px solid #e5e7eb;}
-    .findings-table td{border-bottom:1px solid #f3f4f6;color:#374151;}
-    .report-footer{background:#f8f9fa;border-top:1px solid #e5e7eb;}
-  }
-
-  ::-webkit-scrollbar{width:4px;}
-  ::-webkit-scrollbar-track{background:transparent;}
-  ::-webkit-scrollbar-thumb{background:#1e2530;border-radius:2px;}
+::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:rgba(96,165,250,0.30);border-radius:2px;}
 </style>
 </head>
 <body>
 
-<!-- NAV -->
 <div class="topnav">
-  <div class="logo"><div class="logo-dot"></div>PNEUMOSCAN · AI</div>
+  <div class="logo"><div class="logo-icon"><i class="ti ti-brain"></i></div>MEDSIGHT · AI</div>
   <div class="nav-pills">
-    <div class="nav-pill" onclick="window.location.href='/dashboard.html'">Screening</div>
+    <div class="nav-pill" onclick="window.location.href='/dashbord.html'">Screening</div>
     <div class="nav-pill" onclick="window.location.href='/records.html'">Patient Records</div>
     <div class="nav-pill" onclick="window.location.href='/analytics.html'">Analytics</div>
     <div class="nav-pill" onclick="window.location.href='/settings.html'">Settings</div>
   </div>
   <div class="nav-right">
-    <div class="badge">Model v2.4.1</div>
-    <div class="avatar">DR</div>
+    <div class="nav-badge">Model v2.4.1</div>
   </div>
 </div>
 
 <div class="page">
 
-  <!-- REPORT AREA -->
   <div class="report-area">
-
     <div class="report-toolbar">
-      <div class="toolbar-left">
+      <div>
         <div class="toolbar-title">Clinical Report</div>
-        <div class="toolbar-sub">Generated by PneumoScan AI · Scan SCN-A1B2C3D4</div>
+        <div class="toolbar-sub" id="toolbarSub">Loading report data…</div>
       </div>
       <div class="toolbar-btns">
-        <button class="tbtn tbtn-secondary" onclick="window.location.href='/dashboard.html'"><i class="ti ti-arrow-left"></i> Back to Dashboard</button>
+        <button class="tbtn tbtn-secondary" onclick="window.location.href='/dashbord.html'"><i class="ti ti-arrow-left"></i> Back to Dashboard</button>
         <button class="tbtn tbtn-secondary" onclick="window.print()"><i class="ti ti-printer"></i> Print</button>
         <button class="tbtn tbtn-primary" onclick="savePDF()"><i class="ti ti-file-download"></i> Save as PDF</button>
       </div>
     </div>
 
-    <!-- REPORT CARD -->
-    <div class="report-card" id="reportCard">
+    <div id="noScanMsg" style="display:none;" class="no-scan-banner" style="max-width:800px;margin:0 auto;">
+      <i class="ti ti-alert-circle"></i>
+      <p>No scan data found. Please go back to the dashboard, upload an X-ray and run the analysis first, then click "Generate Clinical Report".</p>
+      <button class="tbtn tbtn-primary" style="margin:12px auto 0;width:auto;" onclick="window.location.href='/dashbord.html'"><i class="ti ti-arrow-left"></i> Go to Dashboard</button>
+    </div>
 
-      <!-- HEADER -->
+    <div class="report-card" id="reportCard" style="display:none;">
+
       <div class="report-header">
         <div>
-          <div class="report-brand">
-            <div class="report-brand-dot"></div>
-            <div>
-              <div class="report-brand-name">PNEUMOSCAN · AI</div>
-              <div class="report-brand-sub">Apollo Hospital · Radiology Department · Chennai</div>
-            </div>
-          </div>
+          <div class="report-brand-name">MEDSIGHT · AI</div>
+          <div class="report-brand-sub" id="rptHospital">MedSight AI · Radiology Department</div>
         </div>
         <div class="report-meta">
-          <div class="report-id">Report #RPT-2026-00421</div>
-          <div class="report-date">Generated: 20 May 2026 · 14:32 IST</div>
-          <div class="report-date">Scan ID: SCN-A1B2C3D4</div>
-          <div><span class="report-status">● ABNORMAL · HIGH PRIORITY</span></div>
+          <div class="report-id" id="rptReportId">Report #—</div>
+          <div class="report-date" id="rptGenDate">Generated: —</div>
+          <div class="report-date" id="rptScanId">Scan ID: —</div>
+          <div><span class="report-status" id="rptStatus">● —</span></div>
         </div>
       </div>
 
-      <!-- PATIENT INFORMATION -->
+      <!-- PATIENT INFO -->
       <div class="report-section">
         <div class="section-title">Patient Information</div>
         <div class="info-grid">
-          <div class="info-cell"><div class="info-label">Full name</div><div class="info-val">Rajan Mehta</div></div>
-          <div class="info-cell"><div class="info-label">Patient ID</div><div class="info-val">#PT-00421</div></div>
-          <div class="info-cell"><div class="info-label">Age / Gender</div><div class="info-val">54 yrs · Male</div></div>
-          <div class="info-cell"><div class="info-label">Ward</div><div class="info-val">Pulmonology</div></div>
-          <div class="info-cell"><div class="info-label">Referred by</div><div class="info-val">Dr. S. Anand</div></div>
-          <div class="info-cell"><div class="info-label">Scan date</div><div class="info-val">20 May 2026</div></div>
+          <div class="info-cell"><div class="info-label">Full name</div><div class="info-val" id="rptName">—</div></div>
+          <div class="info-cell"><div class="info-label">Patient ID</div><div class="info-val" id="rptPatientId">—</div></div>
+          <div class="info-cell"><div class="info-label">Age / Gender</div><div class="info-val" id="rptAgeGender">—</div></div>
+          <div class="info-cell"><div class="info-label">Department</div><div class="info-val" id="rptDept">—</div></div>
+          <div class="info-cell"><div class="info-label">Scan date</div><div class="info-val" id="rptScanDate">—</div></div>
+          <div class="info-cell"><div class="info-label">Triage level</div><div class="info-val" id="rptTriage">—</div></div>
         </div>
       </div>
 
@@ -233,61 +204,19 @@
           <div class="scan-box">
             <div class="scan-box-header">
               <span class="scan-box-title">PA CHEST · ORIGINAL</span>
-              <span style="font-size:9px;color:#334155;">120kVp · 4mAs</span>
+              <span style="font-size:9px;color:#4A6080;">Digital</span>
             </div>
-            <div class="scan-box-body">
-              <svg width="100%" viewBox="0 0 260 200" xmlns="http://www.w3.org/2000/svg">
-                <defs>
-                  <radialGradient id="rbg" cx="50%" cy="40%" r="65%"><stop offset="0%" stop-color="#1a2535"/><stop offset="100%" stop-color="#080c14"/></radialGradient>
-                  <radialGradient id="rll" cx="38%" cy="46%" r="50%"><stop offset="0%" stop-color="#3a5a7a" stop-opacity=".65"/><stop offset="100%" stop-color="#0d1520" stop-opacity="0"/></radialGradient>
-                  <radialGradient id="rrl" cx="62%" cy="46%" r="50%"><stop offset="0%" stop-color="#2a4a6a" stop-opacity=".55"/><stop offset="100%" stop-color="#0d1520" stop-opacity="0"/></radialGradient>
-                  <filter id="rb"><feGaussianBlur stdDeviation="2"/></filter>
-                </defs>
-                <rect width="260" height="200" fill="url(#rbg)" rx="6"/>
-                <g opacity=".12" stroke="#7ab8d4" fill="none" stroke-width=".8">
-                  <path d="M130,36 Q95,44 76,56 Q64,70 68,82"/><path d="M130,48 Q91,58 72,72 Q58,86 64,100"/>
-                  <path d="M130,36 Q165,44 184,56 Q196,70 192,82"/><path d="M130,48 Q169,58 188,72 Q202,86 196,100"/>
-                </g>
-                <rect x="126" y="26" width="8" height="148" rx="2" fill="#1e3045" opacity=".5"/>
-                <ellipse cx="92" cy="100" rx="42" ry="60" fill="url(#rll)" opacity=".8"/>
-                <ellipse cx="168" cy="100" rx="38" ry="56" fill="url(#rrl)" opacity=".8"/>
-                <ellipse cx="122" cy="112" rx="22" ry="28" fill="#0d1e30" opacity=".85"/>
-                <ellipse cx="170" cy="68" rx="18" ry="14" fill="#3a5a2a" opacity=".4" filter="url(#rb)"/>
-                <circle cx="172" cy="66" r="14" stroke="#ef4444" stroke-width="1.5" fill="none" stroke-dasharray="3,2" opacity=".9"/>
-                <line x1="183" y1="56" x2="196" y2="46" stroke="#ef4444" stroke-width="1" opacity=".8"/>
-                <text x="198" y="44" fill="#ef4444" font-size="8" font-family="monospace">RUL</text>
-                <text x="8" y="14" fill="#2a4a6a" font-size="7" font-family="monospace">PA · 20.05.2026</text>
-              </svg>
+            <div class="scan-box-body" id="scanImgBox">
+              <div class="scan-placeholder"><i class="ti ti-x-ray"></i><span>No image available</span></div>
             </div>
           </div>
           <div class="scan-box">
             <div class="scan-box-header">
-              <span class="scan-box-title">GRAD-CAM · HEATMAP OVERLAY</span>
-              <span style="font-size:9px;color:#334155;">EfficientNet-B3</span>
+              <span class="scan-box-title">GRAD-CAM · HEATMAP</span>
+              <span style="font-size:9px;color:#4A6080;">EfficientNet-B3</span>
             </div>
-            <div class="scan-box-body">
-              <svg width="100%" viewBox="0 0 260 200" xmlns="http://www.w3.org/2000/svg">
-                <defs>
-                  <radialGradient id="hbg" cx="50%" cy="40%" r="65%"><stop offset="0%" stop-color="#1a2535"/><stop offset="100%" stop-color="#080c14"/></radialGradient>
-                  <radialGradient id="hll" cx="38%" cy="46%" r="50%"><stop offset="0%" stop-color="#3a5a7a" stop-opacity=".6"/><stop offset="100%" stop-color="#0d1520" stop-opacity="0"/></radialGradient>
-                  <radialGradient id="hrl" cx="62%" cy="46%" r="50%"><stop offset="0%" stop-color="#2a4a6a" stop-opacity=".5"/><stop offset="100%" stop-color="#0d1520" stop-opacity="0"/></radialGradient>
-                  <radialGradient id="h1" cx="65%" cy="33%" r="20%"><stop offset="0%" stop-color="#ef4444" stop-opacity=".95"/><stop offset="50%" stop-color="#f97316" stop-opacity=".6"/><stop offset="100%" stop-color="#eab308" stop-opacity="0"/></radialGradient>
-                  <radialGradient id="h2" cx="35%" cy="65%" r="14%"><stop offset="0%" stop-color="#f97316" stop-opacity=".5"/><stop offset="100%" stop-color="#eab308" stop-opacity="0"/></radialGradient>
-                </defs>
-                <rect width="260" height="200" fill="url(#hbg)" rx="6"/>
-                <rect x="126" y="26" width="8" height="148" rx="2" fill="#1e3045" opacity=".5"/>
-                <ellipse cx="92" cy="100" rx="42" ry="60" fill="url(#hll)" opacity=".8"/>
-                <ellipse cx="168" cy="100" rx="38" ry="56" fill="url(#hrl)" opacity=".8"/>
-                <ellipse cx="122" cy="112" rx="22" ry="28" fill="#0d1e30" opacity=".85"/>
-                <rect width="260" height="200" fill="url(#h1)" rx="6" opacity=".7"/>
-                <rect width="260" height="200" fill="url(#h2)" rx="6" opacity=".6"/>
-                <!-- heatmap scale -->
-                <defs><linearGradient id="scale" x1="0" x2="1"><stop offset="0%" stop-color="#1e3a5f"/><stop offset="50%" stop-color="#f97316"/><stop offset="100%" stop-color="#ef4444"/></linearGradient></defs>
-                <rect x="8" y="180" width="80" height="6" fill="url(#scale)" rx="3"/>
-                <text x="8" y="194" fill="#334155" font-size="7" font-family="monospace">Low</text>
-                <text x="70" y="194" fill="#334155" font-size="7" font-family="monospace">High</text>
-                <text x="8" y="174" fill="#334155" font-size="7" font-family="monospace">Activation intensity</text>
-              </svg>
+            <div class="scan-box-body" id="gradcamImgBox">
+              <div class="scan-placeholder"><i class="ti ti-brain"></i><span>Heatmap not available</span></div>
             </div>
           </div>
         </div>
@@ -302,61 +231,31 @@
               <th>Finding</th>
               <th>Confidence</th>
               <th>Distribution</th>
-              <th>Region</th>
               <th>Triage</th>
             </tr>
           </thead>
-          <tbody>
-            <tr>
-              <td><span class="fdot" style="background:#ef4444;"></span><span style="color:#94a3b8;font-weight:500;">Pneumonia</span></td>
-              <td><span style="color:#ef4444;font-family:'Space Mono',monospace;font-weight:700;">91.3%</span></td>
-              <td><div class="conf-bar-wrap"><div class="conf-bar-fill" style="width:91.3%;background:#ef4444;"></div></div></td>
-              <td style="color:#64748b;">Right upper lobe</td>
-              <td><span class="triage-pill t-high">HIGH</span></td>
-            </tr>
-            <tr>
-              <td><span class="fdot" style="background:#f59e0b;"></span><span style="color:#94a3b8;">Pleural Effusion</span></td>
-              <td><span style="color:#f59e0b;font-family:'Space Mono',monospace;font-weight:700;">34.7%</span></td>
-              <td><div class="conf-bar-wrap"><div class="conf-bar-fill" style="width:34.7%;background:#f59e0b;"></div></div></td>
-              <td style="color:#64748b;">Costophrenic angles</td>
-              <td><span class="triage-pill t-med">MED</span></td>
-            </tr>
-            <tr>
-              <td><span class="fdot" style="background:#22c55e;"></span><span style="color:#64748b;">Cardiomegaly</span></td>
-              <td><span style="color:#22c55e;font-family:'Space Mono',monospace;font-weight:700;">8.2%</span></td>
-              <td><div class="conf-bar-wrap"><div class="conf-bar-fill" style="width:8.2%;background:#22c55e;"></div></div></td>
-              <td style="color:#64748b;">Cardiac silhouette</td>
-              <td><span class="triage-pill t-low">LOW</span></td>
-            </tr>
-            <tr>
-              <td><span class="fdot" style="background:#22c55e;"></span><span style="color:#64748b;">Tuberculosis</span></td>
-              <td><span style="color:#22c55e;font-family:'Space Mono',monospace;font-weight:700;">5.1%</span></td>
-              <td><div class="conf-bar-wrap"><div class="conf-bar-fill" style="width:5.1%;background:#22c55e;"></div></div></td>
-              <td style="color:#64748b;">Upper lobes bilateral</td>
-              <td><span class="triage-pill t-low">LOW</span></td>
-            </tr>
-          </tbody>
+          <tbody id="findingsBody"></tbody>
         </table>
       </div>
 
       <!-- MODEL METRICS -->
       <div class="report-section">
-        <div class="section-title">Model Performance Metrics</div>
+        <div class="section-title">Model Performance</div>
         <div class="metrics-grid">
           <div class="metric-box">
-            <div class="metric-val" style="color:#f87171;">91.3%</div>
+            <div class="metric-val" id="metricConf" style="color:#F87171;">—</div>
             <div class="metric-label">Confidence</div>
           </div>
           <div class="metric-box">
-            <div class="metric-val" style="color:#60c8f5;">0.924</div>
-            <div class="metric-label">AUC-ROC</div>
+            <div class="metric-val" style="color:#60A5FA;">0.797</div>
+            <div class="metric-label">Mean AUC-ROC</div>
           </div>
           <div class="metric-box">
-            <div class="metric-val" style="color:#4ade80;">0.032</div>
+            <div class="metric-val" style="color:#34D399;">0.032</div>
             <div class="metric-label">Cal. Error (ECE)</div>
           </div>
           <div class="metric-box">
-            <div class="metric-val" style="color:#a78bfa;">B3</div>
+            <div class="metric-val" style="color:#A78BFA;">B0+B3</div>
             <div class="metric-label">EfficientNet</div>
           </div>
         </div>
@@ -368,15 +267,15 @@
         <div class="doctor-row">
           <div class="doctor-box">
             <div class="doctor-label">Reviewing radiologist</div>
-            <div class="doctor-name">Dr. Ramesh Anand</div>
-            <div class="doctor-role">MD Radiology · Apollo Hospital</div>
+            <div class="doctor-name" id="rptDoctor">—</div>
+            <div class="doctor-role">Radiology Department</div>
             <div class="sig-line"></div>
-            <div class="sig-text">Signature on file · 20 May 2026</div>
+            <div class="sig-text">Pending signature</div>
           </div>
           <div class="override-box">
             <div class="override-label">Doctor override status</div>
             <div class="override-val" id="overrideStatus">⏳ Pending radiologist confirmation</div>
-            <div style="margin-top:10px;display:flex;gap:6px;">
+            <div style="display:flex;gap:6px;">
               <button class="action-btn action-primary" style="margin-bottom:0;padding:7px;font-size:10px;" onclick="confirmFinding()"><i class="ti ti-check"></i> Confirm</button>
               <button class="action-btn action-secondary" style="margin-bottom:0;padding:7px;font-size:10px;" onclick="rejectFinding()"><i class="ti ti-x"></i> Reject</button>
             </div>
@@ -388,16 +287,13 @@
       <div class="report-section">
         <div class="section-title">Clinical Disclaimer</div>
         <div class="disclaimer-box">
-          <div class="disclaimer-text">
-            This report was generated by PneumoScan AI, an artificial intelligence screening system based on EfficientNet-B3 trained on the NIH ChestXray14 dataset (validation AUC-ROC: 0.924). AI findings are intended to assist — not replace — clinical judgment. All results must be reviewed and confirmed by a qualified radiologist before any diagnostic or treatment decisions are made. This system is not approved as a standalone diagnostic device. In case of clinical urgency, consult a specialist immediately regardless of AI output.
-          </div>
+          <div class="disclaimer-text">This report was generated by MedSight AI, an artificial intelligence screening system based on EfficientNet-B0 + B3 Ensemble trained on the NIH ChestXray14 dataset (mean AUC-ROC: 0.797). AI findings are intended to assist — not replace — clinical judgment. All results must be reviewed and confirmed by a qualified radiologist before any diagnostic or treatment decisions are made. This system is not approved as a standalone diagnostic device. In case of clinical urgency, consult a specialist immediately regardless of AI output.</div>
         </div>
       </div>
 
-      <!-- REPORT FOOTER -->
       <div class="report-footer">
-        <div class="footer-left">PNEUMOSCAN AI · Apollo Hospital · Chennai · India</div>
-        <div class="footer-right">Report #RPT-2026-00421 · Page 1 of 1</div>
+        <div class="footer-text">MEDSIGHT AI · Clinical Screening Tool</div>
+        <div class="footer-text" id="rptFooterId">Report #— · Page 1 of 1</div>
       </div>
 
     </div>
@@ -405,87 +301,199 @@
 
   <!-- RIGHT PANEL -->
   <div class="right-panel">
-
     <div>
-      <div class="panel-section-label">Report Status</div>
-      <div class="status-banner">
-        <div class="status-label">Abnormal · High Risk</div>
-        <div class="status-sub">Pneumonia detected in right upper lobe with 91.3% confidence. Immediate radiologist review required.</div>
+      <div class="panel-label">Report Status</div>
+      <div class="status-banner" id="statusBanner">
+        <div class="status-label" id="statusLabel" style="color:#F87171;">Loading…</div>
+        <div class="status-sub" id="statusSub">Retrieving scan data…</div>
       </div>
     </div>
 
     <div>
-      <div class="panel-section-label">Actions</div>
+      <div class="panel-label">Actions</div>
       <button class="action-btn action-primary" onclick="window.print()"><i class="ti ti-printer"></i> Print Report</button>
       <button class="action-btn action-primary" onclick="savePDF()"><i class="ti ti-file-download"></i> Save as PDF</button>
-      <button class="action-btn action-secondary" onclick="window.location.href='/dashboard.html'"><i class="ti ti-layout-dashboard"></i> Back to Dashboard</button>
+      <button class="action-btn action-secondary" onclick="window.location.href='/dashbord.html'"><i class="ti ti-layout-dashboard"></i> Back to Dashboard</button>
       <button class="action-btn action-secondary" onclick="window.location.href='/analytics.html'"><i class="ti ti-chart-line"></i> View Trend Charts</button>
       <button class="action-btn action-danger" onclick="flagReport()"><i class="ti ti-flag"></i> Flag for Second Opinion</button>
     </div>
 
     <div>
-      <div class="panel-section-label">Report Checklist</div>
+      <div class="panel-label">Report Checklist</div>
       <div class="checklist">
         <div class="check-item done"><i class="ti ti-circle-check"></i> Patient details complete</div>
-        <div class="check-item done"><i class="ti ti-circle-check"></i> Scan image attached</div>
-        <div class="check-item done"><i class="ti ti-circle-check"></i> Grad-CAM heatmap included</div>
+        <div class="check-item" id="chkScan"><i class="ti ti-circle" style="color:#4A6080;"></i> Scan image attached</div>
+        <div class="check-item" id="chkHeatmap"><i class="ti ti-circle" style="color:#4A6080;"></i> Grad-CAM heatmap included</div>
         <div class="check-item done"><i class="ti ti-circle-check"></i> AI findings recorded</div>
         <div class="check-item done"><i class="ti ti-circle-check"></i> Model metrics included</div>
-        <div class="check-item" id="checkOverride"><i class="ti ti-circle" style="color:#334155;"></i> Radiologist confirmed</div>
+        <div class="check-item" id="checkOverride"><i class="ti ti-circle" style="color:#4A6080;"></i> Radiologist confirmed</div>
         <div class="check-item done"><i class="ti ti-circle-check"></i> Disclaimer present</div>
       </div>
     </div>
 
     <div>
-      <div class="panel-section-label">Share Report</div>
-      <button class="action-btn action-secondary" onclick="alert('Report link copied to clipboard.')"><i class="ti ti-link"></i> Copy link</button>
-      <button class="action-btn action-secondary" onclick="alert('Report sent to r.anand@apollo.in')"><i class="ti ti-mail"></i> Email to doctor</button>
+      <div class="panel-label">Share Report</div>
+      <button class="action-btn action-secondary" onclick="showToast('Report link copied to clipboard.')"><i class="ti ti-link"></i> Copy link</button>
+      <button class="action-btn action-secondary" onclick="showToast('Report sent to doctor.')"><i class="ti ti-mail"></i> Email to doctor</button>
     </div>
 
-    <div style="background:#131822;border-radius:8px;padding:10px 12px;border-left:2px solid #1e3a5f;">
-      <div style="font-size:9px;color:#334155;line-height:1.6;"><i class="ti ti-shield" style="font-size:11px;margin-right:4px;"></i>AI screening only. Must be confirmed by a radiologist before clinical use.</div>
+    <div style="background:#132942;border-radius:8px;padding:10px 12px;border-left:2px solid #3B82F6;">
+      <div style="font-size:9px;color:#4A6080;line-height:1.6;"><i class="ti ti-shield" style="font-size:11px;margin-right:4px;"></i>AI screening only. Must be confirmed by a radiologist before clinical use.</div>
     </div>
-
   </div>
 </div>
 
-<!-- TOAST -->
-<div id="toast" style="position:fixed;bottom:24px;right:24px;background:#0d1017;border:1px solid #1e3a5f;border-radius:10px;padding:12px 18px;display:flex;align-items:center;gap:10px;font-size:12px;color:#60c8f5;transform:translateY(80px);opacity:0;transition:all .3s;z-index:100;">
-  <i class="ti ti-check" style="font-size:15px;color:#4ade80;"></i>
+<div id="toast" style="position:fixed;bottom:24px;right:24px;background:#0F1F34;border:1px solid rgba(96,165,250,0.30);border-radius:10px;padding:12px 18px;display:flex;align-items:center;gap:10px;font-size:12px;color:#60A5FA;transform:translateY(80px);opacity:0;transition:all .3s;z-index:100;">
+  <i class="ti ti-check" style="font-size:15px;color:#34D399;"></i>
   <span id="toastMsg">Done</span>
 </div>
 
 <script>
-  function showToast(msg, color) {
-    const t = document.getElementById('toast');
-    document.getElementById('toastMsg').textContent = msg;
-    t.style.borderColor = color || '#1e3a5f';
-    t.style.transform = 'translateY(0)';
-    t.style.opacity = '1';
-    setTimeout(() => { t.style.transform = 'translateY(80px)'; t.style.opacity = '0'; }, 2500);
+// ── LOAD DATA FROM localStorage ──────────────────────────────────
+// Dashboard saves these keys before navigating here:
+//   medsight_scan_result   — raw API response from /scans/predict
+//   medsight_patient       — confirmed patient object
+//   medsight_scan_image    — base64 of the uploaded X-ray
+
+const FINDING_COLORS = {
+  Pneumonia:'#F87171', Tuberculosis:'#f97316', Cardiomegaly:'#60A5FA',
+  'Pleural Effusion':'#FBBF24', Effusion:'#FBBF24', Pneumothorax:'#A78BFA',
+  Infiltration:'#C084FC', 'No Finding':'#34D399', Normal:'#34D399',
+};
+
+function triageClass(t) {
+  return t === 'HIGH' ? 't-high' : t === 'MEDIUM' ? 't-med' : 't-low';
+}
+function triageLabel(t) {
+  return t === 'HIGH' ? 'HIGH' : t === 'MEDIUM' ? 'MED' : 'LOW';
+}
+function confColor(p) {
+  return p >= 0.6 ? '#F87171' : p >= 0.3 ? '#FBBF24' : '#34D399';
+}
+function nowStr() {
+  return new Date().toLocaleString('en-GB', {day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}) + ' IST';
+}
+function randomId() {
+  return 'RPT-' + new Date().getFullYear() + '-' + Math.floor(10000 + Math.random()*90000);
+}
+
+function buildReport() {
+  let scanResult, patient, scanImage;
+  try { scanResult = JSON.parse(localStorage.getItem('medsight_scan_result') || 'null'); } catch(e) {}
+  try { patient    = JSON.parse(localStorage.getItem('medsight_patient')     || 'null'); } catch(e) {}
+  try { scanImage  = localStorage.getItem('medsight_scan_image') || null; } catch(e) {}
+
+  if (!scanResult) {
+    document.getElementById('noScanMsg').style.display  = 'block';
+    document.getElementById('reportCard').style.display = 'none';
+    document.getElementById('toolbarSub').textContent   = 'No scan data — go to dashboard first';
+    document.getElementById('statusLabel').textContent  = 'No data';
+    document.getElementById('statusSub').textContent    = 'Run a scan on the dashboard first.';
+    return;
   }
 
-  function savePDF() {
-    showToast('Opening print dialog — select "Save as PDF"');
-    setTimeout(() => window.print(), 500);
+  document.getElementById('noScanMsg').style.display  = 'none';
+  document.getElementById('reportCard').style.display = 'block';
+
+  const cond      = scanResult.top_condition || scanResult.primary_finding || 'Unknown';
+  const rawConf   = scanResult.confidence ?? 0;
+  const confFloat = rawConf > 1 ? rawConf / 100 : rawConf;
+  const conf      = (confFloat * 100).toFixed(1);
+  const triage    = scanResult.triage || (confFloat >= 0.75 ? 'HIGH' : confFloat >= 0.40 ? 'MEDIUM' : 'LOW');
+  const findings  = scanResult.findings || scanResult.probabilities || {};
+  const scanId    = scanResult.scan_id || 'SCN-' + Math.random().toString(36).slice(2,10).toUpperCase();
+  const reportId  = randomId();
+  const today     = new Date().toISOString().split('T')[0];
+
+  // ── Toolbar ──
+  document.getElementById('toolbarSub').textContent = `Generated by MedSight AI · Scan ${scanId}`;
+
+  // ── Header ──
+  document.getElementById('rptReportId').textContent  = `Report #${reportId}`;
+  document.getElementById('rptGenDate').textContent   = `Generated: ${nowStr()}`;
+  document.getElementById('rptScanId').textContent    = `Scan ID: ${scanId}`;
+
+  const statusEl = document.getElementById('rptStatus');
+  statusEl.textContent  = `● ${cond.toUpperCase()} · ${triage} PRIORITY`;
+  statusEl.className    = `report-status status-${triage.toLowerCase()}`;
+
+  // ── Patient info ──
+  document.getElementById('rptName').textContent       = patient?.name      || '—';
+  document.getElementById('rptPatientId').textContent  = patient?.id ? `#${patient.id}` : '—';
+  document.getElementById('rptAgeGender').textContent  = patient ? `${patient.age || '—'} yrs · ${patient.gender || patient.sex || '—'}` : '—';
+  document.getElementById('rptDept').textContent       = patient?.department || patient?.dept || '—';
+  document.getElementById('rptScanDate').textContent   = scanResult.scan_date || today;
+  document.getElementById('rptTriage').textContent     = triage;
+  document.getElementById('rptDoctor').textContent     = scanResult.doctor_name || patient?.doctor_name || 'Assigned Radiologist';
+  document.getElementById('rptFooterId').textContent   = `Report #${reportId} · Page 1 of 1`;
+
+  // ── Scan image ──
+  if (scanImage) {
+    document.getElementById('scanImgBox').innerHTML = `<img src="${scanImage}" alt="Chest X-Ray"/>`;
+    document.getElementById('chkScan').className   = 'check-item done';
+    document.getElementById('chkScan').innerHTML   = '<i class="ti ti-circle-check"></i> Scan image attached';
   }
 
-  function confirmFinding() {
-    document.getElementById('overrideStatus').innerHTML = '✓ <span style="color:#4ade80;">Confirmed by Dr. Ramesh Anand · ' + new Date().toLocaleTimeString() + '</span>';
-    const c = document.getElementById('checkOverride');
-    c.classList.add('done');
-    c.innerHTML = '<i class="ti ti-circle-check"></i> Radiologist confirmed';
-    showToast('Finding confirmed and logged', '#1a5228');
+  // ── Grad-CAM ──
+  if (scanResult.gradcam_base64) {
+    document.getElementById('gradcamImgBox').innerHTML = `<img src="data:image/png;base64,${scanResult.gradcam_base64}" alt="Grad-CAM Heatmap"/>`;
+    document.getElementById('chkHeatmap').className   = 'check-item done';
+    document.getElementById('chkHeatmap').innerHTML   = '<i class="ti ti-circle-check"></i> Grad-CAM heatmap included';
   }
 
-  function rejectFinding() {
-    document.getElementById('overrideStatus').innerHTML = '✗ <span style="color:#f87171;">Rejected — marked for re-review</span>';
-    showToast('Finding rejected. Case queued for re-review.', '#5a1f1f');
-  }
+  // ── Findings table ──
+  const sorted = Object.entries(findings).sort((a,b) => b[1] - a[1]);
+  document.getElementById('findingsBody').innerHTML = sorted.map(([name, prob]) => {
+    const pct = (prob * 100).toFixed(1);
+    const tc  = prob >= 0.75 ? 'HIGH' : prob >= 0.40 ? 'MEDIUM' : 'LOW';
+    const fc  = FINDING_COLORS[name] || '#94A3B8';
+    return `<tr>
+      <td><span class="fdot" style="background:${fc};"></span><span style="color:#CBD5E6;font-weight:500;">${name}</span></td>
+      <td><span style="color:${confColor(prob)};font-family:'Space Mono',monospace;font-weight:700;">${pct}%</span></td>
+      <td><div class="conf-bar-wrap"><div class="conf-bar-fill" style="width:${pct}%;background:${confColor(prob)};"></div></div></td>
+      <td><span class="triage-pill ${triageClass(tc)}">${triageLabel(tc)}</span></td>
+    </tr>`;
+  }).join('');
 
-  function flagReport() {
-    showToast('Report flagged for second opinion', '#5a3f10');
-  }
+  // ── Metrics ──
+  document.getElementById('metricConf').textContent = `${conf}%`;
+
+  // ── Right panel status ──
+  const triageColor = triage === 'HIGH' ? '#F87171' : triage === 'MEDIUM' ? '#FBBF24' : '#34D399';
+  document.getElementById('statusLabel').style.color = triageColor;
+  document.getElementById('statusLabel').textContent = `${cond} · ${triage} Priority`;
+  document.getElementById('statusSub').textContent   = `${conf}% confidence · ${patient?.name || 'Unknown patient'} · ${scanResult.scan_date || today}`;
+
+  const banner = document.getElementById('statusBanner');
+  if (triage === 'HIGH')        banner.style.borderColor = 'rgba(248,113,113,0.25)';
+  else if (triage === 'MEDIUM') banner.style.borderColor = 'rgba(251,191,36,0.25)';
+  else                          banner.style.borderColor = 'rgba(52,211,153,0.25)';
+}
+
+// ── ACTIONS ──────────────────────────────────────────────────────
+function confirmFinding() {
+  document.getElementById('overrideStatus').innerHTML = `✓ <span style="color:#34D399;">Confirmed · ${new Date().toLocaleTimeString()}</span>`;
+  const c = document.getElementById('checkOverride');
+  c.className = 'check-item done';
+  c.innerHTML = '<i class="ti ti-circle-check"></i> Radiologist confirmed';
+  showToast('Finding confirmed and logged.');
+}
+function rejectFinding() {
+  document.getElementById('overrideStatus').innerHTML = `✗ <span style="color:#F87171;">Rejected — marked for re-review</span>`;
+  showToast('Finding rejected. Case queued for re-review.');
+}
+function flagReport() { showToast('Report flagged for second opinion.'); }
+function savePDF()    { showToast('Opening print dialog — select "Save as PDF"'); setTimeout(() => window.print(), 500); }
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg;
+  t.style.transform = 'translateY(0)'; t.style.opacity = '1';
+  setTimeout(() => { t.style.transform = 'translateY(80px)'; t.style.opacity = '0'; }, 2800);
+}
+
+// ── INIT ─────────────────────────────────────────────────────────
+buildReport();
 </script>
 </body>
 </html>

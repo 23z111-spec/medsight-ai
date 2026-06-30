@@ -29,15 +29,9 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
 .badge{background:var(--surface-soft);border:1px solid var(--border-bright);border-radius:20px;padding:3px 12px;font-size:10px;color:var(--accent);font-family:'Space Mono',monospace;}
 .nav-right{display:flex;align-items:center;gap:14px;}
 
-/* profile dropdown */
 .profile-menu-wrap{position:relative;display:inline-block;}
 .avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--accent-strong),#1D4ED8);border:2px solid var(--border-bright);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;font-family:'Space Mono',monospace;cursor:pointer;transition:transform .15s;}
 .avatar:hover{transform:scale(1.05);}
-.profile-dropdown{display:none;position:fixed;top:58px;right:24px;width:220px;background:#0f1f34;border:1px solid rgba(96,165,250,0.40);border-radius:12px;box-shadow:0 20px 50px rgba(0,0,0,0.8);padding:6px;z-index:99999;}
-.dropdown-email{padding:10px 12px 8px;font-size:11px;color:#94a3b8 !important;}
-.dropdown-divider{height:1px;background:rgba(96,165,250,0.14);margin:4px 0;}
-.dropdown-item{width:100%;display:flex;align-items:center;gap:8px;padding:9px 12px;background:none;border:none;border-radius:8px;color:#cbd5e6 !important;font-family:'Inter',sans-serif;font-size:12px;cursor:pointer;transition:background .15s,color .15s;text-align:left;}
-.dropdown-item:hover{background:rgba(248,113,113,0.15) !important;color:#fda4af !important;}
 
 .demo-banner{background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.25);border-radius:6px;padding:4px 12px;font-size:10px;color:var(--warning);display:none;align-items:center;gap:6px;}
 
@@ -163,7 +157,6 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
 .tl-finding{font-size:9px;color:var(--muted);margin-top:1px;text-align:center;max-width:68px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .tl-conf{font-size:9px;font-family:'Space Mono',monospace;font-weight:700;margin-top:1px;text-align:center;}
 
-/* expand modal */
 .chart-modal{position:fixed;inset:0;background:rgba(0,0,0,.85);display:none;align-items:center;justify-content:center;z-index:1000;padding:20px;}
 .chart-modal.active{display:flex;}
 .chart-modal-content{background:var(--surface);border:1px solid var(--border-bright);border-radius:16px;width:100%;max-width:90%;height:88vh;display:flex;flex-direction:column;padding:24px;position:relative;box-shadow:0 20px 60px rgba(0,0,0,.6);}
@@ -174,29 +167,9 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
 .chart-modal-sub{font-size:11px;color:var(--muted-dim);margin-top:3px;}
 .chart-modal-body{flex:1;overflow:auto;position:relative;}
 
-/* logout modal */
-.logout-backdrop{
-  position:fixed;
-  top:0;left:0;width:100%;height:100%;
-  background:rgba(6,21,40,0.75);
-  backdrop-filter:blur(4px);
-  z-index:9999;
-  display:none;
-}
+.logout-backdrop{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(6,21,40,0.75);backdrop-filter:blur(4px);z-index:9999;display:none;}
 @keyframes modalIn{from{opacity:0;transform:scale(0.95)}to{opacity:1;transform:scale(1)}}
-.logout-modal{
-  position:absolute;
-  top:50%;left:50%;
-  transform:translate(-50%,-50%);
-  width:320px;
-  background:var(--surface);
-  border:1px solid var(--border-bright);
-  border-radius:16px;
-  padding:28px 24px 20px;
-  text-align:center;
-  box-shadow:0 24px 60px rgba(0,0,0,0.6);
-  animation:modalIn .18s ease;
-}
+.logout-modal{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:320px;background:var(--surface);border:1px solid var(--border-bright);border-radius:16px;padding:28px 24px 20px;text-align:center;box-shadow:0 24px 60px rgba(0,0,0,0.6);animation:modalIn .18s ease;}
 .logout-icon{width:48px;height:48px;border-radius:50%;background:rgba(253,164,175,0.12);color:#fda4af;display:flex;align-items:center;justify-content:center;font-size:22px;margin:0 auto 14px;}
 .logout-title{font-size:16px;font-weight:700;color:var(--text);margin-bottom:6px;}
 .logout-text{font-size:11px;color:var(--muted);line-height:1.6;margin-bottom:20px;}
@@ -215,17 +188,16 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
 <nav class="topnav">
   <div class="logo"><div class="logo-icon"><i class="ti ti-brain"></i></div>PNEUMOSCAN · AI</div>
   <div class="nav-pills">
-    <div class="nav-pill" onclick="window.location.href='/dashboard.html'">Screening</div>
-    <div class="nav-pill" onclick="window.location.href='/records.html'">Patient Records</div>
+    <div class="nav-pill" onclick="window.location.href='dashbord.html'">Screening</div>
+    <div class="nav-pill" onclick="window.location.href='records.html'">Patient Records</div>
     <div class="nav-pill active">Analytics</div>
-    <div class="nav-pill" onclick="window.location.href='/settings.html'">Settings</div>
+    <div class="nav-pill" onclick="window.location.href='settings.html'">Settings</div>
   </div>
   <div class="nav-right">
     <div class="demo-banner" id="demoBanner"><i class="ti ti-flask"></i> Demo data</div>
     <div class="badge">Model v2.4.1</div>
     <div class="profile-menu-wrap" id="profileMenuWrap">
       <div class="avatar" id="navAvatar" onclick="toggleProfileMenu(event)">DR</div>
-
     </div>
   </div>
 </nav>
@@ -271,7 +243,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
       <button class="export-btn" id="exportBtn" onclick="exportCSV()" style="display:none;">
         <i class="ti ti-download"></i> Export CSV
       </button>
-      <button onclick="window.location.href='/dashboard.html'"
+      <button onclick="window.location.href='dashbord.html'"
               style="width:100%;background:var(--accent-glow);border:1px solid var(--border-bright);border-radius:8px;padding:9px;font-size:11px;color:var(--accent);cursor:pointer;font-family:'Inter',sans-serif;display:flex;align-items:center;justify-content:center;gap:6px;">
         <i class="ti ti-layout-dashboard"></i> Open Dashboard
       </button>
@@ -381,7 +353,6 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
 </div>
 </div>
 
-<!-- Chart expand modal -->
 <div class="chart-modal" id="chartModal">
   <div class="chart-modal-content">
     <button class="chart-modal-close" onclick="closeModal()"><i class="ti ti-x"></i></button>
@@ -393,7 +364,6 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
   </div>
 </div>
 
-<!-- Logout modal — outside .app so no stacking context issues -->
 <div class="logout-backdrop" id="logoutBackdrop" onclick="cancelLogout()">
   <div class="logout-modal" onclick="event.stopPropagation()">
     <div class="logout-icon"><i class="ti ti-logout"></i></div>
@@ -485,6 +455,28 @@ const COND_COLORS = {
 const TRIAGE_COLOR = { HIGH:'#F87171', MEDIUM:'#FBBF24', LOW:'#34D399' };
 const TRIAGE_BG    = { HIGH:'rgba(248,113,113,0.15)', MEDIUM:'rgba(251,191,36,0.12)', LOW:'rgba(52,211,153,0.12)' };
 
+// ── FIX: merge symptoms saved by the dashboard into localStorage ──
+// Dashboard saves: localStorage['medsight_symptoms_' + patientId] = JSON array of
+// the symptoms recorded for the MOST RECENT scan only (it's per-patient, not per-scan,
+// since the API doesn't store symptoms at all). We attach that array onto the latest
+// scan in the list so the symptom log card shows it.
+function mergeLocalSymptoms(patient, scans) {
+  if (!patient || !scans.length) return scans;
+  let saved;
+  try {
+    saved = JSON.parse(localStorage.getItem('medsight_symptoms_' + patient.id) || 'null');
+  } catch(e) { saved = null; }
+  if (!Array.isArray(saved) || !saved.length) return scans;
+
+  // Attach to whichever scan is most recent (assumes scans sorted newest-first already,
+  // or sorted right after this call — see selectPatient()).
+  const sorted = [...scans].sort((a,b) => new Date(b.scan_date) - new Date(a.scan_date));
+  if (!sorted[0].symptoms || !sorted[0].symptoms.length) {
+    sorted[0] = { ...sorted[0], symptoms: saved };
+  }
+  return sorted;
+}
+
 // ── Profile ───────────────────────────────────────────────────
 (function(){
   try {
@@ -498,7 +490,6 @@ const TRIAGE_BG    = { HIGH:'rgba(248,113,113,0.15)', MEDIUM:'rgba(251,191,36,0.
   } catch {}
 })();
 
-// ── Profile dropdown ──────────────────────────────────────────
 function toggleProfileMenu(e) {
   if (e) e.stopPropagation();
   const dd = document.getElementById('profileDropdown');
@@ -507,12 +498,10 @@ function toggleProfileMenu(e) {
 document.addEventListener('click', e => {
   const wrap = document.getElementById('profileMenuWrap');
   const dd   = document.getElementById('profileDropdown');
-  // close only if click is outside both the avatar wrap AND the dropdown itself
   if (!wrap.contains(e.target) && !dd.contains(e.target))
     dd.style.display = 'none';
 });
 
-// ── Logout ────────────────────────────────────────────────────
 function requestLogout() {
   document.getElementById('profileDropdown').style.display = 'none';
   document.getElementById('logoutBackdrop').style.display  = 'block';
@@ -520,10 +509,9 @@ function requestLogout() {
 function cancelLogout()  { document.getElementById('logoutBackdrop').style.display = 'none'; }
 function confirmLogout() {
   ['token','pneumoscan_token','pneumoscan_user'].forEach(k => { try{localStorage.removeItem(k);}catch{} });
-  window.location.href = '/login.html';
+  window.location.href = 'login.html';
 }
 
-// ── Demo mode ─────────────────────────────────────────────────
 function setDemoMode(on) {
   usingDemo = on;
   document.getElementById('demoBanner').style.display = on ? 'flex' : 'none';
@@ -548,7 +536,6 @@ function demoGlobalStats() {
   document.getElementById('gStatCondSub').textContent  = `${topCond[1]} of ${totalScans} scans`;
 }
 
-// ── Global stats ──────────────────────────────────────────────
 async function loadGlobalStats() {
   try {
     const r = await fetch(`${API}/patients/search?name=`, {
@@ -569,7 +556,6 @@ async function loadGlobalStats() {
   }
 }
 
-// ── Patient search ────────────────────────────────────────────
 let searchTimer;
 function onPatientSearch(q) {
   clearTimeout(searchTimer);
@@ -623,7 +609,6 @@ document.addEventListener('click', e => {
     document.getElementById('patientDropdown').classList.remove('show');
 });
 
-// ── Select patient ────────────────────────────────────────────
 async function selectPatient(id) {
   document.getElementById('patientDropdown').classList.remove('show');
   document.getElementById('patientSearchInput').value = '';
@@ -650,13 +635,14 @@ async function selectPatient(id) {
   }
 
   currentPatient = data;
-  allScans = (data.scans || []).slice().sort((a,b) => new Date(b.scan_date) - new Date(a.scan_date));
+  let sorted = (data.scans || []).slice().sort((a,b) => new Date(b.scan_date) - new Date(a.scan_date));
+  // FIX: merge in symptoms the dashboard saved to localStorage for this patient
+  allScans = mergeLocalSymptoms(data, sorted);
   applyDateFilter();
   renderSidebar(data);
   document.getElementById('exportBtn').style.display = 'flex';
 }
 
-// ── Date filter ───────────────────────────────────────────────
 function setDateFilter(val) {
   dateFilter = val;
   document.querySelectorAll('.df-btn').forEach(b => b.classList.remove('active'));
@@ -676,10 +662,9 @@ function applyDateFilter() {
   renderAnalytics(currentPatient, filteredScans);
 }
 
-// ── Sidebar ───────────────────────────────────────────────────
 function renderSidebar(p) {
-  const scans  = p.scans || [];
-  const latest = scans[0] || {};
+  const scans  = p.scans || allScans;
+  const latest = allScans[0] || {};
   const tc     = TRIAGE_COLOR[latest.triage] || '#4A6080';
   const tbg    = TRIAGE_BG[latest.triage]    || 'var(--surface-soft)';
 
@@ -700,7 +685,7 @@ function renderSidebar(p) {
       ${p.phone?`<div class="prow-full"><span>Phone</span><span>${p.phone}</span></div>`:''}
       ${p.department?`<div class="prow-full"><span>Department</span><span>${p.department}</span></div>`:''}
       <hr class="patient-divider"/>
-      <div class="prow-full"><span>Total scans</span><span>${scans.length}</span></div>
+      <div class="prow-full"><span>Total scans</span><span>${allScans.length}</span></div>
       <div class="prow-full"><span>Last scan</span><span>${formatDate(latest.scan_date||'')}</span></div>
       <div class="prow-full"><span>Latest finding</span><span style="color:${COND_COLORS[latest.top_condition]?.line||'var(--muted-strong)'}">${latest.top_condition||'—'}</span></div>
       ${latest.triage?`<div class="prow-full"><span>Current triage</span>
@@ -709,7 +694,7 @@ function renderSidebar(p) {
       ${latest.doctor_name?`<div class="prow-full"><span>Physician</span><span>${latest.doctor_name}</span></div>`:''}
     </div>`;
 
-  document.getElementById('scanList').innerHTML = scans.slice(0,8).map((s,i) => `
+  document.getElementById('scanList').innerHTML = allScans.slice(0,8).map((s,i) => `
     <div class="scan-item ${i===0?'active':''}" onclick="highlightScan(this)">
       <div class="scan-thumb">${String(s.id).slice(-3)}</div>
       <div class="scan-info">
@@ -727,7 +712,6 @@ function highlightScan(el) {
   el.classList.add('active');
 }
 
-// ── Analytics render ──────────────────────────────────────────
 function renderAnalytics(p, scans) {
   Object.values(charts).forEach(c => { try{c.destroy();}catch{} });
   charts = {};
@@ -755,7 +739,6 @@ function renderAnalytics(p, scans) {
   document.getElementById('gStatCond').textContent       = topCond[0];
   document.getElementById('gStatCondSub').textContent    = `${topCond[1]}/${scans.length} scans · ${p.name}`;
 
-  // Symptom log
   const allSxNames = new Set();
   document.getElementById('symptomBody').innerHTML = scans.map(s => {
     const symptoms = Array.isArray(s.symptoms) && s.symptoms.length ? s.symptoms : [];
@@ -774,7 +757,6 @@ function renderAnalytics(p, scans) {
   document.getElementById('symptomSub').textContent   = `${p.name} · ${scans.length} visits`;
   document.getElementById('symptomBadge').textContent = `${allSxNames.size} unique symptom${allSxNames.size!==1?'s':''}`;
 
-  // Doughnut
   const condLabels = Object.keys(condCounts);
   const condVals   = condLabels.map(c => condCounts[c]);
   const condColors = condLabels.map(c => COND_COLORS[c]?.line || '#60A5FA');
@@ -803,7 +785,6 @@ function renderAnalytics(p, scans) {
     },
   });
 
-  // Timeline
   const displayScans = [...scans].reverse();
   document.getElementById('timelineSub').textContent = `${displayScans.length} scans · oldest → newest`;
   document.getElementById('timelineBody').innerHTML = `<div class="tl-track">${
@@ -822,7 +803,6 @@ function renderAnalytics(p, scans) {
   showAnalytics();
 }
 
-// ── Expand modal ──────────────────────────────────────────────
 function expandChart(cardId) {
   const card   = document.getElementById(cardId);
   const title  = card.querySelector('.chart-title')?.textContent || '';
@@ -865,7 +845,6 @@ document.getElementById('chartModal').addEventListener('click', e => {
   if (e.target.id === 'chartModal') closeModal();
 });
 
-// ── Export CSV ────────────────────────────────────────────────
 function exportCSV() {
   if (!filteredScans.length || !currentPatient) return;
   const p = currentPatient;
@@ -883,7 +862,6 @@ function exportCSV() {
   a.click();
 }
 
-// ── UI states ─────────────────────────────────────────────────
 function showLoading() {
   document.getElementById('contentEmpty').style.display     = 'none';
   document.getElementById('contentLoading').style.display   = 'flex';
@@ -900,7 +878,6 @@ function showAnalytics() {
   document.getElementById('analyticsContent').style.display = 'flex';
 }
 
-// ── Date helpers ──────────────────────────────────────────────
 function formatDate(d) {
   if (!d) return '—';
   return new Date(d+'T00:00:00').toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
@@ -910,7 +887,6 @@ function formatDateShort(d) {
   return new Date(d+'T00:00:00').toLocaleDateString('en-GB',{day:'2-digit',month:'short'});
 }
 
-// ── Keyboard ──────────────────────────────────────────────────
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') { closeModal(); cancelLogout(); }
 });
@@ -918,7 +894,6 @@ document.addEventListener('keydown', e => {
 loadGlobalStats();
 </script>
 
-<!-- Profile dropdown — direct body child so nothing clips it -->
 <div id="profileDropdown" style="
   display:none;
   position:fixed;

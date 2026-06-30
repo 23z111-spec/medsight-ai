@@ -72,4 +72,12 @@ class Scan(Base):
     override           = Column(String, nullable=True)        # confirm / normal / abnormal / refer
     reviewed_at        = Column(DateTime(timezone=True), nullable=True)
 
+    # Patient-reported symptoms recorded at the time of THIS scan.
+    # Stored as a JSON-encoded list of objects, e.g.
+    # '[{"name": "Cough", "severity": "medium"}, {"name": "Fever", "severity": "high"}]'
+    # Decode with json.loads(scan.symptoms) when reading, encode with
+    # json.dumps(symptoms_list) when writing. Nullable so older scans
+    # created before this column existed simply have no symptom data.
+    symptoms           = Column(Text, nullable=True)
+
     created_at         = Column(DateTime(timezone=True), server_default=func.now())
