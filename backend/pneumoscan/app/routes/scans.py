@@ -7,11 +7,12 @@ PUT  /scans/{id}/review — doctor saves notes / override
 
 import os
 import uuid
+import json
 from datetime import datetime, date
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, List
 
 from app.database import get_db
 from app.models_db import Scan, Patient, User
@@ -29,6 +30,11 @@ os.makedirs(GRADCAM_DIR, exist_ok=True)
 
 
 # ── Schemas ───────────────────────────────────────────────────────
+class Symptom(BaseModel):
+    name: str
+    severity: Optional[str] = "low"   # "low" | "medium" | "high"
+
+
 class ScanResponse(BaseModel):
     id: int
     patient_id: int
@@ -39,6 +45,7 @@ class ScanResponse(BaseModel):
     top_condition: Optional[str]
     confidence: Optional[float]
     findings: dict
+    symptoms: List[Symptom] = []
     gradcam_base64: Optional[str] = None
     doctor_notes: Optional[str] = None
     override: Optional[str] = None
@@ -54,12 +61,28 @@ class ReviewRequest(BaseModel):
     override: Optional[str] = None   # "confirm" | "normal" | "abnormal" | "refer"
 
 
+# ── Helpers ───────────────────────────────────────────────────────
+def decode_symptoms(raw: Optional[str]) -> list:
+    """Safely turn the stored JSON string back into a list of dicts.
+    Returns [] for None, empty string, or malformed JSON rather than
+    raising, since symptoms are supplementary data and shouldn't break
+    scan retrieval if something got corrupted."""
+    if not raw:
+        return []
+    try:
+        data = json.loads(raw)
+        return data if isinstance(data, list) else []
+    except (json.JSONDecodeError, TypeError):
+        return []
+
+
 # ── Routes ────────────────────────────────────────────────────────
 @router.post("/predict", response_model=ScanResponse)
 async def predict_and_save(
     patient_id: int = Form(...),
     department: str = Form(...),
     scan_date: str = Form(...),       # ISO format YYYY-MM-DD
+    symptoms: str = Form("[]"),       # JSON-encoded list, e.g. '[{"name":"Cough","severity":"medium"}]'
     file: UploadFile = File(...),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
@@ -76,6 +99,18 @@ async def predict_and_save(
     image_bytes = await file.read()
     if len(image_bytes) > 10 * 1024 * 1024:
         raise HTTPException(status_code=413, detail="File too large. Maximum 10 MB.")
+
+    # ── Validate / normalize symptoms payload ──
+    # Frontend sends a JSON string in the form field; if it's missing or
+    # malformed we fall back to an empty list rather than failing the
+    # whole scan upload over bad symptom data.
+    try:
+        parsed_symptoms = json.loads(symptoms)
+        if not isinstance(parsed_symptoms, list):
+            parsed_symptoms = []
+    except (json.JSONDecodeError, TypeError):
+        parsed_symptoms = []
+    symptoms_json = json.dumps(parsed_symptoms)
 
     # ── Save original image ──
     file_id = str(uuid.uuid4())[:12]
@@ -133,6 +168,7 @@ async def predict_and_save(
         cardiomegaly_prob=findings.get("Cardiomegaly"),
         effusion_prob=findings.get("Effusion"),
         infiltration_prob=findings.get("Infiltration"),
+        symptoms=symptoms_json,
     )
     db.add(scan)
     db.commit()
@@ -148,6 +184,7 @@ async def predict_and_save(
         top_condition=scan.top_condition,
         confidence=scan.confidence,
         findings=findings,
+        symptoms=parsed_symptoms,
         gradcam_base64=gradcam_b64,
         doctor_notes=scan.doctor_notes,
         override=scan.override,
@@ -188,6 +225,7 @@ def get_scan(
         top_condition=scan.top_condition,
         confidence=scan.confidence,
         findings=findings,
+        symptoms=decode_symptoms(scan.symptoms),
         gradcam_base64=gradcam_b64,
         doctor_notes=scan.doctor_notes,
         override=scan.override,

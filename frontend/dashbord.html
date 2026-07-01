@@ -103,6 +103,56 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
 .pd-change{background:transparent;border:none;color:var(--accent);font-size:10px;cursor:pointer;font-family:'Inter',sans-serif;margin-top:6px;display:flex;align-items:center;gap:4px;}
 .pd-change:hover{text-decoration:underline;}
 
+/* SYMPTOM CHIPS */
+.symptom-box{background:var(--surface-soft);border:1px solid var(--border);border-radius:10px;padding:12px;animation:fadeIn .3s ease;overflow:hidden;}
+.symptom-box-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;gap:8px;}
+.symptom-hint{font-size:9px;color:var(--muted-dim);line-height:1.5;}
+.symptom-count-badge{font-size:9px;font-family:'Space Mono',monospace;padding:2px 7px;border-radius:10px;background:var(--surface-strong);color:var(--muted);border:1px solid var(--border);flex-shrink:0;white-space:nowrap;}
+.symptom-chip-grid{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;}
+.symptom-chip{
+  padding:6px 11px;border-radius:20px;font-size:11px;font-weight:500;cursor:pointer;
+  border:1px solid var(--border);background:var(--surface-strong);color:var(--muted);
+  transition:all .15s;user-select:none;display:inline-flex;align-items:center;gap:5px;
+  max-width:100%;
+}
+.symptom-chip:hover{border-color:var(--border-bright);color:var(--muted-strong);}
+.symptom-chip .sev-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;display:none;}
+.symptom-chip.sev-low{background:rgba(96,165,250,0.10);border-color:rgba(96,165,250,0.35);color:var(--accent);}
+.symptom-chip.sev-low .sev-dot{display:inline-block;background:var(--accent);}
+.symptom-chip.sev-medium{background:rgba(251,191,36,0.10);border-color:rgba(251,191,36,0.4);color:var(--warning);}
+.symptom-chip.sev-medium .sev-dot{display:inline-block;background:var(--warning);}
+.symptom-chip.sev-high{background:var(--danger-bg);border-color:rgba(248,113,113,0.4);color:var(--danger);}
+.symptom-chip.sev-high .sev-dot{display:inline-block;background:var(--danger);}
+
+/* FIX: the custom-symptom row was overflowing its parent box because the
+   input had no min-width:0, so a flex child with default min-width:auto
+   refuses to shrink below its content size and pushes the Add button out
+   past the box's right edge. min-width:0 on the input lets it shrink
+   properly inside the flex row, and flex-shrink:0 + white-space:nowrap on
+   the button keeps it a fixed size so it never gets squeezed or pushed out. */
+.symptom-custom-row{display:flex;gap:6px;padding-top:10px;border-top:1px solid var(--border);width:100%;}
+.symptom-custom-input{
+  flex:1 1 auto;
+  min-width:0;                 /* <- the actual fix: allows shrinking inside flex row */
+  width:100%;
+  background:var(--surface-strong);border:1px solid var(--border);border-radius:6px;
+  padding:7px 10px;font-size:11px;color:var(--text);outline:none;font-family:'Inter',sans-serif;
+  transition:border .15s;
+}
+.symptom-custom-input:focus{border-color:var(--border-bright);}
+.symptom-custom-input::placeholder{color:var(--muted-dim);}
+.symptom-custom-add{
+  flex:0 0 auto;                /* <- never grow or shrink */
+  white-space:nowrap;
+  background:var(--accent-glow);border:1px solid var(--border-bright);border-radius:6px;
+  padding:7px 12px;font-size:11px;color:var(--accent);cursor:pointer;font-family:'Inter',sans-serif;
+  transition:all .15s;
+}
+.symptom-custom-add:hover{background:rgba(59,130,246,0.25);}
+.symptom-selected-summary{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);}
+.symptom-summary-tag{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:20px;font-size:9px;font-weight:600;max-width:100%;}
+.symptom-summary-empty{font-size:10px;color:var(--muted-dim);font-style:italic;}
+
 /* XRAY PREVIEW */
 .xray-preview-box{background:var(--surface-soft);border:1px solid var(--border);border-radius:10px;overflow:hidden;animation:fadeIn .3s ease;}
 .xpb-header{padding:8px 10px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
@@ -181,7 +231,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
 .profile-dropdown-item{width:100%;display:flex;align-items:center;gap:8px;padding:9px 12px;background:none;border:none;border-radius:8px;color:var(--muted-strong);font-family:'Inter',sans-serif;font-size:12px;cursor:pointer;text-align:left;transition:background .15s;}
 .profile-dropdown-item:hover{background:var(--surface-strong);}
 .logout-item:hover{background:rgba(248,113,113,0.12);color:#FDA4AF;}
-.logout-modal-backdrop{position:fixed;inset:0;background:rgba(6,21,40,0.75);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:999;}
+.logout-modal-backdrop{position:fixed;inset:0;background:rgba(6,21,40,0.75);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:9999;overflow:auto;}
 .logout-modal-backdrop.show{display:flex;}
 .logout-modal{width:320px;background:var(--surface);border:1px solid var(--border-bright);border-radius:16px;padding:28px 24px 20px;text-align:center;box-shadow:0 24px 60px rgba(0,0,0,0.6);animation:modalIn .18s ease;}
 .logout-modal-icon{width:48px;height:48px;border-radius:50%;background:rgba(253,164,175,0.12);color:#FDA4AF;display:flex;align-items:center;justify-content:center;font-size:22px;margin:0 auto 14px;}
@@ -271,22 +321,24 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
 .cd-welcome-icon{font-size:40px;opacity:.4;}
 .cd-welcome h3{font-size:16px;font-weight:500;color:#d4e0e8;}
 .cd-welcome p{font-size:12px;line-height:1.7;max-width:280px;}
+
+.list-loading{padding:12px;font-size:11px;color:var(--muted-dim);text-align:center;font-style:italic;}
+.list-error{padding:12px;font-size:11px;color:var(--danger);text-align:center;}
 </style>
 </head>
 <body>
 <div class="app">
 
-<!-- NAV -->
 <div class="topnav">
   <div class="logo">
-    <div class="logo-icon"><i class="ti ti-brain" aria-hidden="true"></i></div>
+    <div class="logo-icon"><i class="ti ti-brain"></i></div>
     MEDSIGHT · AI
   </div>
   <div class="nav-pills">
     <div class="nav-pill active">Screening</div>
-    <div class="nav-pill" onclick="window.location.href='records.html'">Patient Records</div>
-    <div class="nav-pill" onclick="window.location.href='analytics.html'">Analytics</div>
-    <div class="nav-pill" onclick="window.location.href='settings.html'">Settings</div>
+    <div class="nav-pill" onclick="window.location.href='/records.html'">Patient Records</div>
+    <div class="nav-pill" onclick="window.location.href='/analytics.html'">Analytics</div>
+    <div class="nav-pill" onclick="window.location.href='/settings.html'">Settings</div>
   </div>
   <div class="nav-right">
     <div class="badge">Model v2.4.1</div>
@@ -301,28 +353,16 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
         <button class="profile-dropdown-item logout-item" onclick="requestLogout()"><i class="ti ti-logout" style="font-size:15px;"></i><span>Log out</span></button>
       </div>
     </div>
-    <div class="logout-modal-backdrop" id="logoutModalBackdrop">
-      <div class="logout-modal">
-        <div class="logout-modal-icon"><i class="ti ti-logout"></i></div>
-        <div class="logout-modal-title">Sign out?</div>
-        <div class="logout-modal-text">You'll need to sign in again to access the screening dashboard.</div>
-        <div class="logout-modal-actions">
-          <button class="logout-modal-btn cancel" onclick="cancelLogout()">Cancel</button>
-          <button class="logout-modal-btn confirm" onclick="confirmLogout()">Yes, sign out</button>
-        </div>
-      </div>
-    </div>
+
   </div>
 </div>
 
 <div class="main">
-
-  <!-- LEFT PANEL -->
   <div class="left-panel">
     <div>
       <div class="section-label">Patient</div>
       <button class="action-btn-large btn-blue" onclick="openPatientModal()">
-        <i class="ti ti-user-search" aria-hidden="true"></i> Select Patient
+        <i class="ti ti-user-search"></i> Select Patient
       </button>
     </div>
 
@@ -342,10 +382,33 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
       </div>
     </div>
 
+    <div id="symptomsInput" style="display:none;">
+      <div class="section-label">Symptoms</div>
+      <div class="symptom-box">
+        <div class="symptom-box-header">
+          <div class="symptom-hint">Tap a symptom to cycle severity</div>
+          <span class="symptom-count-badge" id="symptomCountBadge">0 selected</span>
+        </div>
+
+        <div class="symptom-chip-grid" id="symptomChipGrid"></div>
+
+        <div class="symptom-custom-row">
+          <input id="customSymptomInput" class="symptom-custom-input" type="text"
+                 placeholder="Other symptom…"
+                 onkeydown="if(event.key==='Enter'){addCustomSymptomChip();event.preventDefault();}"/>
+          <button class="symptom-custom-add" onclick="addCustomSymptomChip()">Add</button>
+        </div>
+
+        <div class="symptom-selected-summary" id="symptomSelectedSummary">
+          <span class="symptom-summary-empty">No symptoms selected</span>
+        </div>
+      </div>
+    </div>
+
     <div>
       <div class="section-label">X-Ray</div>
       <button class="action-btn-large btn-outline" onclick="document.getElementById('fileInput').click()">
-        <i class="ti ti-upload" aria-hidden="true"></i> Upload X-Ray
+        <i class="ti ti-upload"></i> Upload X-Ray
       </button>
       <input type="file" id="fileInput" accept="image/*,.dcm" style="display:none;" onchange="handleUpload(event)"/>
     </div>
@@ -360,7 +423,6 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
       </div>
     </div>
 
-    <!-- AI ORB -->
     <div class="ai-orb-wrap" onclick="openChatDrawer()" title="Ask AI about this scan">
       <div class="ai-orb-label">Ask AI</div>
       <div class="ai-orb" id="orbEl">
@@ -382,7 +444,6 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
     </div>
   </div>
 
-  <!-- CENTER PANEL -->
   <div class="center">
     <div class="toolbar">
       <div class="tool-sep"></div>
@@ -394,7 +455,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
 
     <div class="xray-box" id="xrayBox">
       <div class="xray-empty" id="xrayEmpty">
-        <i class="ti ti-x-ray" aria-hidden="true"></i>
+        <i class="ti ti-x-ray"></i>
         <div class="xray-empty-text">No X-ray uploaded</div>
         <div class="xray-empty-sub">Select a patient and upload a scan to begin analysis</div>
       </div>
@@ -456,13 +517,12 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
     </div>
   </div>
 
-  <!-- RIGHT PANEL -->
   <div class="right-panel">
     <div class="rp-sec">
       <div class="rp-title">Primary Finding</div>
       <div id="findingWaiting">
         <div class="waiting-state">
-          <div class="waiting-icon"><i class="ti ti-stethoscope" aria-hidden="true"></i></div>
+          <div class="waiting-icon"><i class="ti ti-stethoscope"></i></div>
           <div class="waiting-text">Waiting for X-ray</div>
           <div class="waiting-sub">Upload a chest X-ray to begin AI analysis and view disease predictions.</div>
         </div>
@@ -481,7 +541,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
       <div class="rp-title">AI Explanation</div>
       <div id="explanationWaiting">
         <div class="explanation-waiting">
-          <div class="explanation-waiting-text">AI explanation will appear here once the scan is analysed. The model will describe why it detected the condition and which lung regions contributed to the prediction.</div>
+          <div class="explanation-waiting-text">AI explanation will appear here once the scan is analysed.</div>
         </div>
       </div>
       <div id="explanationResult" style="display:none;">
@@ -494,16 +554,16 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
     <div class="rp-sec">
       <div class="rp-title">Actions</div>
       <button class="rp-action rp-action-danger" onclick="flagForReview()">
-        <i class="ti ti-flag" aria-hidden="true"></i> Flag for Review
+        <i class="ti ti-flag"></i> Flag for Review
       </button>
-      <button class="rp-action rp-action-primary" onclick="window.location.href='report.html'">
-        <i class="ti ti-file-text" aria-hidden="true"></i> Generate Clinical Report
+      <button class="rp-action rp-action-primary" onclick="window.location.href='/report.html'">
+        <i class="ti ti-file-text"></i> Generate Clinical Report
       </button>
     </div>
 
     <div class="rp-sec">
       <div class="disclaimer">
-        <i class="ti ti-shield" style="font-size:11px;margin-right:4px;" aria-hidden="true"></i>
+        <i class="ti ti-shield" style="font-size:11px;margin-right:4px;"></i>
         AI screening tool only. All findings must be confirmed by a qualified radiologist before any clinical decision is made. Not for diagnostic use.
       </div>
     </div>
@@ -511,7 +571,18 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
 </div>
 </div>
 
-<!-- PATIENT MODAL -->
+<div class="logout-modal-backdrop" id="logoutModalBackdrop">
+  <div class="logout-modal">
+    <div class="logout-modal-icon"><i class="ti ti-logout"></i></div>
+    <div class="logout-modal-title">Sign out?</div>
+    <div class="logout-modal-text">You'll need to sign in again to access the screening dashboard.</div>
+    <div class="logout-modal-actions">
+      <button class="logout-modal-btn cancel" onclick="cancelLogout()">Cancel</button>
+      <button class="logout-modal-btn confirm" onclick="confirmLogout()">Yes, sign out</button>
+    </div>
+  </div>
+</div>
+
 <div class="modal-backdrop" id="patientModal">
   <div class="modal">
     <div id="step1">
@@ -519,12 +590,12 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
       <div class="modal-sub">Is this an existing patient or a new patient?</div>
       <div class="modal-choice-row">
         <div class="modal-choice" onclick="showStep('step2existing')">
-          <i class="ti ti-users" aria-hidden="true"></i>
+          <i class="ti ti-users"></i>
           <div class="modal-choice-label">Existing Patient</div>
           <div class="modal-choice-sub">Search from records</div>
         </div>
         <div class="modal-choice" onclick="showStep('step2new')">
-          <i class="ti ti-user-plus" aria-hidden="true"></i>
+          <i class="ti ti-user-plus"></i>
           <div class="modal-choice-label">New Patient</div>
           <div class="modal-choice-sub">Enter details</div>
         </div>
@@ -537,12 +608,12 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
     <div id="step2existing" style="display:none;">
       <button class="modal-back" onclick="showStep('step1')"><i class="ti ti-arrow-left" style="font-size:13px;"></i> Back</button>
       <div class="modal-title">Search Patient</div>
-      <div class="modal-sub">Search by name or patient ID</div>
+      <div class="modal-sub">Search by name</div>
       <div class="search-wrap">
-        <i class="ti ti-search" aria-hidden="true"></i>
-        <input class="search-input" type="text" placeholder="e.g. Rajan Mehta or PT-00421" id="patientSearch" oninput="filterPatients()"/>
+        <i class="ti ti-search"></i>
+        <input class="search-input" type="text" placeholder="e.g. Rajan Mehta" id="patientSearch" oninput="filterPatients()"/>
       </div>
-      <div class="patient-list" id="patientList"></div>
+      <div class="patient-list" id="patientList"><div class="list-loading">Loading patients…</div></div>
       <div class="modal-actions" style="margin-top:12px;">
         <button class="modal-btn modal-btn-cancel" onclick="closePatientModal()">Cancel</button>
         <button class="modal-btn modal-btn-confirm" onclick="confirmExistingPatient()">Select Patient</button>
@@ -584,7 +655,6 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
   </div>
 </div>
 
-<!-- CHAT DRAWER -->
 <div class="chat-drawer-backdrop" id="chatBackdrop" onclick="closeChatDrawer()"></div>
 <div class="chat-drawer" id="chatDrawer">
   <div class="cd-header">
@@ -619,35 +689,42 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
 </div>
 
 <script>
-/* ─────────────────────────────────────────────
-   KEY FIX: Two separate variables
-   selectedPatient  = temp selection inside modal (reset on close)
-   confirmedPatient = persists after modal confirm (used for upload guard)
-───────────────────────────────────────────── */
-const PATIENTS = [
-  { id:'PT-00421', name:'Rajan Mehta',    age:54, sex:'Male',   dept:'Pulmonology' },
-  { id:'PT-00398', name:'Priya Sharma',   age:42, sex:'Female', dept:'General' },
-  { id:'PT-00415', name:'Arun Krishnan',  age:67, sex:'Male',   dept:'ICU' },
-  { id:'PT-00402', name:'Sunita Patel',   age:38, sex:'Female', dept:'Pulmonology' },
-  { id:'PT-00388', name:'Vikram Nair',    age:59, sex:'Male',   dept:'Emergency' },
-  { id:'PT-00376', name:'Kavitha Reddy',  age:45, sex:'Female', dept:'General' },
-  { id:'PT-00361', name:'Mohan Das',      age:71, sex:'Male',   dept:'Pulmonology' },
-  { id:'PT-00349', name:'Ananya Singh',   age:29, sex:'Female', dept:'General' },
-];
+const API_BASE = 'http://127.0.0.1:8000';
+const token    = () => localStorage.getItem('token') || localStorage.getItem('pneumoscan_token') || '';
+const authHdr  = () => ({ 'Authorization': 'Bearer ' + token() });
 
-let selectedPatient  = null; // temp — inside modal only
-let confirmedPatient = null; // ← persists after modal closes
+let apiPatients      = [];
+let selectedPatient  = null;
+let confirmedPatient = null;
 let cdScanResult     = null;
 let cdChatHistory    = [];
 let cdIsStreaming     = false;
 let cdGreeted        = false;
+let inferenceRunning = false;
 
-/* ── MODAL ── */
+(function initProfile() {
+  try {
+    const u = JSON.parse(localStorage.getItem('pneumoscan_user') || '{}');
+    if (u.full_name) applyProfile(u);
+  } catch(e) {}
+  fetch(`${API_BASE}/auth/me`, { headers: authHdr() })
+    .then(r => r.ok ? r.json() : null)
+    .then(u => { if (u) { localStorage.setItem('pneumoscan_user', JSON.stringify(u)); applyProfile(u); } })
+    .catch(() => {});
+})();
+
+function applyProfile(u) {
+  const initials = (u.full_name || 'Dr').replace(/^Dr\.?\s*/i,'').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase() || 'DR';
+  document.getElementById('avatarInitials').textContent  = initials;
+  document.getElementById('dropdownName').textContent    = u.full_name || 'Doctor';
+  document.getElementById('dropdownEmail').textContent   = u.email || '';
+}
+
 function showStep(id) {
   ['step1','step2existing','step2new'].forEach(s => {
     document.getElementById(s).style.display = s === id ? 'block' : 'none';
   });
-  if (id === 'step2existing') renderPatientList('');
+  if (id === 'step2existing') loadPatients();
 }
 
 function openPatientModal() {
@@ -658,87 +735,174 @@ function openPatientModal() {
 function closePatientModal() {
   document.getElementById('patientModal').classList.remove('show');
   document.getElementById('patientSearch').value = '';
-  selectedPatient = null; // only reset the MODAL temp variable
-  // ← confirmedPatient is NOT touched here
+  selectedPatient = null;
 }
 
-/* ── EXISTING PATIENT ── */
-function renderPatientList(q) {
-  const filtered = PATIENTS.filter(p =>
-    p.name.toLowerCase().includes(q.toLowerCase()) ||
-    p.id.toLowerCase().includes(q.toLowerCase())
-  );
-  document.getElementById('patientList').innerHTML = filtered.map(p => `
-    <div class="patient-list-item ${selectedPatient?.id === p.id ? 'selected' : ''}"
-         id="pli-${p.id}" onclick="selectPatientItem('${p.id}')">
-      <div class="pli-avatar">${p.name.split(' ').map(w=>w[0]).join('').slice(0,2)}</div>
-      <div>
-        <div class="pli-name">${p.name}</div>
-        <div class="pli-meta">${p.age} · ${p.sex} · ${p.dept} · ${p.id}</div>
-      </div>
-    </div>
-  `).join('');
+async function loadPatients(query = '') {
+  document.getElementById('patientList').innerHTML = '<div class="list-loading">Loading…</div>';
+  try {
+    const r = await fetch(`${API_BASE}/patients/search?name=${encodeURIComponent(query)}`, { headers: authHdr() });
+    if (!r.ok) throw new Error('API error');
+    apiPatients = await r.json();
+    renderPatientList(apiPatients);
+  } catch(e) {
+    document.getElementById('patientList').innerHTML = '<div class="list-error">⚠ Could not load patients. Is the server running?</div>';
+  }
 }
 
 function filterPatients() {
-  renderPatientList(document.getElementById('patientSearch').value);
+  const q = document.getElementById('patientSearch').value.trim();
   selectedPatient = null;
+  clearTimeout(window._ptTimer);
+  window._ptTimer = setTimeout(() => loadPatients(q), 300);
+}
+
+function renderPatientList(patients) {
+  if (!patients.length) {
+    document.getElementById('patientList').innerHTML = '<div class="list-loading">No patients found.</div>';
+    return;
+  }
+  document.getElementById('patientList').innerHTML = patients.map(p => `
+    <div class="patient-list-item" id="pli-${p.id}" onclick="selectPatientItem(${p.id})">
+      <div class="pli-avatar">${(p.name||'?').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase()}</div>
+      <div>
+        <div class="pli-name">${p.name}</div>
+        <div class="pli-meta">${p.age || '—'} · ${p.gender || '—'} · ${p.department || '—'}</div>
+      </div>
+    </div>`).join('');
 }
 
 function selectPatientItem(id) {
   document.querySelectorAll('.patient-list-item').forEach(el => el.classList.remove('selected'));
   const el = document.getElementById('pli-' + id);
   if (el) el.classList.add('selected');
-  selectedPatient = PATIENTS.find(p => p.id === id);
+  selectedPatient = apiPatients.find(p => p.id === id) || null;
 }
 
 function confirmExistingPatient() {
   if (!selectedPatient) { alert('Please select a patient from the list.'); return; }
-  confirmedPatient = selectedPatient; // ← SAVE to persistent variable
+  confirmedPatient = selectedPatient;
+  resetSymptoms();
   displayPatient(confirmedPatient);
   closePatientModal();
 }
 
-/* ── NEW PATIENT ── */
-function confirmNewPatient() {
+async function confirmNewPatient() {
   const name = document.getElementById('newName').value.trim();
   const dept = document.getElementById('newDept').value.trim();
   const age  = document.getElementById('newAge').value.trim();
   const sex  = document.getElementById('newSex').value;
   if (!name || !dept || !age || !sex) { alert('Please fill in all fields.'); return; }
-  const id = 'PT-' + Math.floor(10000 + Math.random() * 90000);
-  const p = { id, name, age: parseInt(age), sex, dept };
-  PATIENTS.unshift(p);
-  confirmedPatient = p; // ← SAVE to persistent variable
-  displayPatient(confirmedPatient);
-  closePatientModal();
+
+  try {
+    const r = await fetch(`${API_BASE}/patients/`, {
+      method: 'POST',
+      headers: { ...authHdr(), 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, department: dept, age: parseInt(age), gender: sex })
+    });
+    if (!r.ok) throw new Error('Could not create patient');
+    const newP = await r.json();
+    confirmedPatient = newP;
+    resetSymptoms();
+    displayPatient(confirmedPatient);
+    closePatientModal();
+  } catch(e) {
+    alert('Failed to add patient: ' + e.message);
+  }
 }
 
-/* ── DISPLAY PATIENT ── */
 function displayPatient(p) {
-  const initials = p.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
-  document.getElementById('pdAvatar').textContent = initials;
-  document.getElementById('pdName').textContent = p.name;
-  document.getElementById('pdMeta').textContent = `${p.sex} · ${p.age} yrs · #${p.id}`;
-  document.getElementById('pdDept').textContent = p.dept;
-  document.getElementById('pdAgeSex').textContent = `${p.age} · ${p.sex}`;
-  document.getElementById('pdId').textContent = `#${p.id}`;
+  const initials = (p.name || '?').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+  document.getElementById('pdAvatar').textContent   = initials;
+  document.getElementById('pdName').textContent     = p.name;
+  document.getElementById('pdMeta').textContent     = `${p.gender || '—'} · ${p.age || '—'} yrs`;
+  document.getElementById('pdDept').textContent     = p.department || '—';
+  document.getElementById('pdAgeSex').textContent   = `${p.age || '—'} · ${p.gender || '—'}`;
+  document.getElementById('pdId').textContent       = `#${p.id}`;
   document.getElementById('patientDisplay').style.display = 'block';
+  document.getElementById('symptomsInput').style.display  = 'block';
 }
 
-/* ── UPLOAD ── */
+const COMMON_SYMPTOMS = [
+  'Chest pain', 'Shortness of breath', 'Cough', 'Fever',
+  'Fatigue', 'Wheezing', 'Night sweats', 'Chest tightness',
+  'Dyspnea', 'Productive cough', 'Weight loss', 'Loss of appetite'
+];
+
+let symptomState   = {};
+let customChipList = [];
+
+const SEV_CYCLE = [null, 'low', 'medium', 'high'];
+
+function resetSymptoms() {
+  symptomState   = {};
+  customChipList = [];
+  renderSymptomChips();
+}
+
+function cycleSymptom(name) {
+  const current   = symptomState[name] || null;
+  const idx       = SEV_CYCLE.indexOf(current);
+  const nextState = SEV_CYCLE[(idx + 1) % SEV_CYCLE.length];
+  if (nextState === null) delete symptomState[name];
+  else symptomState[name] = nextState;
+  renderSymptomChips();
+}
+
+function addCustomSymptomChip() {
+  const input = document.getElementById('customSymptomInput');
+  const name  = input.value.trim();
+  if (!name) return;
+  if (!customChipList.includes(name) && !COMMON_SYMPTOMS.includes(name)) {
+    customChipList.push(name);
+  }
+  symptomState[name] = 'medium';
+  input.value = '';
+  renderSymptomChips();
+}
+
+function getCurrentSymptomsArray() {
+  return Object.entries(symptomState).map(([name, severity]) => ({ name, severity }));
+}
+
+function renderSymptomChips() {
+  const allChipNames = [...COMMON_SYMPTOMS, ...customChipList];
+  const grid = document.getElementById('symptomChipGrid');
+  grid.innerHTML = allChipNames.map(name => {
+    const sev      = symptomState[name] || null;
+    const sevClass = sev ? `sev-${sev}` : '';
+    return `<span class="symptom-chip ${sevClass}" onclick="cycleSymptom('${name.replace(/'/g,"\\'")}')">
+      <span class="sev-dot"></span>${name}
+    </span>`;
+  }).join('');
+
+  const count = Object.keys(symptomState).length;
+  document.getElementById('symptomCountBadge').textContent = `${count} selected`;
+
+  const summary = document.getElementById('symptomSelectedSummary');
+  if (!count) {
+    summary.innerHTML = '<span class="symptom-summary-empty">No symptoms selected</span>';
+  } else {
+    const SEV_COLOR = { high:'#F87171', medium:'#FBBF24', low:'#60A5FA' };
+    const SEV_BG    = { high:'rgba(248,113,113,0.12)', medium:'rgba(251,191,36,0.12)', low:'rgba(96,165,250,0.12)' };
+    summary.innerHTML = Object.entries(symptomState).map(([name, sev]) =>
+      `<span class="symptom-summary-tag" style="background:${SEV_BG[sev]};color:${SEV_COLOR[sev]};">
+        ${name} · ${sev}
+      </span>`
+    ).join('');
+  }
+}
+
+renderSymptomChips();
+
 function handleUpload(event) {
   const file = event.target.files[0];
+  event.target.value = '';
+
   if (!file) return;
+  if (!confirmedPatient) { alert('Please select a patient first.'); return; }
+  if (inferenceRunning) return;
 
-  // ← USE confirmedPatient (persists after modal close)
-  if (!confirmedPatient) {
-    alert('Please select a patient first.');
-    event.target.value = '';
-    return;
-  }
-
-  // preview in left panel
   document.getElementById('xpbName').textContent = file.name;
   document.getElementById('xpbSize').textContent = (file.size / 1024).toFixed(0) + ' KB';
   const reader = new FileReader();
@@ -746,19 +910,19 @@ function handleUpload(event) {
   reader.readAsDataURL(file);
   document.getElementById('xrayPreviewBox').style.display = 'block';
 
-  // show viewer
-  document.getElementById('xrayEmpty').style.display = 'none';
-  document.getElementById('xraySvg').style.display = 'block';
-  document.getElementById('hmOverlay').style.display = 'block';
-  document.getElementById('zoomTag').style.display = 'block';
+  document.getElementById('xrayEmpty').style.display   = 'none';
+  document.getElementById('xraySvg').style.display     = 'block';
+  document.getElementById('hmOverlay').style.display   = 'block';
+  document.getElementById('zoomTag').style.display     = 'block';
 
-  // show actual image
   const reader2 = new FileReader();
   reader2.onload = e => {
+    const imageData = e.target.result;
     const img = document.getElementById('xrayImage');
-    img.setAttribute('href', e.target.result);
+    img.setAttribute('href', imageData);
     img.style.display = 'block';
     document.getElementById('staticLung').style.display = 'none';
+    localStorage.setItem('medsight_scan_image', imageData);
   };
   reader2.readAsDataURL(file);
 
@@ -769,16 +933,16 @@ function handleUpload(event) {
   runInference(file);
 }
 
-/* ── INFERENCE ── */
 function runInference(file) {
-  const token = localStorage.getItem('token') || localStorage.getItem('pneumoscan_token');
-  const today = new Date().toISOString().split('T')[0];
+  inferenceRunning = true;
 
+  const today = new Date().toISOString().split('T')[0];
   const formData = new FormData();
   formData.append('file', file);
-  formData.append('patient_id', '1'); // hardcoded to DB patient id=1 for now
+  formData.append('patient_id', String(confirmedPatient.id));
   formData.append('scan_date', today);
-  formData.append('department', confirmedPatient?.dept || 'General');
+  formData.append('department', confirmedPatient.department || confirmedPatient.dept || 'General');
+  formData.append('symptoms', JSON.stringify(getCurrentSymptomsArray()));
 
   document.getElementById('loadingOverlay').classList.add('active');
   const steps = ['Preprocessing image…','Running EfficientNet inference…','Computing class probabilities…','Generating Grad-CAM heatmap…'];
@@ -788,22 +952,24 @@ function runInference(file) {
     si++;
   }, 900);
 
-  fetch('http://127.0.0.1:8000/scans/predict', {
+  fetch(`${API_BASE}/scans/predict`, {
     method: 'POST',
-    headers: { 'Authorization': 'Bearer ' + token },
+    headers: authHdr(),
     body: formData
   })
-  .then(r => r.json())
+  .then(r => { if (!r.ok) throw new Error('API ' + r.status); return r.json(); })
   .then(data => {
     clearInterval(stepInterval);
     document.getElementById('loadingOverlay').classList.remove('active');
+    inferenceRunning = false;
     showResults(data);
   })
   .catch(err => {
     clearInterval(stepInterval);
     document.getElementById('loadingOverlay').classList.remove('active');
-    console.error(err);
-    showResults(getMockResult()); // fallback to mock
+    inferenceRunning = false;
+    console.warn('Inference failed, using mock:', err.message);
+    showResults(getMockResult());
   });
 }
 
@@ -812,41 +978,42 @@ function getMockResult() {
     top_condition:'Pneumonia', confidence:0.913, triage:'HIGH', mock_mode:true,
     scan_id:'SCN-MOCK001',
     findings:{ Pneumonia:0.913, Effusion:0.347, Cardiomegaly:0.082, Infiltration:0.051, 'No Finding':0.087 },
-    gradcam_base64:null
+    gradcam_base64: null
   };
 }
 
-/* ── SHOW RESULTS ── */
 const EXPLANATIONS = {
-  Pneumonia:    'The model detected focal consolidation in the right upper lobe (RUL) with increased radio-opacity. Grad-CAM activation is concentrated in the RUL region, consistent with bacterial pneumonia. The opacification pattern and lobe-specific involvement are key predictors.',
-  Effusion:     'Blunting of the costophrenic angles was detected bilaterally, with the left side showing greater attenuation. The Grad-CAM heatmap highlights the lower lung zones where fluid accumulation is visible, consistent with pleural effusion.',
-  Cardiomegaly: 'The cardiac silhouette appears enlarged relative to the thoracic width (cardiothoracic ratio >0.5). Grad-CAM activation is centred over the cardiac shadow. This finding is associated with cardiomegaly and warrants echocardiographic evaluation.',
-  Infiltration: 'Diffuse bilateral haziness is present across multiple lung zones. The Grad-CAM heatmap shows widespread activation consistent with interstitial infiltrates. This pattern may indicate infection, pulmonary oedema, or inflammatory disease.',
-  'No Finding': 'No significant pulmonary abnormality was detected. Lung fields appear clear bilaterally with no focal consolidation, effusion, or cardiomegaly. Grad-CAM activation is diffuse and low-intensity, indicating no dominant region of concern.',
+  Pneumonia:    'The model detected focal consolidation in the right upper lobe (RUL) with increased radio-opacity. Grad-CAM activation is concentrated in the RUL region, consistent with bacterial pneumonia.',
+  Effusion:     'Blunting of the costophrenic angles was detected bilaterally, with the left side showing greater attenuation. Consistent with pleural effusion.',
+  Cardiomegaly: 'The cardiac silhouette appears enlarged relative to the thoracic width (cardiothoracic ratio >0.5). This finding warrants echocardiographic evaluation.',
+  Infiltration: 'Diffuse bilateral haziness is present across multiple lung zones, consistent with interstitial infiltrates.',
+  'No Finding': 'No significant pulmonary abnormality was detected. Lung fields appear clear bilaterally.',
 };
 
 function showResults(data) {
-  cdScanResult = data; // sync to chat
+  cdScanResult = data;
 
-  // ── normalise field names ──
-  // backend may return: top_condition OR primary_finding OR condition
-  const cond = data.top_condition || data.primary_finding || data.condition || 'Unknown';
-  // confidence may be 0-1 float OR already a 0-100 percentage string
-  const rawConf = data.confidence ?? data.confidence_score ?? 0;
+  if (confirmedPatient) {
+    localStorage.setItem('medsight_patient', JSON.stringify(confirmedPatient));
+    localStorage.setItem('medsight_symptoms_' + confirmedPatient.id, JSON.stringify(getCurrentSymptomsArray()));
+  }
+  localStorage.setItem('medsight_scan_result', JSON.stringify(data));
+
+  const cond      = data.top_condition || data.primary_finding || data.condition || 'Unknown';
+  const rawConf   = data.confidence ?? data.confidence_score ?? 0;
   const confFloat = rawConf > 1 ? rawConf / 100 : rawConf;
-  const conf = (confFloat * 100).toFixed(1);
-  // triage may be: triage OR risk_level OR severity
-  const triage = data.triage || data.risk_level || data.severity || (confFloat >= 0.75 ? 'HIGH' : confFloat >= 0.40 ? 'MEDIUM' : 'LOW');
-  // findings may be: findings OR probabilities OR predictions
-  const findings = data.findings || data.probabilities || data.predictions || {};
-  const col    = triage === 'HIGH' ? 'var(--danger)' : triage === 'MEDIUM' ? 'var(--warning)' : 'var(--success)';
-  const bg     = triage === 'HIGH' ? 'var(--danger-bg)' : triage === 'MEDIUM' ? 'rgba(251,191,36,0.1)' : 'var(--success-bg)';
-  const bdr    = triage === 'HIGH' ? 'rgba(248,113,113,0.3)' : triage === 'MEDIUM' ? 'rgba(251,191,36,0.3)' : 'rgba(52,211,153,0.3)';
+  const conf      = (confFloat * 100).toFixed(1);
+  const triage    = data.triage || data.risk_level || data.severity || (confFloat >= 0.75 ? 'HIGH' : confFloat >= 0.40 ? 'MEDIUM' : 'LOW');
+  const findings  = data.findings || data.probabilities || data.predictions || {};
+
+  const col = triage === 'HIGH' ? 'var(--danger)' : triage === 'MEDIUM' ? 'var(--warning)' : 'var(--success)';
+  const bg  = triage === 'HIGH' ? 'var(--danger-bg)' : triage === 'MEDIUM' ? 'rgba(251,191,36,0.1)' : 'var(--success-bg)';
+  const bdr = triage === 'HIGH' ? 'rgba(248,113,113,0.3)' : triage === 'MEDIUM' ? 'rgba(251,191,36,0.3)' : 'rgba(52,211,153,0.3)';
 
   document.getElementById('findingDisease').textContent = cond;
   document.getElementById('findingDisease').style.color = col;
-  document.getElementById('findingConf').textContent = `${conf}% confidence · ${triage === 'HIGH' ? 'High' : triage === 'MEDIUM' ? 'Medium' : 'Low'} risk`;
-  document.getElementById('findingTriage').textContent = `● ${triage} PRIORITY`;
+  document.getElementById('findingConf').textContent    = `${conf}% confidence · ${triage === 'HIGH' ? 'High' : triage === 'MEDIUM' ? 'Medium' : 'Low'} risk`;
+  document.getElementById('findingTriage').textContent  = `● ${triage} PRIORITY`;
   Object.assign(document.getElementById('findingTriage').style, { color:col, background:bg, borderColor:bdr });
 
   const sorted = Object.entries(findings).filter(([c])=>c!=='No Finding').sort((a,b)=>b[1]-a[1]);
@@ -859,17 +1026,16 @@ function showResults(data) {
     </div>`;
   }).join('');
 
-  document.getElementById('findingWaiting').style.display = 'none';
-  document.getElementById('findingResult').style.display = 'block';
-
-  document.getElementById('explanationText').textContent = EXPLANATIONS[cond] || 'AI analysis complete. Refer to the Grad-CAM heatmap for visual explanation.';
+  document.getElementById('findingWaiting').style.display   = 'none';
+  document.getElementById('findingResult').style.display    = 'block';
+  document.getElementById('explanationText').textContent    = EXPLANATIONS[cond] || 'AI analysis complete.';
   document.getElementById('explanationWaiting').style.display = 'none';
-  document.getElementById('explanationResult').style.display = 'block';
+  document.getElementById('explanationResult').style.display  = 'block';
 
   const regionMap = { Pneumonia:'⚠ Pneumonia detected · RUL', Effusion:'⚠ Effusion detected · Base', Cardiomegaly:'⚠ Cardiomegaly detected · Cardiac', Infiltration:'⚠ Infiltration detected · Bilateral', 'No Finding':'✓ No abnormality detected' };
   const annTag = document.getElementById('annTag');
-  annTag.textContent = regionMap[cond] || '⚠ Abnormality detected';
-  annTag.style.display = 'block';
+  annTag.textContent     = regionMap[cond] || '⚠ Abnormality detected';
+  annTag.style.display   = 'block';
 
   if (data.gradcam_base64) {
     document.getElementById('hmOverlay').innerHTML = `<img src="data:image/png;base64,${data.gradcam_base64}" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;opacity:0.75;">`;
@@ -878,199 +1044,166 @@ function showResults(data) {
     gc.style.display = 'block';
   }
 
-  // update chat context badge
   const badge = document.getElementById('cdContextBadge');
   if (badge) {
-    badge.className = `cd-context-badge ${(data.triage||'LOW').toLowerCase()}`;
+    badge.className   = `cd-context-badge ${(triage).toLowerCase()}`;
     badge.textContent = `${cond} · ${conf}% · ${triage}`;
   }
   cdGreeted = false;
 }
 
-/* ── HEATMAP TOGGLE ── */
 function toggleHeatmap() {
   document.getElementById('hmToggle').classList.toggle('on');
   document.getElementById('hmOverlay').classList.toggle('visible');
 }
 
-/* ── ACTIONS ── */
 function flagForReview() { alert('Case flagged for radiologist review.'); }
 
-/* ── PROFILE / LOGOUT ── */
-const AUTH_TOKEN_KEY = 'pneumoscan_token';
-const AUTH_USER_KEY  = 'pneumoscan_user';
-const LOGIN_PAGE_URL = 'login.html';
-(function() {
-  const raw = localStorage.getItem(AUTH_USER_KEY);
-  if (!raw) return;
-  try {
-    const user = JSON.parse(raw);
-    const initials = (user.full_name||'Dr').replace(/^Dr\.?\s*/i,'').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase()||'DR';
-    document.getElementById('avatarInitials').textContent = initials;
-    document.getElementById('dropdownName').textContent = user.full_name||'Doctor';
-    document.getElementById('dropdownEmail').textContent = user.email||'';
-  } catch(e) {}
-})();
 function toggleProfileMenu() { document.getElementById('profileDropdown').classList.toggle('open'); }
-document.addEventListener('click', e => { const w = document.getElementById('profileMenuWrap'); if (w && !w.contains(e.target)) document.getElementById('profileDropdown').classList.remove('open'); });
+document.addEventListener('click', e => {
+  const w = document.getElementById('profileMenuWrap');
+  if (w && !w.contains(e.target)) document.getElementById('profileDropdown').classList.remove('open');
+});
 function requestLogout() { document.getElementById('profileDropdown').classList.remove('open'); document.getElementById('logoutModalBackdrop').classList.add('show'); }
-function cancelLogout() { document.getElementById('logoutModalBackdrop').classList.remove('show'); }
-function confirmLogout() { try{localStorage.removeItem('token');}catch(e){} try{localStorage.removeItem(AUTH_TOKEN_KEY);}catch(e){} try{localStorage.removeItem(AUTH_USER_KEY);}catch(e){} window.location.href=LOGIN_PAGE_URL; }
+function cancelLogout()  { document.getElementById('logoutModalBackdrop').classList.remove('show'); }
+function confirmLogout() {
+  ['token','pneumoscan_token','pneumoscan_user'].forEach(k => { try { localStorage.removeItem(k); } catch(e) {} });
+  window.location.href = '/login.html';
+}
 
-/* ── NAV ── */
-document.querySelectorAll('.nav-pill').forEach(pill => { pill.addEventListener('click', () => { document.querySelectorAll('.nav-pill').forEach(p=>p.classList.remove('active')); pill.classList.add('active'); }); });
-document.addEventListener('keydown', e => { if (e.key==='Escape') { cancelLogout(); closePatientModal(); closeChatDrawer(); } });
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { cancelLogout(); closePatientModal(); closeChatDrawer(); }
+});
 
-/* ── CHAT DRAWER ── */
-const CD_API_BASE = 'http://localhost:8000';
 function openChatDrawer() {
   document.getElementById('chatDrawer').classList.add('open');
   document.getElementById('chatBackdrop').classList.add('open');
   syncChatContext();
-  setTimeout(()=>document.getElementById('cdInput').focus(), 300);
+  setTimeout(() => document.getElementById('cdInput').focus(), 300);
 }
 function closeChatDrawer() {
   document.getElementById('chatDrawer').classList.remove('open');
   document.getElementById('chatBackdrop').classList.remove('open');
 }
 function syncChatContext() {
-  const badge = document.getElementById('cdContextBadge');
-  const input = document.getElementById('cdInput');
+  const badge   = document.getElementById('cdContextBadge');
+  const input   = document.getElementById('cdInput');
   const sendBtn = document.getElementById('cdSendBtn');
   if (cdScanResult) {
-    const t = (cdScanResult.triage||'LOW').toLowerCase();
-    badge.className = `cd-context-badge ${t}`;
-    const _cond = cdScanResult.top_condition || cdScanResult.primary_finding || cdScanResult.condition || 'Unknown';
-    const _raw = cdScanResult.confidence ?? cdScanResult.confidence_score ?? 0;
-    const _conf = (_raw > 1 ? _raw : _raw * 100).toFixed(1);
-    const _triage = cdScanResult.triage || cdScanResult.risk_level || cdScanResult.severity || 'LOW';
+    const t      = (cdScanResult.triage || 'LOW').toLowerCase();
+    const _cond  = cdScanResult.top_condition || cdScanResult.primary_finding || 'Unknown';
+    const _raw   = cdScanResult.confidence ?? 0;
+    const _conf  = (_raw > 1 ? _raw : _raw * 100).toFixed(1);
+    const _triage = cdScanResult.triage || 'LOW';
+    badge.className   = `cd-context-badge ${t}`;
     badge.textContent = `${_cond} · ${_conf}% · ${_triage}`;
-    input.disabled = false; sendBtn.disabled = false;
+    input.disabled    = false;
+    sendBtn.disabled  = false;
     document.getElementById('cdSuggestions').style.display = 'flex';
-    document.getElementById('cdWelcome').style.display = 'none';
+    document.getElementById('cdWelcome').style.display     = 'none';
     if (!cdGreeted) { showCdScanMessage(cdScanResult); cdGreeted = true; }
   } else {
-    badge.className = 'cd-context-badge none';
+    badge.className   = 'cd-context-badge none';
     badge.textContent = 'No scan loaded — upload & run a scan first';
-    input.disabled = true; sendBtn.disabled = true;
+    input.disabled    = true;
+    sendBtn.disabled  = true;
   }
 }
 function showCdScanMessage(data) {
-  const conf = (data.confidence*100).toFixed(1);
+  const conf = ((data.confidence ?? 0) * 100).toFixed(1);
   const triageText = { HIGH:'⚠️ <strong>High-priority</strong> finding. Please see a doctor today.', MEDIUM:'⚡ <strong>Medium-priority</strong> finding. See a doctor within 1–2 days.', LOW:'✅ <strong>Low-priority</strong> finding. Routine follow-up recommended.' }[data.triage] || '';
-  const rows = Object.entries(data.findings||data.probabilities||{}).filter(([c])=>c!=='No Finding').sort((a,b)=>b[1]-a[1]).map(([c,p])=>`<li>${c}: <strong>${(p*100).toFixed(1)}%</strong></li>`).join('');
-  cdAddBotMessage(`<span class="cd-tag">SCAN LOADED · ${data.scan_id||'—'}</span>
+  const rows = Object.entries(data.findings || {}).filter(([c])=>c!=='No Finding').sort((a,b)=>b[1]-a[1]).map(([c,p])=>`<li>${c}: <strong>${(p*100).toFixed(1)}%</strong></li>`).join('');
+  cdAddBotMessage(`<span class="cd-tag">SCAN LOADED · ${data.scan_id || '—'}</span>
     Primary finding: <strong>${data.top_condition}</strong> (${conf}% confidence)<br>
-    ${triageText}${rows?`<ul style="margin-top:6px">${rows}</ul>`:''}
+    ${triageText}${rows ? `<ul style="margin-top:6px">${rows}</ul>` : ''}
     <div class="cd-disclaimer">Ask me anything about this result in plain language.</div>`);
 }
-function cdNowTime() { return new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}); }
+function cdNowTime() { return new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}); }
 function cdEscape(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 function cdAddUserMessage(text) {
   const msgs = document.getElementById('cdMessages');
-  const d = document.createElement('div'); d.className='cd-msg user';
-  d.innerHTML=`<div class="cd-avatar user">👤</div><div style="display:flex;flex-direction:column;gap:3px;align-items:flex-end;"><div class="cd-bubble">${cdEscape(text)}</div><div class="cd-ts">${cdNowTime()}</div></div>`;
-  msgs.appendChild(d); msgs.scrollTop=msgs.scrollHeight;
+  const d = document.createElement('div'); d.className = 'cd-msg user';
+  d.innerHTML = `<div class="cd-avatar user">👤</div><div style="display:flex;flex-direction:column;gap:3px;align-items:flex-end;"><div class="cd-bubble">${cdEscape(text)}</div><div class="cd-ts">${cdNowTime()}</div></div>`;
+  msgs.appendChild(d); msgs.scrollTop = msgs.scrollHeight;
 }
 function cdAddBotMessage(html) {
   const msgs = document.getElementById('cdMessages');
-  const d = document.createElement('div'); d.className='cd-msg bot';
-  const bubble = document.createElement('div'); bubble.className='cd-bubble'; bubble.innerHTML=html;
-  const wrap = document.createElement('div'); wrap.style.cssText='display:flex;flex-direction:column;gap:3px;';
+  const d = document.createElement('div'); d.className = 'cd-msg bot';
+  const bubble = document.createElement('div'); bubble.className = 'cd-bubble'; bubble.innerHTML = html;
+  const wrap = document.createElement('div'); wrap.style.cssText = 'display:flex;flex-direction:column;gap:3px;';
   wrap.appendChild(bubble);
-  const ts = document.createElement('div'); ts.className='cd-ts'; ts.textContent=cdNowTime();
-  wrap.appendChild(ts); d.innerHTML=`<div class="cd-avatar bot">AI</div>`; d.appendChild(wrap);
-  msgs.appendChild(d); msgs.scrollTop=msgs.scrollHeight; return bubble;
+  const ts = document.createElement('div'); ts.className = 'cd-ts'; ts.textContent = cdNowTime();
+  wrap.appendChild(ts); d.innerHTML = `<div class="cd-avatar bot">AI</div>`; d.appendChild(wrap);
+  msgs.appendChild(d); msgs.scrollTop = msgs.scrollHeight; return bubble;
 }
 function cdShowTyping() {
-  const msgs=document.getElementById('cdMessages');
-  const d=document.createElement('div'); d.className='cd-msg bot'; d.id='cdTypingMsg';
-  d.innerHTML=`<div class="cd-avatar bot">AI</div><div class="cd-bubble"><div class="cd-typing"><span></span><span></span><span></span></div></div>`;
-  msgs.appendChild(d); msgs.scrollTop=msgs.scrollHeight;
+  const msgs = document.getElementById('cdMessages');
+  const d = document.createElement('div'); d.className = 'cd-msg bot'; d.id = 'cdTypingMsg';
+  d.innerHTML = `<div class="cd-avatar bot">AI</div><div class="cd-bubble"><div class="cd-typing"><span></span><span></span><span></span></div></div>`;
+  msgs.appendChild(d); msgs.scrollTop = msgs.scrollHeight;
 }
 function cdRemoveTyping() { document.getElementById('cdTypingMsg')?.remove(); }
 async function cdCallAPI(userMsg) {
-  const res = await fetch(`${CD_API_BASE}/chat/`, {
+  const res = await fetch(`${API_BASE}/chat/`, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + (localStorage.getItem('token') || localStorage.getItem('pneumoscan_token'))
-    },
-    body: JSON.stringify({
-  message:      userMsg,
-  question:     userMsg,
-  scan_result:  cdScanResult,
-  chat_history: cdChatHistory.slice(-6)
-})
+    headers: { ...authHdr(), 'Content-Type': 'application/json' },
+    body: JSON.stringify({ message: userMsg, question: userMsg, scan_result: cdScanResult, chat_history: cdChatHistory.slice(-6) })
   });
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
-
   const contentType = res.headers.get('content-type') || '';
 
-  // ── NON-STREAMING JSON response ──
   if (contentType.includes('application/json')) {
     const data = await res.json();
-    // handle common response shapes
-const text = data.reply || data.response || data.answer || data.text || data.output || '';
-if (!text) {
-  cdAddBotMessage('<span class="cd-tag">NOTE</span>Received an empty reply. Check your <code>/chat/</code> endpoint.');
-  return '';
-}    const bubble = cdAddBotMessage(text.replace(/\n/g,'<br>') + '<div class="cd-disclaimer">AI-generated response. Verify with a qualified healthcare professional.</div>');
+    const text = data.reply || data.response || data.answer || data.text || data.output || '';
+    if (!text) { cdAddBotMessage('<span class="cd-tag">NOTE</span>Received an empty reply.'); return ''; }
+    cdAddBotMessage(text.replace(/\n/g,'<br>') + '<div class="cd-disclaimer">AI-generated response. Verify with a qualified healthcare professional.</div>');
     return text;
   }
 
-  // ── STREAMING SSE response ──
   const bubble = cdAddBotMessage('');
-  const reader = res.body.getReader();
+  const reader  = res.body.getReader();
   const decoder = new TextDecoder();
   let fullText = '', buffer = '';
-
   while (true) {
     const { done, value } = await reader.read();
     if (done) break;
     buffer += decoder.decode(value, { stream: true });
-    const lines = buffer.split('\n');
-    buffer = lines.pop();
+    const lines = buffer.split('\n'); buffer = lines.pop();
     for (const line of lines) {
       if (!line.startsWith('data: ')) continue;
       try {
         const chunk = JSON.parse(line.slice(6));
         const token = chunk.token || chunk.text || chunk.delta || chunk.content || '';
-        if (token) {
-          fullText += token;
-          bubble.innerHTML = fullText.replace(/\n/g,'<br>');
-          document.getElementById('cdMessages').scrollTop = document.getElementById('cdMessages').scrollHeight;
-        }
+        if (token) { fullText += token; bubble.innerHTML = fullText.replace(/\n/g,'<br>'); document.getElementById('cdMessages').scrollTop = 99999; }
       } catch {}
     }
   }
-
-  if (fullText) {
-    bubble.innerHTML += '<div class="cd-disclaimer">AI-generated response. Verify with a qualified healthcare professional.</div>';
-  } else {
-    bubble.innerHTML = 'No response received. Check that your chat endpoint is running.';
-  }
+  if (fullText) bubble.innerHTML += '<div class="cd-disclaimer">AI-generated. Verify with a qualified healthcare professional.</div>';
+  else bubble.innerHTML = 'No response received.';
   return fullText;
 }
 async function cdSend() {
-  const input=document.getElementById('cdInput');
-  const text=input.value.trim(); if (!text||cdIsStreaming) return;
-  input.value=''; input.style.height='auto';
-  cdAddUserMessage(text); cdChatHistory.push({role:'user',content:text});
-  cdIsStreaming=true; document.getElementById('cdSendBtn').disabled=true; cdShowTyping();
+  const input   = document.getElementById('cdInput');
+  const text    = input.value.trim();
+  if (!text || cdIsStreaming) return;
+  input.value   = ''; input.style.height = 'auto';
+  cdAddUserMessage(text); cdChatHistory.push({ role:'user', content:text });
+  cdIsStreaming  = true; document.getElementById('cdSendBtn').disabled = true; cdShowTyping();
   try {
-    await new Promise(r=>setTimeout(r,280)); cdRemoveTyping();
-    const reply=await cdCallAPI(text);
-    if (reply) cdChatHistory.push({role:'assistant',content:reply});
+    await new Promise(r => setTimeout(r, 280)); cdRemoveTyping();
+    const reply = await cdCallAPI(text);
+    if (reply) cdChatHistory.push({ role:'assistant', content:reply });
   } catch(err) {
     cdRemoveTyping();
-    cdAddBotMessage(`<span class="cd-tag">ERROR</span>Could not reach chat API: <strong>${cdEscape(err.message)}</strong>. Make sure uvicorn is running.`);
-  } finally { cdIsStreaming=false; document.getElementById('cdSendBtn').disabled=false; document.getElementById('cdInput').focus(); }
+    cdAddBotMessage(`<span class="cd-tag">ERROR</span>Could not reach chat API: <strong>${cdEscape(err.message)}</strong>.`);
+  } finally {
+    cdIsStreaming = false; document.getElementById('cdSendBtn').disabled = false; document.getElementById('cdInput').focus();
+  }
 }
-function cdSendSuggestion(text) { document.getElementById('cdInput').value=text; cdSend(); }
+function cdSendSuggestion(text) { document.getElementById('cdInput').value = text; cdSend(); }
 document.getElementById('cdSendBtn').addEventListener('click', cdSend);
-document.getElementById('cdInput').addEventListener('keydown', e => { if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();cdSend();} });
-document.getElementById('cdInput').addEventListener('input', function(){this.style.height='auto';this.style.height=Math.min(this.scrollHeight,100)+'px';});
+document.getElementById('cdInput').addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); cdSend(); } });
+document.getElementById('cdInput').addEventListener('input', function() { this.style.height = 'auto'; this.style.height = Math.min(this.scrollHeight, 100) + 'px'; });
 </script>
 </body>
 </html>

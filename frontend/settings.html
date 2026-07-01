@@ -3,113 +3,158 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>PneumoScan AI · Settings</title>
+<title>MedSight AI · Settings</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css"/>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="styles.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
 <style>
-  *{margin:0;padding:0;box-sizing:border-box;}
-  html,body{height:100%;background:#0a0c10;color:#e2e8f0;font-family:'DM Sans',sans-serif;overflow:hidden;}
+:root{
+  --bg:#061528;--surface:#0F1F34;--surface-soft:#132942;--surface-strong:#183156;
+  --border:rgba(96,165,250,0.14);--border-bright:rgba(96,165,250,0.30);
+  --accent:#60A5FA;--accent-strong:#3B82F6;--accent-glow:rgba(59,130,246,0.15);
+  --text:#E2EFFF;--muted-strong:#CBD5E6;--muted:#94A3B8;--muted-dim:#4A6080;
+  --danger:#F87171;--warning:#FBBF24;--success:#34D399;
+  --danger-bg:rgba(248,113,113,0.10);--success-bg:rgba(52,211,153,0.10);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;overflow:hidden;}
 
-  /* NAV */
-  .topnav{background:#0d1017;border-bottom:1px solid #1e2530;display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:48px;flex-shrink:0;}
-  .logo{display:flex;align-items:center;gap:8px;font-family:'Space Mono',monospace;font-size:12px;color:#60c8f5;letter-spacing:.5px;}
-  .logo-dot{width:7px;height:7px;border-radius:50%;background:#60c8f5;}
-  .nav-pills{display:flex;gap:4px;}
-  .nav-pill{padding:4px 14px;border-radius:6px;font-size:11px;color:#64748b;cursor:pointer;transition:all .15s;}
-  .nav-pill:hover{color:#94a3b8;}
-  .nav-pill.active{background:#1a2235;color:#60c8f5;}
-  .badge{background:#1a2235;border:1px solid #1e2d45;border-radius:20px;padding:3px 10px;font-size:10px;color:#60c8f5;font-family:'Space Mono',monospace;}
-  .avatar{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#2563eb,#7c3aed);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#fff;}
-  .nav-right{display:flex;align-items:center;gap:12px;}
+/* NAV */
+.topnav{background:rgba(15,31,52,0.97);border-bottom:1px solid var(--border);backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:52px;flex-shrink:0;}
+.logo{display:flex;align-items:center;gap:10px;font-family:'Space Mono',monospace;font-size:13px;color:var(--accent);letter-spacing:.5px;font-weight:700;}
+.logo-icon{width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,var(--accent-strong),#1D4ED8);display:flex;align-items:center;justify-content:center;font-size:14px;color:#fff;}
+.nav-pills{display:flex;gap:2px;}
+.nav-pill{padding:5px 16px;border-radius:8px;font-size:12px;font-weight:500;color:var(--muted);cursor:pointer;transition:all .15s;}
+.nav-pill:hover{color:var(--muted-strong);background:var(--surface-soft);}
+.nav-pill.active{background:var(--accent-glow);color:var(--accent);border:1px solid var(--border-bright);}
+.nav-badge{background:var(--surface-soft);border:1px solid var(--border-bright);border-radius:20px;padding:3px 12px;font-size:10px;color:var(--accent);font-family:'Space Mono',monospace;}
+.nav-right{display:flex;align-items:center;gap:14px;}
+.avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--accent-strong),#1D4ED8);border:2px solid var(--border-bright);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;font-family:'Space Mono',monospace;cursor:pointer;}
 
-  /* LAYOUT */
-  .app{display:flex;flex-direction:column;height:100vh;}
-  .main{display:grid;grid-template-columns:220px 1fr;flex:1;overflow:hidden;}
+/* LAYOUT */
+.app{display:flex;flex-direction:column;height:100vh;}
+.main{display:grid;grid-template-columns:220px 1fr;flex:1;overflow:hidden;min-height:0;}
 
-  /* SIDEBAR */
-.sidebar{background:#0d1017;border-right:1px solid #1e2530;padding:16px 10px;display:flex;flex-direction:column;gap:4px;overflow:hidden;}
-  .sidebar-section{font-size:9px;font-weight:500;color:#334155;letter-spacing:1.2px;text-transform:uppercase;padding:10px 10px 6px;margin-top:8px;}
-  .sidebar-section:first-child{margin-top:0;}
-  .side-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;cursor:pointer;border:1px solid transparent;transition:all .15s;font-size:12px;color:#64748b;}
-  .side-item:hover{background:#131822;color:#94a3b8;}
-  .side-item.active{background:#0f1e35;border-color:#1e3a5f;color:#60c8f5;}
-  .side-item i{font-size:15px;width:16px;text-align:center;}
-  .side-badge{margin-left:auto;background:#2d1010;border:1px solid #5a1f1f;color:#f87171;font-size:9px;padding:1px 6px;border-radius:4px;font-family:'Space Mono',monospace;}
+/* SIDEBAR */
+.sidebar{background:var(--surface);border-right:1px solid var(--border);padding:14px 10px;display:flex;flex-direction:column;gap:2px;overflow-y:auto;}
+.sidebar-section{font-size:9px;font-weight:600;color:var(--muted-dim);letter-spacing:1.2px;text-transform:uppercase;padding:10px 10px 5px;margin-top:6px;}
+.sidebar-section:first-child{margin-top:0;}
+.side-item{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:8px;cursor:pointer;border:1px solid transparent;transition:all .15s;font-size:12px;font-weight:500;color:var(--muted);}
+.side-item:hover{background:var(--surface-soft);color:var(--muted-strong);}
+.side-item.active{background:var(--accent-glow);border-color:var(--border-bright);color:var(--accent);}
+.side-item i{font-size:15px;width:16px;text-align:center;flex-shrink:0;}
 
-  /* CONTENT */
-.content{overflow:hidden;padding:24px;display:flex;flex-direction:column;gap:20px;background:#080b0f;}
+/* CONTENT */
+.content{overflow-y:auto;padding:20px 24px;display:flex;flex-direction:column;gap:18px;background:var(--bg);}
+.page-header{display:flex;align-items:flex-start;justify-content:space-between;flex-shrink:0;}
+.page-title{font-size:17px;font-weight:600;color:var(--muted-strong);}
+.page-sub{font-size:11px;color:var(--muted-dim);margin-top:3px;}
+.save-btn{background:var(--accent-glow);border:1px solid var(--border-bright);border-radius:8px;padding:8px 16px;font-size:11px;font-weight:500;color:var(--accent);cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s;display:flex;align-items:center;gap:6px;white-space:nowrap;}
+.save-btn:hover{background:rgba(59,130,246,0.25);}
+.save-btn:disabled{opacity:.5;cursor:not-allowed;}
 
-  .page-header{display:flex;align-items:flex-start;justify-content:space-between;}
-  .page-title{font-size:18px;font-weight:500;color:#94a3b8;}
-  .page-sub{font-size:11px;color:#475569;margin-top:3px;}
-  .save-btn{background:#1a3a6a;border:1px solid #2563eb;border-radius:8px;padding:8px 18px;font-size:11px;color:#60c8f5;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;display:flex;align-items:center;gap:6px;}
-  .save-btn:hover{background:#1e4480;}
+/* CARDS */
+.settings-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;flex-shrink:0;}
+.card-header{padding:13px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+.card-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
+.card-title{font-size:12px;font-weight:600;color:var(--muted-strong);}
+.card-sub{font-size:10px;color:var(--muted-dim);margin-top:2px;}
+.card-body{padding:4px 0;}
 
-  /* SECTION CARDS */
-  .settings-card{background:#0d1017;border:1px solid #1e2530;border-radius:12px;overflow:hidden;}
-  .card-header{padding:14px 18px;border-bottom:1px solid #1e2530;display:flex;align-items:center;gap:10px;}
-  .card-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;}
-  .card-title{font-size:13px;font-weight:500;color:#94a3b8;}
-  .card-sub{font-size:10px;color:#475569;margin-top:1px;}
-  .card-body{padding:6px 0;}
+/* ROWS */
+.setting-row{display:flex;align-items:center;justify-content:space-between;padding:11px 16px;border-bottom:1px solid var(--surface-soft);transition:background .12s;}
+.setting-row:last-child{border-bottom:none;}
+.setting-row:hover{background:var(--surface-soft);}
+.setting-label{font-size:12px;color:var(--muted-strong);font-weight:500;}
+.setting-sub{font-size:10px;color:var(--muted-dim);margin-top:2px;}
+.setting-control{flex-shrink:0;margin-left:20px;}
 
-  /* SETTING ROWS */
-  .setting-row{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;border-bottom:1px solid #0d1017;transition:background .12s;}
-  .setting-row:last-child{border-bottom:none;}
-  .setting-row:hover{background:#0a0f18;}
-  .setting-label{font-size:12px;color:#94a3b8;font-weight:500;}
-  .setting-sub{font-size:10px;color:#475569;margin-top:2px;}
-  .setting-control{flex-shrink:0;margin-left:20px;}
+/* TOGGLE */
+.toggle{width:34px;height:18px;background:var(--surface-strong);border-radius:9px;position:relative;cursor:pointer;border:1px solid var(--border);transition:background .2s;}
+.toggle.on{background:var(--accent-strong);border-color:var(--accent);}
+.toggle::after{content:'';position:absolute;width:12px;height:12px;background:var(--muted-dim);border-radius:50%;top:2px;left:2px;transition:all .2s;}
+.toggle.on::after{left:18px;background:#fff;}
 
-  /* TOGGLE */
-  .toggle{width:36px;height:20px;background:#1e2530;border-radius:10px;position:relative;cursor:pointer;border:1px solid #2d3a4a;transition:background .2s;}
-  .toggle.on{background:#1a4a7a;border-color:#2563eb;}
-  .toggle::after{content:'';position:absolute;width:14px;height:14px;background:#475569;border-radius:50%;top:2px;left:2px;transition:all .2s;}
-  .toggle.on::after{left:18px;background:#60c8f5;}
+/* INPUTS */
+.setting-input{background:var(--surface-soft);border:1px solid var(--border);border-radius:7px;padding:7px 10px;font-size:11px;color:var(--text);outline:none;font-family:'Inter',sans-serif;width:180px;transition:border .15s;}
+.setting-input:focus{border-color:var(--accent);}
+.setting-input:disabled{opacity:.45;cursor:not-allowed;}
+.setting-select{background:var(--surface-soft);border:1px solid var(--border);border-radius:7px;padding:7px 10px;font-size:11px;color:var(--text);outline:none;font-family:'Inter',sans-serif;width:160px;cursor:pointer;transition:border .15s;}
+.setting-select:focus{border-color:var(--accent);}
+.setting-select option{background:var(--surface-soft);}
 
-  /* INPUT */
-  .setting-input{background:#131822;border:1px solid #1e2530;border-radius:7px;padding:6px 10px;font-size:11px;color:#94a3b8;outline:none;font-family:'DM Sans',sans-serif;width:160px;transition:border .15s;}
-  .setting-input:focus{border-color:#1e3a5f;}
+/* SLIDER */
+.slider-wrap{display:flex;align-items:center;gap:10px;}
+.setting-slider{-webkit-appearance:none;width:120px;height:4px;border-radius:2px;background:var(--surface-strong);outline:none;cursor:pointer;}
+.setting-slider::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:var(--accent);cursor:pointer;border:2px solid var(--bg);}
+.slider-val{font-size:10px;font-family:'Space Mono',monospace;color:var(--accent);min-width:34px;text-align:right;}
 
-  /* SELECT */
-  .setting-select{background:#131822;border:1px solid #1e2530;border-radius:7px;padding:6px 10px;font-size:11px;color:#94a3b8;outline:none;font-family:'DM Sans',sans-serif;width:160px;cursor:pointer;}
-  .setting-select option{background:#131822;}
+/* API STATUS */
+.status-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.status-dot.online{background:var(--success);box-shadow:0 0 6px rgba(52,211,153,.5);}
+.status-dot.offline{background:var(--danger);}
+.status-dot.checking{background:var(--warning);animation:pulse 1s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
 
-  /* SLIDER */
-  .slider-wrap{display:flex;align-items:center;gap:10px;}
-  .setting-slider{-webkit-appearance:none;width:130px;height:4px;border-radius:2px;background:#1e2530;outline:none;cursor:pointer;}
-  .setting-slider::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:#60c8f5;cursor:pointer;border:2px solid #0d1017;}
-  .slider-val{font-size:10px;font-family:'Space Mono',monospace;color:#60c8f5;min-width:32px;text-align:right;}
+/* PROFILE CARD */
+.profile-card{display:flex;align-items:center;gap:14px;padding:16px;}
+.profile-avatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--accent-strong),#1D4ED8);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;color:#fff;flex-shrink:0;border:2px solid var(--border-bright);}
+.profile-name{font-size:13px;font-weight:600;color:var(--text);}
+.profile-role{font-size:10px;color:var(--muted-dim);margin-top:2px;}
 
-  /* API STATUS */
-  .api-status{display:flex;align-items:center;gap:6px;font-size:10px;}
-  .status-dot{width:7px;height:7px;border-radius:50%;}
-  .status-dot.online{background:#22c55e;box-shadow:0 0 6px rgba(34,197,94,.5);}
-  .status-dot.offline{background:#ef4444;}
+/* DANGER */
+.danger-card{background:var(--surface);border:1px solid rgba(248,113,113,0.25);border-radius:12px;overflow:hidden;flex-shrink:0;}
+.danger-header{padding:13px 16px;border-bottom:1px solid rgba(248,113,113,0.15);display:flex;align-items:center;gap:10px;}
+.danger-icon{width:32px;height:32px;border-radius:8px;background:var(--danger-bg);display:flex;align-items:center;justify-content:center;font-size:15px;color:var(--danger);flex-shrink:0;}
+.danger-btn{background:transparent;border:1px solid rgba(248,113,113,0.3);border-radius:7px;padding:6px 14px;font-size:11px;color:var(--danger);cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s;}
+.danger-btn:hover{background:var(--danger-bg);}
 
-  /* PROFILE CARD */
-  .profile-card{display:flex;align-items:center;gap:14px;padding:16px 18px;border-bottom:1px solid #131822;}
-  .profile-avatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#2563eb,#7c3aed);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:600;color:#fff;flex-shrink:0;}
-  .profile-name{font-size:13px;font-weight:500;color:#e2e8f0;}
-  .profile-role{font-size:10px;color:#475569;margin-top:2px;}
-  .profile-edit{margin-left:auto;background:transparent;border:1px solid #1e2530;border-radius:6px;padding:5px 10px;font-size:10px;color:#64748b;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;}
-  .profile-edit:hover{background:#131822;color:#94a3b8;}
+/* GHOST BTN */
+.ghost-btn{background:transparent;border:1px solid var(--border);border-radius:7px;padding:6px 14px;font-size:11px;color:var(--muted);cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s;}
+.ghost-btn:hover{border-color:var(--accent);color:var(--accent);}
 
-  /* DANGER ZONE */
-  .danger-card{background:#0d1017;border:1px solid #3f1515;border-radius:12px;overflow:hidden;}
-  .danger-header{padding:14px 18px;border-bottom:1px solid #3f1515;display:flex;align-items:center;gap:10px;}
-  .danger-icon{width:32px;height:32px;border-radius:8px;background:#2d1010;display:flex;align-items:center;justify-content:center;font-size:15px;color:#f87171;}
-  .danger-btn{background:transparent;border:1px solid #5a1f1f;border-radius:7px;padding:7px 14px;font-size:11px;color:#f87171;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;}
-  .danger-btn:hover{background:#2d1010;}
+/* MONO LABEL */
+.mono-label{font-size:11px;font-family:'Space Mono',monospace;color:var(--accent);}
+.mono-label.muted{color:var(--muted-dim);}
+.mono-label.success{color:var(--success);}
 
-  /* TOAST */
-  .toast{position:fixed;bottom:24px;right:24px;background:#0d1017;border:1px solid #1e3a5f;border-radius:10px;padding:12px 18px;display:flex;align-items:center;gap:10px;font-size:12px;color:#60c8f5;transform:translateY(80px);opacity:0;transition:all .3s;z-index:100;}
-  .toast.show{transform:translateY(0);opacity:1;}
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--surface);border:1px solid var(--border-bright);border-radius:10px;padding:11px 16px;display:flex;align-items:center;gap:9px;font-size:12px;color:var(--muted-strong);transform:translateY(80px);opacity:0;transition:all .3s;z-index:200;box-shadow:0 8px 24px rgba(0,0,0,.4);}
+.toast.show{transform:translateY(0);opacity:1;}
 
-  ::-webkit-scrollbar{width:4px;}
-  ::-webkit-scrollbar-track{background:transparent;}
-  ::-webkit-scrollbar-thumb{background:#1e2530;border-radius:2px;}
+/* SKELETON */
+.skeleton{background:linear-gradient(90deg,var(--surface-soft) 25%,var(--surface-strong) 50%,var(--surface-soft) 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;border-radius:4px;}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* SECTION VISIBILITY */
+.section-wrap{display:none;flex-direction:column;gap:16px;}
+.section-wrap.active{display:flex;}
+
+/* PROFILE DROPDOWN */
+.profile-menu-wrap{position:relative;display:inline-block;}
+.profile-dropdown{position:absolute;top:calc(100% + 10px);right:0;width:200px;background:var(--surface-soft);border:1px solid var(--border-bright);border-radius:12px;box-shadow:0 16px 40px rgba(0,0,0,0.5);padding:6px;opacity:0;transform:translateY(-6px);pointer-events:none;transition:all .15s ease;z-index:300;}
+.profile-dropdown.open{opacity:1;transform:translateY(0);pointer-events:auto;}
+.profile-dropdown-email{padding:10px 12px 8px;font-size:11px;color:var(--muted);}
+.profile-dropdown-divider{height:1px;background:var(--border);margin:4px 0;}
+.profile-dropdown-item{width:100%;display:flex;align-items:center;gap:8px;padding:9px 12px;background:none;border:none;border-radius:8px;color:var(--muted-strong);font-family:'Inter',sans-serif;font-size:12px;cursor:pointer;text-align:left;transition:all .15s;}
+.profile-dropdown-item:hover{background:rgba(248,113,113,0.12);color:#FDA4AF;}
+
+/* LOGOUT MODAL */
+.logout-modal-backdrop{position:fixed;inset:0;background:rgba(6,21,40,0.75);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:9999;}
+.logout-modal-backdrop.show{display:flex;}
+.logout-modal{width:320px;background:var(--surface);border:1px solid var(--border-bright);border-radius:16px;padding:28px 24px 20px;text-align:center;box-shadow:0 24px 60px rgba(0,0,0,0.6);}
+.logout-modal-icon{width:48px;height:48px;border-radius:50%;background:rgba(253,164,175,0.12);color:#FDA4AF;display:flex;align-items:center;justify-content:center;font-size:22px;margin:0 auto 14px;}
+.logout-modal-title{font-size:16px;font-weight:700;color:var(--text);margin-bottom:6px;}
+.logout-modal-text{font-size:11px;color:var(--muted);line-height:1.6;margin-bottom:20px;}
+.logout-modal-actions{display:flex;gap:8px;}
+.logout-modal-btn{flex:1;padding:10px;border-radius:9px;font-size:12px;font-weight:600;font-family:'Inter',sans-serif;cursor:pointer;transition:all .15s;}
+.logout-modal-btn.cancel{background:var(--surface-soft);border:1px solid var(--border);color:var(--muted-strong);}
+.logout-modal-btn.confirm{background:#FDA4AF;border:1px solid #FDA4AF;color:#1a0506;}
+.logout-modal-btn.confirm:hover{background:#f87171;border-color:#f87171;}
+
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border-bright);border-radius:2px;}
 </style>
 </head>
 <body>
@@ -117,211 +162,212 @@
 
 <!-- NAV -->
 <div class="topnav">
-  <div class="logo"><div class="logo-dot"></div>PNEUMOSCAN · AI</div>
-<div class="nav-pills">
-    <div class="nav-pill" onclick="window.location.href='dashbord.html'">Screening</div>
-    <div class="nav-pill" onclick="window.location.href='records.html'">Patient Records</div>
-    <div class="nav-pill" onclick="window.location.href='analytics.html'">Analytics</div>
+  <div class="logo"><div class="logo-icon"><i class="ti ti-brain"></i></div>MEDSIGHT · AI</div>
+  <div class="nav-pills">
+    <div class="nav-pill" onclick="window.location.href='/dashbord.html'">Screening</div>
+    <div class="nav-pill" onclick="window.location.href='/records.html'">Patient Records</div>
+    <div class="nav-pill" onclick="window.location.href='/analytics.html'">Analytics</div>
     <div class="nav-pill active">Settings</div>
   </div>
   <div class="nav-right">
-    <div class="badge">Model v2.4.1</div>
-    <div class="avatar">DR</div>
+    <div class="nav-badge">Model v2.4.1</div>
+    <!-- PROFILE AVATAR + DROPDOWN -->
+    <div class="profile-menu-wrap" id="profileMenuWrap">
+      <div class="avatar" id="navAvatar" onclick="toggleProfileMenu()">DR</div>
+      <div class="profile-dropdown" id="profileDropdown">
+        <div class="profile-dropdown-email" id="dropdownEmail">—</div>
+        <div class="profile-dropdown-divider"></div>
+        <button class="profile-dropdown-item" onclick="requestLogout()">
+          <i class="ti ti-logout" style="font-size:15px;"></i> Log out
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- LOGOUT MODAL — outside .main so it's never clipped -->
+<div class="logout-modal-backdrop" id="logoutModalBackdrop">
+  <div class="logout-modal">
+    <div class="logout-modal-icon"><i class="ti ti-logout"></i></div>
+    <div class="logout-modal-title">Sign out?</div>
+    <div class="logout-modal-text">You'll need to sign in again to access settings.</div>
+    <div class="logout-modal-actions">
+      <button class="logout-modal-btn cancel" onclick="cancelLogout()">Cancel</button>
+      <button class="logout-modal-btn confirm" onclick="confirmLogout()">Yes, sign out</button>
+    </div>
   </div>
 </div>
 
 <div class="main">
 
-  <!-- SETTINGS SIDEBAR -->
+  <!-- SIDEBAR -->
   <div class="sidebar">
     <div class="sidebar-section">Account</div>
-    <div class="side-item active" onclick="showSection('profile')"><i class="ti ti-user-circle"></i> Profile</div>
-    <div class="side-item" onclick="showSection('notifications')"><i class="ti ti-bell"></i> Notifications<span class="side-badge">3</span></div>
+    <div class="side-item active" onclick="showSection('profile',this)"><i class="ti ti-user-circle"></i> Profile</div>
+    <div class="side-item" onclick="showSection('notifications',this)"><i class="ti ti-bell"></i> Notifications</div>
 
     <div class="sidebar-section">Model</div>
-    <div class="side-item" onclick="showSection('model')"><i class="ti ti-brain"></i> AI Model</div>
-    <div class="side-item" onclick="showSection('thresholds')"><i class="ti ti-adjustments"></i> Thresholds</div>
+    <div class="side-item" onclick="showSection('model',this)"><i class="ti ti-brain"></i> AI Model</div>
+    <div class="side-item" onclick="showSection('thresholds',this)"><i class="ti ti-adjustments"></i> Thresholds</div>
 
     <div class="sidebar-section">System</div>
-    <div class="side-item" onclick="showSection('api')"><i class="ti ti-api"></i> API & Backend</div>
-    <div class="side-item" onclick="showSection('display')"><i class="ti ti-layout"></i> Display</div>
-    <div class="side-item" onclick="showSection('security')"><i class="ti ti-shield-lock"></i> Security</div>
+    <div class="side-item" onclick="showSection('api',this)"><i class="ti ti-api"></i> API & Backend</div>
+    <div class="side-item" onclick="showSection('display',this)"><i class="ti ti-layout"></i> Display</div>
+    <div class="side-item" onclick="showSection('security',this)"><i class="ti ti-shield-lock"></i> Security</div>
 
     <div class="sidebar-section">Data</div>
-    <div class="side-item" onclick="showSection('storage')"><i class="ti ti-database"></i> Storage</div>
-    <div class="side-item" onclick="showSection('danger')"><i class="ti ti-alert-triangle" style="color:#f87171;"></i> <span style="color:#f87171;">Danger Zone</span></div>
+    <div class="side-item" onclick="showSection('storage',this)"><i class="ti ti-database"></i> Storage</div>
+    <div class="side-item" onclick="showSection('danger',this)">
+      <i class="ti ti-alert-triangle" style="color:var(--danger);"></i>
+      <span style="color:var(--danger);">Danger Zone</span>
+    </div>
   </div>
 
   <!-- CONTENT -->
-  <div class="content" id="settingsContent">
+  <div class="content">
 
     <!-- PROFILE -->
-    <div id="section-profile">
+    <div class="section-wrap active" id="section-profile">
       <div class="page-header">
-        <div><div class="page-title">Profile</div><div class="page-sub">Manage your account information</div></div>
-        <button class="save-btn" onclick="saveSettings()"><i class="ti ti-device-floppy"></i> Save changes</button>
+        <div><div class="page-title">Profile</div><div class="page-sub">Your account information</div></div>
+        <button class="save-btn" id="profileSaveBtn" onclick="saveProfile()"><i class="ti ti-device-floppy"></i> Save changes</button>
       </div>
       <div class="settings-card">
         <div class="profile-card">
-          <div class="profile-avatar">DR</div>
+          <div class="profile-avatar" id="profileAvatar">—</div>
           <div>
-            <div class="profile-name">Dr. Ramesh Anand</div>
-            <div class="profile-role">Radiologist · Apollo Hospital, Chennai</div>
+            <div class="profile-name" id="profileName"><div class="skeleton" style="width:130px;height:13px;"></div></div>
+            <div class="profile-role" id="profileRole"><div class="skeleton" style="width:80px;height:10px;margin-top:5px;"></div></div>
           </div>
-          <button class="profile-edit">Edit photo</button>
         </div>
         <div class="card-body">
           <div class="setting-row">
             <div><div class="setting-label">Full name</div><div class="setting-sub">Your display name across the system</div></div>
-            <div class="setting-control"><input class="setting-input" type="text" value="Dr. Ramesh Anand"/></div>
+            <div class="setting-control"><input class="setting-input" id="inputName" type="text" placeholder="Loading…"/></div>
           </div>
           <div class="setting-row">
-            <div><div class="setting-label">Email address</div><div class="setting-sub">Used for report delivery and alerts</div></div>
-            <div class="setting-control"><input class="setting-input" type="email" value="r.anand@apollo.in"/></div>
+            <div><div class="setting-label">Email address</div><div class="setting-sub">Cannot be changed here</div></div>
+            <div class="setting-control"><input class="setting-input" id="inputEmail" type="email" placeholder="Loading…" disabled/></div>
           </div>
           <div class="setting-row">
-            <div><div class="setting-label">Department</div><div class="setting-sub">Your ward or department</div></div>
-            <div class="setting-control"><input class="setting-input" type="text" value="Radiology"/></div>
-          </div>
-          <div class="setting-row">
-            <div><div class="setting-label">Hospital</div><div class="setting-sub">Institution name shown on reports</div></div>
-            <div class="setting-control"><input class="setting-input" type="text" value="Apollo Hospital"/></div>
+            <div><div class="setting-label">Role</div><div class="setting-sub">Assigned by administrator</div></div>
+            <div class="setting-control"><span class="mono-label" id="inputRole">—</span></div>
           </div>
         </div>
       </div>
     </div>
 
     <!-- NOTIFICATIONS -->
-    <div id="section-notifications" style="display:none;">
+    <div class="section-wrap" id="section-notifications">
       <div class="page-header">
-        <div><div class="page-title">Notifications</div><div class="page-sub">Control when and how you are alerted</div></div>
-        <button class="save-btn" onclick="saveSettings()"><i class="ti ti-device-floppy"></i> Save changes</button>
+        <div><div class="page-title">Notifications</div><div class="page-sub">Saved in your browser</div></div>
+        <button class="save-btn" onclick="saveLocalSection('notifications')"><i class="ti ti-device-floppy"></i> Save changes</button>
       </div>
       <div class="settings-card">
         <div class="card-header">
-          <div class="card-icon" style="background:#1a2235;color:#60c8f5;"><i class="ti ti-bell"></i></div>
+          <div class="card-icon" style="background:var(--accent-glow);color:var(--accent);"><i class="ti ti-bell"></i></div>
           <div><div class="card-title">Alert preferences</div><div class="card-sub">Choose which events trigger notifications</div></div>
         </div>
         <div class="card-body">
           <div class="setting-row">
             <div><div class="setting-label">High triage findings</div><div class="setting-sub">Alert immediately when AI flags HIGH priority</div></div>
-            <div class="setting-control"><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+            <div class="setting-control"><div class="toggle on" id="notif-high" onclick="toggleClick(this)"></div></div>
           </div>
           <div class="setting-row">
             <div><div class="setting-label">Medium triage findings</div><div class="setting-sub">Alert when confidence exceeds threshold</div></div>
-            <div class="setting-control"><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+            <div class="setting-control"><div class="toggle on" id="notif-medium" onclick="toggleClick(this)"></div></div>
           </div>
           <div class="setting-row">
             <div><div class="setting-label">Normal scan results</div><div class="setting-sub">Notify on every completed scan</div></div>
-            <div class="setting-control"><div class="toggle" onclick="this.classList.toggle('on')"></div></div>
+            <div class="setting-control"><div class="toggle" id="notif-normal" onclick="toggleClick(this)"></div></div>
           </div>
           <div class="setting-row">
-            <div><div class="setting-label">Model offline alert</div><div class="setting-sub">Notify if backend becomes unreachable</div></div>
-            <div class="setting-control"><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+            <div><div class="setting-label">Backend offline alert</div><div class="setting-sub">Notify if server becomes unreachable</div></div>
+            <div class="setting-control"><div class="toggle on" id="notif-offline" onclick="toggleClick(this)"></div></div>
           </div>
           <div class="setting-row">
-            <div><div class="setting-label">Email reports</div><div class="setting-sub">Send daily summary to your email</div></div>
-            <div class="setting-control"><div class="toggle" onclick="this.classList.toggle('on')"></div></div>
+            <div><div class="setting-label">Daily email summary</div><div class="setting-sub">Send daily report to your email</div></div>
+            <div class="setting-control"><div class="toggle" id="notif-email" onclick="toggleClick(this)"></div></div>
           </div>
         </div>
       </div>
     </div>
 
     <!-- AI MODEL -->
-    <div id="section-model" style="display:none;">
+    <div class="section-wrap" id="section-model">
       <div class="page-header">
-        <div><div class="page-title">AI Model</div><div class="page-sub">Model configuration and status</div></div>
-        <button class="save-btn" onclick="saveSettings()"><i class="ti ti-device-floppy"></i> Save changes</button>
+        <div><div class="page-title">AI Model</div><div class="page-sub">Currently loaded model configuration</div></div>
       </div>
       <div class="settings-card">
         <div class="card-header">
-          <div class="card-icon" style="background:#0f1e35;color:#60c8f5;"><i class="ti ti-brain"></i></div>
-          <div><div class="card-title">Model info</div><div class="card-sub">Currently loaded model details</div></div>
+          <div class="card-icon" style="background:var(--accent-glow);color:var(--accent);"><i class="ti ti-brain"></i></div>
+          <div><div class="card-title">Model info</div><div class="card-sub">Read-only — reflects deployed weights</div></div>
         </div>
         <div class="card-body">
           <div class="setting-row">
-            <div><div class="setting-label">Architecture</div><div class="setting-sub">Neural network backbone</div></div>
-            <div class="setting-control"><span style="font-size:11px;color:#60c8f5;font-family:'Space Mono',monospace;">EfficientNet-B3</span></div>
+            <div><div class="setting-label">Architecture</div></div>
+            <div class="setting-control"><span class="mono-label">EfficientNet-B0 + B3 Ensemble</span></div>
           </div>
           <div class="setting-row">
-            <div><div class="setting-label">Training dataset</div><div class="setting-sub">Dataset used for fine-tuning</div></div>
-            <div class="setting-control"><span style="font-size:11px;color:#64748b;font-family:'Space Mono',monospace;">NIH ChestXray14</span></div>
+            <div><div class="setting-label">Training dataset</div></div>
+            <div class="setting-control"><span class="mono-label muted">NIH ChestXray14</span></div>
           </div>
           <div class="setting-row">
-            <div><div class="setting-label">Validation AUC-ROC</div><div class="setting-sub">Performance on held-out validation set</div></div>
-            <div class="setting-control"><span style="font-size:13px;font-weight:700;color:#4ade80;font-family:'Space Mono',monospace;">0.924</span></div>
+            <div><div class="setting-label">Conditions covered</div></div>
+            <div class="setting-control"><span class="mono-label muted" style="font-size:10px;">Pneumonia · Cardiomegaly · Effusion · Infiltration</span></div>
           </div>
           <div class="setting-row">
-            <div><div class="setting-label">Model version</div><div class="setting-sub">Weights file identifier</div></div>
-            <div class="setting-control"><span style="font-size:11px;color:#64748b;font-family:'Space Mono',monospace;">v2.4.1</span></div>
+            <div><div class="setting-label">Mean AUC-ROC</div></div>
+            <div class="setting-control"><span class="mono-label success" style="font-size:15px;font-weight:700;">0.7968</span></div>
           </div>
           <div class="setting-row">
-            <div><div class="setting-label">Mock mode</div><div class="setting-sub">Returns dummy predictions — disable once weights loaded</div></div>
-            <div class="setting-control"><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+            <div><div class="setting-label">Model version</div></div>
+            <div class="setting-control"><span class="mono-label muted">v2.4.1</span></div>
           </div>
           <div class="setting-row">
-            <div><div class="setting-label">Grad-CAM enabled</div><div class="setting-sub">Generate heatmap overlay on every prediction</div></div>
-            <div class="setting-control"><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
-          </div>
-          <div class="setting-row">
-            <div><div class="setting-label">Inference device</div><div class="setting-sub">Hardware used for model inference</div></div>
-            <div class="setting-control">
-              <select class="setting-select">
-                <option>CPU</option>
-                <option selected>CUDA (GPU)</option>
-                <option>MPS (Apple)</option>
-              </select>
-            </div>
+            <div><div class="setting-label">Grad-CAM heatmap</div></div>
+            <div class="setting-control"><span class="mono-label success">Enabled</span></div>
           </div>
         </div>
       </div>
     </div>
 
     <!-- THRESHOLDS -->
-    <div id="section-thresholds" style="display:none;">
+    <div class="section-wrap" id="section-thresholds">
       <div class="page-header">
-        <div><div class="page-title">Thresholds</div><div class="page-sub">Adjust AI sensitivity and triage cutoffs</div></div>
-        <button class="save-btn" onclick="saveSettings()"><i class="ti ti-device-floppy"></i> Save changes</button>
+        <div><div class="page-title">Thresholds</div><div class="page-sub">Triage cutoffs saved in your browser</div></div>
+        <button class="save-btn" onclick="saveLocalSection('thresholds')"><i class="ti ti-device-floppy"></i> Save changes</button>
       </div>
       <div class="settings-card">
         <div class="card-header">
-          <div class="card-icon" style="background:#2d1010;color:#f87171;"><i class="ti ti-adjustments"></i></div>
-          <div><div class="card-title">Triage thresholds</div><div class="card-sub">Confidence cutoffs for HIGH / MEDIUM / LOW triage</div></div>
+          <div class="card-icon" style="background:var(--danger-bg);color:var(--danger);"><i class="ti ti-adjustments"></i></div>
+          <div><div class="card-title">Triage thresholds</div><div class="card-sub">Confidence cutoffs for HIGH / MEDIUM / LOW</div></div>
         </div>
         <div class="card-body">
           <div class="setting-row">
-            <div><div class="setting-label">HIGH triage cutoff</div><div class="setting-sub">Confidence above this → flagged as HIGH priority</div></div>
+            <div><div class="setting-label">HIGH triage cutoff</div><div class="setting-sub">Confidence above this → flagged HIGH priority</div></div>
             <div class="setting-control">
               <div class="slider-wrap">
-                <input class="setting-slider" type="range" min="50" max="95" value="75" oninput="document.getElementById('highVal').textContent=this.value+'%'"/>
+                <input class="setting-slider" id="sl-high" type="range" min="50" max="95" value="75" oninput="document.getElementById('highVal').textContent=this.value+'%'"/>
                 <span class="slider-val" id="highVal">75%</span>
               </div>
             </div>
           </div>
           <div class="setting-row">
-            <div><div class="setting-label">MEDIUM triage cutoff</div><div class="setting-sub">Confidence above this → flagged as MEDIUM priority</div></div>
+            <div><div class="setting-label">MEDIUM triage cutoff</div><div class="setting-sub">Confidence above this → flagged MEDIUM priority</div></div>
             <div class="setting-control">
               <div class="slider-wrap">
-                <input class="setting-slider" type="range" min="20" max="74" value="40" oninput="document.getElementById('medVal').textContent=this.value+'%'"/>
+                <input class="setting-slider" id="sl-medium" type="range" min="20" max="74" value="40" oninput="document.getElementById('medVal').textContent=this.value+'%'"/>
                 <span class="slider-val" id="medVal">40%</span>
               </div>
             </div>
           </div>
           <div class="setting-row">
-            <div><div class="setting-label">Minimum confidence to display</div><div class="setting-sub">Findings below this are hidden from results</div></div>
+            <div><div class="setting-label">Minimum display confidence</div><div class="setting-sub">Findings below this are hidden from results</div></div>
             <div class="setting-control">
               <div class="slider-wrap">
-                <input class="setting-slider" type="range" min="1" max="30" value="5" oninput="document.getElementById('minVal').textContent=this.value+'%'"/>
+                <input class="setting-slider" id="sl-min" type="range" min="1" max="30" value="5" oninput="document.getElementById('minVal').textContent=this.value+'%'"/>
                 <span class="slider-val" id="minVal">5%</span>
-              </div>
-            </div>
-          </div>
-          <div class="setting-row">
-            <div><div class="setting-label">Human review flag threshold</div><div class="setting-sub">Scans below this confidence are flagged for manual review</div></div>
-            <div class="setting-control">
-              <div class="slider-wrap">
-                <input class="setting-slider" type="range" min="50" max="90" value="70" oninput="document.getElementById('reviewVal').textContent=this.value+'%'"/>
-                <span class="slider-val" id="reviewVal">70%</span>
               </div>
             </div>
           </div>
@@ -330,34 +376,31 @@
     </div>
 
     <!-- API & BACKEND -->
-    <div id="section-api" style="display:none;">
+    <div class="section-wrap" id="section-api">
       <div class="page-header">
-        <div><div class="page-title">API & Backend</div><div class="page-sub">FastAPI server connection settings</div></div>
+        <div><div class="page-title">API & Backend</div><div class="page-sub">FastAPI server connection</div></div>
         <button class="save-btn" onclick="checkConnection()"><i class="ti ti-plug"></i> Test connection</button>
       </div>
       <div class="settings-card">
         <div class="card-header">
-          <div class="card-icon" style="background:#0f1e35;color:#60c8f5;"><i class="ti ti-api"></i></div>
+          <div class="card-icon" style="background:var(--accent-glow);color:var(--accent);"><i class="ti ti-api"></i></div>
           <div>
             <div class="card-title">Backend connection</div>
-            <div style="display:flex;align-items:center;gap:6px;margin-top:4px;">
-              <div class="api-status"><div class="status-dot online"></div><span style="font-size:10px;color:#4ade80;">Connected · localhost:8000</span></div>
+            <div style="display:flex;align-items:center;gap:6px;margin-top:5px;">
+              <div class="status-dot checking" id="statusDot"></div>
+              <span style="font-size:10px;color:var(--muted);" id="statusText">Checking…</span>
             </div>
           </div>
         </div>
         <div class="card-body">
           <div class="setting-row">
-            <div><div class="setting-label">API base URL</div><div class="setting-sub">FastAPI server address</div></div>
-            <div class="setting-control"><input class="setting-input" type="text" value="http://localhost:8000" style="width:200px;"/></div>
+            <div><div class="setting-label">API base URL</div></div>
+            <div class="setting-control"><input class="setting-input" id="apiUrl" type="text" value="http://localhost:8000" style="width:210px;"/></div>
           </div>
           <div class="setting-row">
-            <div><div class="setting-label">Predict endpoint</div><div class="setting-sub">POST endpoint for image inference</div></div>
-            <div class="setting-control"><input class="setting-input" type="text" value="/predict" style="width:200px;"/></div>
-          </div>
-          <div class="setting-row">
-            <div><div class="setting-label">Request timeout</div><div class="setting-sub">Max wait time for inference response</div></div>
+            <div><div class="setting-label">Request timeout</div></div>
             <div class="setting-control">
-              <select class="setting-select">
+              <select class="setting-select" id="apiTimeout">
                 <option>10 seconds</option>
                 <option selected>30 seconds</option>
                 <option>60 seconds</option>
@@ -365,72 +408,58 @@
             </div>
           </div>
           <div class="setting-row">
-            <div><div class="setting-label">Auto-reconnect</div><div class="setting-sub">Retry connection if backend goes offline</div></div>
-            <div class="setting-control"><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+            <div><div class="setting-label">Auto-reconnect</div><div class="setting-sub">Retry if backend goes offline</div></div>
+            <div class="setting-control"><div class="toggle on" id="toggle-reconnect" onclick="toggleClick(this)"></div></div>
           </div>
         </div>
       </div>
     </div>
 
     <!-- DISPLAY -->
-    <div id="section-display" style="display:none;">
+    <div class="section-wrap" id="section-display">
       <div class="page-header">
-        <div><div class="page-title">Display</div><div class="page-sub">Viewer and UI preferences</div></div>
-        <button class="save-btn" onclick="saveSettings()"><i class="ti ti-device-floppy"></i> Save changes</button>
+        <div><div class="page-title">Display</div><div class="page-sub">Viewer preferences saved in your browser</div></div>
+        <button class="save-btn" onclick="saveLocalSection('display')"><i class="ti ti-device-floppy"></i> Save changes</button>
       </div>
       <div class="settings-card">
-        <div class="card-header">
-          <div class="card-icon" style="background:#131822;color:#64748b;"><i class="ti ti-layout"></i></div>
-          <div><div class="card-title">Viewer settings</div><div class="card-sub">X-ray viewer and heatmap preferences</div></div>
-        </div>
         <div class="card-body">
           <div class="setting-row">
-            <div><div class="setting-label">Default Grad-CAM overlay</div><div class="setting-sub">Show heatmap by default on scan open</div></div>
-            <div class="setting-control"><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+            <div><div class="setting-label">Default Grad-CAM overlay</div><div class="setting-sub">Show heatmap by default when scan loads</div></div>
+            <div class="setting-control"><div class="toggle on" id="disp-gradcam" onclick="toggleClick(this)"></div></div>
           </div>
           <div class="setting-row">
-            <div><div class="setting-label">Heatmap opacity</div><div class="setting-sub">Default overlay transparency</div></div>
+            <div><div class="setting-label">Heatmap opacity</div></div>
             <div class="setting-control">
               <div class="slider-wrap">
-                <input class="setting-slider" type="range" min="10" max="90" value="55" oninput="document.getElementById('opacityVal').textContent=this.value+'%'"/>
+                <input class="setting-slider" id="sl-opacity" type="range" min="10" max="90" value="55" oninput="document.getElementById('opacityVal').textContent=this.value+'%'"/>
                 <span class="slider-val" id="opacityVal">55%</span>
               </div>
             </div>
           </div>
           <div class="setting-row">
-            <div><div class="setting-label">Default zoom level</div><div class="setting-sub">Initial magnification on scan open</div></div>
-            <div class="setting-control">
-              <select class="setting-select">
-                <option selected>1.0× — Fit to screen</option>
-                <option>1.5×</option>
-                <option>2.0×</option>
-              </select>
-            </div>
-          </div>
-          <div class="setting-row">
-            <div><div class="setting-label">Annotation markers</div><div class="setting-sub">Show RUL / region labels on X-ray</div></div>
-            <div class="setting-control"><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
-          </div>
-          <div class="setting-row">
             <div><div class="setting-label">Show confidence on findings</div><div class="setting-sub">Display % next to each finding label</div></div>
-            <div class="setting-control"><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+            <div class="setting-control"><div class="toggle on" id="disp-confidence" onclick="toggleClick(this)"></div></div>
+          </div>
+          <div class="setting-row">
+            <div><div class="setting-label">Annotation markers</div><div class="setting-sub">Show region labels on X-ray viewer</div></div>
+            <div class="setting-control"><div class="toggle on" id="disp-markers" onclick="toggleClick(this)"></div></div>
           </div>
         </div>
       </div>
     </div>
 
     <!-- SECURITY -->
-    <div id="section-security" style="display:none;">
+    <div class="section-wrap" id="section-security">
       <div class="page-header">
-        <div><div class="page-title">Security</div><div class="page-sub">Access and authentication settings</div></div>
-        <button class="save-btn" onclick="saveSettings()"><i class="ti ti-device-floppy"></i> Save changes</button>
+        <div><div class="page-title">Security</div><div class="page-sub">Session and access preferences</div></div>
+        <button class="save-btn" onclick="saveLocalSection('security')"><i class="ti ti-device-floppy"></i> Save changes</button>
       </div>
       <div class="settings-card">
         <div class="card-body">
           <div class="setting-row">
             <div><div class="setting-label">Session timeout</div><div class="setting-sub">Auto-logout after inactivity</div></div>
             <div class="setting-control">
-              <select class="setting-select">
+              <select class="setting-select" id="sec-timeout">
                 <option>15 minutes</option>
                 <option selected>30 minutes</option>
                 <option>1 hour</option>
@@ -439,45 +468,41 @@
             </div>
           </div>
           <div class="setting-row">
-            <div><div class="setting-label">Require login on startup</div><div class="setting-sub">Prompt for credentials each session</div></div>
-            <div class="setting-control"><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+            <div><div class="setting-label">Require login on startup</div></div>
+            <div class="setting-control"><div class="toggle on" id="sec-login" onclick="toggleClick(this)"></div></div>
           </div>
           <div class="setting-row">
             <div><div class="setting-label">Audit log</div><div class="setting-sub">Record all AI actions and doctor overrides</div></div>
-            <div class="setting-control"><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+            <div class="setting-control"><div class="toggle on" id="sec-audit" onclick="toggleClick(this)"></div></div>
           </div>
           <div class="setting-row">
-            <div><div class="setting-label">Change password</div><div class="setting-sub">Update your account password</div></div>
-            <div class="setting-control"><button class="profile-edit" style="font-size:11px;padding:6px 12px;">Change</button></div>
+            <div><div class="setting-label">Change password</div><div class="setting-sub">A reset link will be sent to your email</div></div>
+            <div class="setting-control"><button class="ghost-btn" onclick="sendPasswordReset()">Send reset link</button></div>
           </div>
         </div>
       </div>
     </div>
 
     <!-- STORAGE -->
-    <div id="section-storage" style="display:none;">
+    <div class="section-wrap" id="section-storage">
       <div class="page-header">
-        <div><div class="page-title">Storage</div><div class="page-sub">Database and file storage settings</div></div>
-        <button class="save-btn" onclick="saveSettings()"><i class="ti ti-device-floppy"></i> Save changes</button>
+        <div><div class="page-title">Storage</div><div class="page-sub">Database and file retention</div></div>
+        <button class="save-btn" onclick="saveLocalSection('storage')"><i class="ti ti-device-floppy"></i> Save changes</button>
       </div>
       <div class="settings-card">
         <div class="card-body">
           <div class="setting-row">
-            <div><div class="setting-label">Database</div><div class="setting-sub">Active database backend</div></div>
-            <div class="setting-control"><span style="font-size:11px;color:#60c8f5;font-family:'Space Mono',monospace;">SQLite · local</span></div>
+            <div><div class="setting-label">Database</div></div>
+            <div class="setting-control"><span class="mono-label">SQLite · local</span></div>
           </div>
           <div class="setting-row">
-            <div><div class="setting-label">Storage used</div><div class="setting-sub">Current database and scan storage</div></div>
-            <div class="setting-control"><span style="font-size:11px;color:#94a3b8;font-family:'Space Mono',monospace;">1.24 GB / 10 GB</span></div>
+            <div><div class="setting-label">Auto-backup</div><div class="setting-sub">Back up database daily to local folder</div></div>
+            <div class="setting-control"><div class="toggle on" id="stor-backup" onclick="toggleClick(this)"></div></div>
           </div>
           <div class="setting-row">
-            <div><div class="setting-label">Auto-backup</div><div class="setting-sub">Backup database daily to local folder</div></div>
-            <div class="setting-control"><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
-          </div>
-          <div class="setting-row">
-            <div><div class="setting-label">Retain scans for</div><div class="setting-sub">Auto-delete scans older than this period</div></div>
+            <div><div class="setting-label">Retain scans for</div><div class="setting-sub">Auto-delete scans older than this</div></div>
             <div class="setting-control">
-              <select class="setting-select">
+              <select class="setting-select" id="stor-retain">
                 <option>3 months</option>
                 <option>6 months</option>
                 <option selected>1 year</option>
@@ -490,27 +515,23 @@
     </div>
 
     <!-- DANGER ZONE -->
-    <div id="section-danger" style="display:none;">
+    <div class="section-wrap" id="section-danger">
       <div class="page-header">
         <div><div class="page-title">Danger Zone</div><div class="page-sub">Irreversible actions — proceed with caution</div></div>
       </div>
       <div class="danger-card">
         <div class="danger-header">
           <div class="danger-icon"><i class="ti ti-alert-triangle"></i></div>
-          <div><div class="card-title" style="color:#f87171;">Destructive actions</div><div class="card-sub">These cannot be undone</div></div>
+          <div><div class="card-title" style="color:var(--danger);">Destructive actions</div><div class="card-sub">These cannot be undone</div></div>
         </div>
         <div class="card-body">
           <div class="setting-row">
             <div><div class="setting-label">Clear all scan history</div><div class="setting-sub">Permanently delete all patient scans and results</div></div>
-            <div class="setting-control"><button class="danger-btn" onclick="confirmDanger('clear scans')">Clear scans</button></div>
-          </div>
-          <div class="setting-row">
-            <div><div class="setting-label">Reset model to mock mode</div><div class="setting-sub">Unload weights and revert to dummy predictions</div></div>
-            <div class="setting-control"><button class="danger-btn" onclick="confirmDanger('reset model')">Reset model</button></div>
+            <div class="setting-control"><button class="danger-btn" onclick="confirmDanger('clear all scan history')">Clear scans</button></div>
           </div>
           <div class="setting-row">
             <div><div class="setting-label">Delete all patient records</div><div class="setting-sub">Remove all patients and associated data from the database</div></div>
-            <div class="setting-control"><button class="danger-btn" onclick="confirmDanger('delete all records')">Delete records</button></div>
+            <div class="setting-control"><button class="danger-btn" onclick="confirmDanger('delete all patient records')">Delete records</button></div>
           </div>
         </div>
       </div>
@@ -520,45 +541,160 @@
 </div>
 </div>
 
-<!-- TOAST -->
-<div class="toast" id="toast"><i class="ti ti-check" style="font-size:15px;color:#4ade80;"></i> Settings saved successfully</div>
+<div class="toast" id="toast"></div>
 
 <script>
-  const sections = ['profile','notifications','model','thresholds','api','display','security','storage','danger'];
+const API   = 'http://127.0.0.1:8000';
+const token = () => localStorage.getItem('token') || localStorage.getItem('pneumoscan_token') || '';
 
-  function showSection(id) {
-    sections.forEach(s => {
-      document.getElementById('section-' + s).style.display = s === id ? 'flex' : 'none';
-      document.getElementById('section-' + s).style.flexDirection = 'column';
-      document.getElementById('section-' + s).style.gap = '16px';
-    });
-    document.querySelectorAll('.side-item').forEach(el => el.classList.remove('active'));
-    event.currentTarget.classList.add('active');
+// ── PROFILE DROPDOWN & LOGOUT ────────────────────────────────────
+function toggleProfileMenu() {
+  document.getElementById('profileDropdown').classList.toggle('open');
+  try {
+    const u = JSON.parse(localStorage.getItem('pneumoscan_user') || '{}');
+    document.getElementById('dropdownEmail').textContent = u.email || u.full_name || '—';
+  } catch(e) {}
+}
+document.addEventListener('click', e => {
+  if (!document.getElementById('profileMenuWrap').contains(e.target))
+    document.getElementById('profileDropdown').classList.remove('open');
+});
+function requestLogout() {
+  document.getElementById('profileDropdown').classList.remove('open');
+  document.getElementById('logoutModalBackdrop').classList.add('show');
+}
+function cancelLogout()  { document.getElementById('logoutModalBackdrop').classList.remove('show'); }
+function confirmLogout() {
+  ['token','pneumoscan_token','pneumoscan_user'].forEach(k => { try{localStorage.removeItem(k);}catch(e){} });
+  window.location.href = '/login.html';
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') cancelLogout(); });
+
+// ── EXISTING SETTINGS FUNCTIONS (unchanged) ──────────────────────
+function showSection(id, el) {
+  document.querySelectorAll('.section-wrap').forEach(s => s.classList.remove('active'));
+  document.getElementById('section-' + id).classList.add('active');
+  document.querySelectorAll('.side-item').forEach(s => s.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function showToast(msg, ok = true) {
+  const t = document.getElementById('toast');
+  t.style.borderColor = ok ? 'var(--border-bright)' : 'rgba(248,113,113,0.4)';
+  t.innerHTML = `<i class="ti ${ok?'ti-check':'ti-x'}" style="font-size:14px;color:${ok?'var(--success)':'var(--danger)'};"></i> ${msg}`;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+function toggleClick(el) { el.classList.toggle('on'); }
+
+async function loadProfile() {
+  try {
+    const r = await fetch(`${API}/auth/me`, { headers:{'Authorization':'Bearer '+token()}, signal:AbortSignal.timeout(4000) });
+    if (!r.ok) throw new Error();
+    const u = await r.json();
+    const initials = (u.full_name||'DR').replace(/^Dr\.?\s*/i,'').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+    document.getElementById('profileAvatar').textContent = initials;
+    document.getElementById('navAvatar').textContent     = initials;
+    document.getElementById('profileName').textContent   = u.full_name || '—';
+    document.getElementById('profileRole').textContent   = u.role ? u.role.charAt(0).toUpperCase()+u.role.slice(1) : '—';
+    document.getElementById('inputName').value           = u.full_name || '';
+    document.getElementById('inputEmail').value          = u.email || '';
+    document.getElementById('inputRole').textContent     = u.role || '—';
+  } catch(e) {
+    try {
+      const u = JSON.parse(localStorage.getItem('pneumoscan_user')||'{}');
+      const initials = (u.full_name||'DR').replace(/^Dr\.?\s*/i,'').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+      document.getElementById('profileAvatar').textContent = initials;
+      document.getElementById('navAvatar').textContent     = initials;
+      document.getElementById('profileName').textContent   = u.full_name || '—';
+      document.getElementById('profileRole').textContent   = u.role || '—';
+      document.getElementById('inputName').value           = u.full_name || '';
+      document.getElementById('inputEmail').value          = u.email || '';
+      document.getElementById('inputRole').textContent     = u.role || '—';
+    } catch(e2) {}
   }
+}
 
-  /* show profile by default */
-  document.getElementById('section-profile').style.display = 'flex';
-  document.getElementById('section-profile').style.flexDirection = 'column';
-  document.getElementById('section-profile').style.gap = '16px';
+async function saveProfile() {
+  const name = document.getElementById('inputName').value.trim();
+  if (!name) { showToast('Name cannot be empty.', false); return; }
+  const btn = document.getElementById('profileSaveBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="ti ti-loader-2" style="animation:spin .7s linear infinite;display:inline-block;font-size:14px;"></i> Saving…';
+  try {
+    const stored = JSON.parse(localStorage.getItem('pneumoscan_user')||'{}');
+    stored.full_name = name;
+    localStorage.setItem('pneumoscan_user', JSON.stringify(stored));
+    document.getElementById('profileName').textContent = name;
+    const initials = name.replace(/^Dr\.?\s*/i,'').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+    document.getElementById('profileAvatar').textContent = initials;
+    document.getElementById('navAvatar').textContent     = initials;
+    showToast('Profile updated.');
+  } catch(e) { showToast('Could not save profile.', false); }
+  finally { btn.disabled=false; btn.innerHTML='<i class="ti ti-device-floppy"></i> Save changes'; }
+}
 
-  function saveSettings() {
-    const toast = document.getElementById('toast');
-    toast.classList.add('show');
-    setTimeout(() => toast.classList.remove('show'), 2500);
+function saveLocalSection(section) {
+  const wrap  = document.getElementById('section-' + section);
+  const state = {};
+  wrap.querySelectorAll('.toggle[id]').forEach(t  => { state[t.id]  = t.classList.contains('on'); });
+  wrap.querySelectorAll('input[type=range][id]').forEach(s => { state[s.id] = s.value; });
+  wrap.querySelectorAll('select[id]').forEach(s   => { state[s.id]  = s.value; });
+  localStorage.setItem('settings_' + section, JSON.stringify(state));
+  showToast('Preferences saved.');
+}
+
+function restoreLocalSections() {
+  ['notifications','thresholds','display','security','storage'].forEach(section => {
+    const raw = localStorage.getItem('settings_' + section);
+    if (!raw) return;
+    try {
+      const state = JSON.parse(raw);
+      Object.entries(state).forEach(([id, val]) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        if (el.classList.contains('toggle')) { val ? el.classList.add('on') : el.classList.remove('on'); }
+        else if (el.type === 'range')        { el.value = val; el.dispatchEvent(new Event('input')); }
+        else if (el.tagName === 'SELECT')    { el.value = val; }
+      });
+    } catch(e) {}
+  });
+}
+
+async function checkConnection() {
+  const dot = document.getElementById('statusDot'), text = document.getElementById('statusText');
+  dot.className = 'status-dot checking'; text.textContent = 'Checking…'; text.style.color = 'var(--muted)';
+  try {
+    const r = await fetch(`${API}/health`, { signal: AbortSignal.timeout(5000) });
+    if (r.ok) {
+      dot.className = 'status-dot online'; text.textContent = 'Connected · localhost:8000'; text.style.color = 'var(--success)';
+      showToast('Backend connected.');
+    } else throw new Error();
+  } catch(e) {
+    dot.className = 'status-dot offline'; text.textContent = 'Cannot reach backend'; text.style.color = 'var(--danger)';
+    showToast('Cannot reach backend — is uvicorn running?', false);
   }
+}
 
-  function checkConnection() {
-    fetch('http://localhost:8000/health')
-      .then(r => r.json())
-      .then(() => { const t = document.getElementById('toast'); t.innerHTML = '<i class="ti ti-check" style="font-size:15px;color:#4ade80;"></i> Backend connected · localhost:8000'; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2500); })
-      .catch(() => { const t = document.getElementById('toast'); t.style.borderColor='#5a1f1f'; t.innerHTML = '<i class="ti ti-x" style="font-size:15px;color:#f87171;"></i> Cannot reach backend — is uvicorn running?'; t.classList.add('show'); setTimeout(()=>{t.classList.remove('show');t.style.borderColor='#1e3a5f';},3000); });
-  }
+async function sendPasswordReset() {
+  const email = document.getElementById('inputEmail').value;
+  if (!email) { showToast('Load your profile first.', false); return; }
+  try {
+    await fetch(`${API}/auth/forgot-password`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({email}) });
+    showToast('Reset link sent to ' + email);
+  } catch(e) { showToast('Could not send reset email.', false); }
+}
 
-  function confirmDanger(action) {
-    if (confirm(`Are you sure you want to ${action}? This cannot be undone.`)) {
-      saveSettings();
-    }
+function confirmDanger(action) {
+  if (confirm(`Are you sure you want to ${action}?\n\nThis cannot be undone.`)) {
+    showToast(`"${action}" — not yet wired to API.`, false);
   }
+}
+
+loadProfile();
+restoreLocalSections();
+checkConnection();
 </script>
 </body>
 </html>

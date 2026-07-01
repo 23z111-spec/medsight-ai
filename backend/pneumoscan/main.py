@@ -8,6 +8,8 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import RedirectResponse
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
@@ -15,16 +17,14 @@ from contextlib import asynccontextmanager
 from app.routes import predict, health, patients, auth, scans, chat
 from app.model_loader import load_models
 from app.database import engine, Base
-from app import models_db  # noqa: F401 — ensures User table is registered
+from app import models_db
 from app.routes.auth_password_reset import router as password_router
 
 print("MAIN FILE:", os.path.abspath(__file__))
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Create DB tables if they don't exist
     Base.metadata.create_all(bind=engine)
-    # Load ML models at startup
     load_models()
     yield
 
@@ -40,7 +40,6 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-# CORS configuration
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -49,24 +48,17 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Root endpoint
 @app.get("/")
 def root():
-    return {
-        "service":     "PneumoScan AI",
-        "status":      "running",
-        "version":     "1.0.0",
-        "ensemble":    "EfficientNet-B0 + B3",
-        "mean_auc":    0.7968,
-        "docs":        "/docs",
-        "disclaimer":  "AI screening tool — not for clinical use without physician review."
-    }
+    return RedirectResponse(url="/login.html")
 
-# Register all routes
-app.include_router(auth.router,          prefix="/auth",      tags=["Authentication"])
-app.include_router(health.router,        prefix="/health",    tags=["Health"])
-app.include_router(predict.router,       prefix="/predict",   tags=["Prediction"])
-app.include_router(patients.router,      prefix="/patients",  tags=["Patients"])
-app.include_router(scans.router,         prefix="/scans",     tags=["Scans"])
-app.include_router(chat.router,          prefix="/chat",      tags=["Chat"])
-app.include_router(password_router)      # /auth/forgot-password  &  /auth/reset-password
+app.include_router(auth.router,     prefix="/auth",     tags=["Authentication"])
+app.include_router(health.router,   prefix="/health",   tags=["Health"])
+app.include_router(predict.router,  prefix="/predict",  tags=["Prediction"])
+app.include_router(patients.router, prefix="/patients", tags=["Patients"])
+app.include_router(scans.router,    prefix="/scans",    tags=["Scans"])
+app.include_router(chat.router,     prefix="/chat",     tags=["Chat"])
+app.include_router(password_router)
+
+# Must be LAST
+app.mount("/", StaticFiles(directory="../../frontend", html=True), name="static")

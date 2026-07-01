@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>MedSight AI · Analytics</title>
+<title>PneumoScan AI · Analytics</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
@@ -23,13 +23,17 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
 .logo{display:flex;align-items:center;gap:10px;font-family:'Space Mono',monospace;font-size:13px;color:var(--accent);letter-spacing:.5px;font-weight:700;}
 .logo-icon{width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,var(--accent-strong),#1D4ED8);display:flex;align-items:center;justify-content:center;font-size:14px;color:#fff;}
 .nav-pills{display:flex;gap:2px;}
-.nav-pill{padding:5px 16px;border-radius:8px;font-size:12px;font-weight:500;color:var(--muted);cursor:pointer;transition:all .15s;}
+.nav-pill{padding:5px 16px;border-radius:8px;font-size:12px;font-weight:500;color:var(--muted);cursor:pointer;transition:all .15s;border:1px solid transparent;}
 .nav-pill:hover{color:var(--muted-strong);background:var(--surface-soft);}
-.nav-pill.active{background:var(--accent-glow);color:var(--accent);border:1px solid var(--border-bright);}
+.nav-pill.active{background:var(--accent-glow);color:var(--accent);border-color:var(--border-bright);}
 .badge{background:var(--surface-soft);border:1px solid var(--border-bright);border-radius:20px;padding:3px 12px;font-size:10px;color:var(--accent);font-family:'Space Mono',monospace;}
 .nav-right{display:flex;align-items:center;gap:14px;}
-.avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--accent-strong),#1D4ED8);border:2px solid var(--border-bright);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;font-family:'Space Mono',monospace;}
-.demo-banner{background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.25);border-radius:6px;padding:4px 12px;font-size:10px;color:var(--warning);display:flex;align-items:center;gap:6px;}
+
+.profile-menu-wrap{position:relative;display:inline-block;}
+.avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--accent-strong),#1D4ED8);border:2px solid var(--border-bright);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;font-family:'Space Mono',monospace;cursor:pointer;transition:transform .15s;}
+.avatar:hover{transform:scale(1.05);}
+
+.demo-banner{background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.25);border-radius:6px;padding:4px 12px;font-size:10px;color:var(--warning);display:none;align-items:center;gap:6px;}
 
 .app{display:flex;flex-direction:column;height:100vh;}
 .main{display:grid;grid-template-columns:240px 1fr;flex:1;overflow:hidden;min-height:0;}
@@ -61,14 +65,10 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
 .patient-card{background:var(--surface-soft);border:1px solid var(--border);border-radius:10px;padding:12px;}
 .patient-name{font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px;}
 .patient-meta{font-size:10px;color:var(--muted-dim);margin-bottom:10px;}
-.prow{display:flex;justify-content:space-between;font-size:10px;color:var(--muted-dim);margin-bottom:3px;}
-.prow span:last-child{color:var(--muted-strong);}
-.patient-divider{border:none;border-top:1px solid var(--border);margin:8px 0;}
-
-/* detailed patient info rows */
 .prow-full{display:flex;justify-content:space-between;font-size:10px;color:var(--muted-dim);margin-bottom:5px;align-items:flex-start;}
 .prow-full span:last-child{color:var(--muted-strong);text-align:right;max-width:60%;}
 .patient-triage-pill{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:20px;font-size:9px;font-weight:700;font-family:'Space Mono',monospace;}
+.patient-divider{border:none;border-top:1px solid var(--border);margin:8px 0;}
 
 .scan-item{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;cursor:pointer;border:1px solid transparent;transition:all .15s;margin-bottom:4px;}
 .scan-item:hover{background:var(--surface-soft);}
@@ -112,7 +112,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
 .chart-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px;overflow:hidden;display:flex;flex-direction:column;cursor:pointer;transition:all .12s;position:relative;}
 .chart-card:hover{border-color:var(--accent);box-shadow:0 0 12px var(--accent-glow);}
 .symptom-card{grid-column:1;grid-row:1;cursor:default;}
-.symptom-card:hover{border-color:var(--border);}
+.symptom-card:hover{border-color:var(--border);box-shadow:none;}
 .dist-card{grid-column:2;grid-row:1;}
 
 .sx-scroll-wrap{flex:1;overflow-y:auto;overflow-x:hidden;display:flex;flex-direction:column;gap:1px;margin:0 -12px;padding:0 12px;}
@@ -131,16 +131,13 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
 .sx-none{font-size:10px;color:var(--muted-dim);font-style:italic;padding-top:2px;}
 
 .timeline-card{grid-column:1 / -1;grid-row:2;cursor:default;min-height:110px;}
-.timeline-card:hover{border-color:var(--border);}
+.timeline-card:hover{border-color:var(--border);box-shadow:none;}
 .expand-icon{position:absolute;top:10px;right:10px;width:22px;height:22px;background:var(--accent-glow);border:1px solid var(--border-bright);border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--accent);opacity:0;transition:opacity .2s;}
 .chart-card:hover .expand-icon{opacity:1;}
 .chart-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px;flex-shrink:0;padding-right:28px;}
 .chart-title{font-size:11px;font-weight:500;color:var(--muted-strong);}
 .chart-sub{font-size:9px;color:var(--muted-dim);margin-top:2px;}
 .chart-badge{font-size:9px;font-family:'Space Mono',monospace;padding:2px 7px;border-radius:4px;white-space:nowrap;}
-.badge-danger{background:var(--danger-bg);border:1px solid rgba(248,113,113,0.3);color:var(--danger);}
-.badge-ok{background:var(--success-bg);border:1px solid rgba(52,211,153,0.3);color:var(--success);}
-.badge-warn{background:var(--warning-bg);border:1px solid rgba(251,191,36,0.3);color:var(--warning);}
 .badge-neutral{background:var(--surface-soft);border:1px solid var(--border);color:var(--muted);}
 .chart-body{flex:1;min-height:0;position:relative;}
 
@@ -170,14 +167,26 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
 .chart-modal-sub{font-size:11px;color:var(--muted-dim);margin-top:3px;}
 .chart-modal-body{flex:1;overflow:auto;position:relative;}
 
+.logout-backdrop{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(6,21,40,0.75);backdrop-filter:blur(4px);z-index:9999;display:none;}
+@keyframes modalIn{from{opacity:0;transform:scale(0.95)}to{opacity:1;transform:scale(1)}}
+.logout-modal{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:320px;background:var(--surface);border:1px solid var(--border-bright);border-radius:16px;padding:28px 24px 20px;text-align:center;box-shadow:0 24px 60px rgba(0,0,0,0.6);animation:modalIn .18s ease;}
+.logout-icon{width:48px;height:48px;border-radius:50%;background:rgba(253,164,175,0.12);color:#fda4af;display:flex;align-items:center;justify-content:center;font-size:22px;margin:0 auto 14px;}
+.logout-title{font-size:16px;font-weight:700;color:var(--text);margin-bottom:6px;}
+.logout-text{font-size:11px;color:var(--muted);line-height:1.6;margin-bottom:20px;}
+.logout-actions{display:flex;gap:8px;}
+.logout-btn{flex:1;padding:10px;border-radius:9px;font-size:12px;font-weight:600;font-family:'Inter',sans-serif;cursor:pointer;transition:background .15s;}
+.logout-btn.cancel{background:var(--surface-soft);border:1px solid var(--border);color:var(--muted-strong);}
+.logout-btn.confirm{background:#fda4af;border:1px solid #fda4af;color:#1a0506;}
+.logout-btn.confirm:hover{background:#f87171;border-color:#f87171;}
+
 ::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:var(--border-bright);border-radius:2px;}
 </style>
 </head>
 <body>
 <div class="app">
 
-<div class="topnav">
-  <div class="logo"><div class="logo-icon"><i class="ti ti-brain"></i></div>MEDSIGHT · AI</div>
+<nav class="topnav">
+  <div class="logo"><div class="logo-icon"><i class="ti ti-brain"></i></div>PNEUMOSCAN · AI</div>
   <div class="nav-pills">
     <div class="nav-pill" onclick="window.location.href='dashbord.html'">Screening</div>
     <div class="nav-pill" onclick="window.location.href='records.html'">Patient Records</div>
@@ -185,15 +194,17 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
     <div class="nav-pill" onclick="window.location.href='settings.html'">Settings</div>
   </div>
   <div class="nav-right">
-    <div class="demo-banner" id="demoBanner" style="display:none;"><i class="ti ti-flask"></i> Demo data</div>
+    <div class="demo-banner" id="demoBanner"><i class="ti ti-flask"></i> Demo data</div>
     <div class="badge">Model v2.4.1</div>
-    <div class="avatar" id="navAvatar">DR</div>
+    <div class="profile-menu-wrap" id="profileMenuWrap">
+      <div class="avatar" id="navAvatar" onclick="toggleProfileMenu(event)">DR</div>
+    </div>
   </div>
-</div>
+</nav>
 
 <div class="main">
 
-  <div class="sidebar">
+  <aside class="sidebar">
     <div>
       <div class="section-label">Search Patient</div>
       <div class="patient-search-wrap">
@@ -208,10 +219,10 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
     <div>
       <div class="section-label">Date Range</div>
       <div class="date-filter">
-        <button class="df-btn active" id="df-all"  onclick="setDateFilter('all')">All</button>
-        <button class="df-btn"        id="df-180"  onclick="setDateFilter(180)">6M</button>
-        <button class="df-btn"        id="df-90"   onclick="setDateFilter(90)">90D</button>
-        <button class="df-btn"        id="df-30"   onclick="setDateFilter(30)">30D</button>
+        <button class="df-btn active" id="df-all" onclick="setDateFilter('all')">All</button>
+        <button class="df-btn"        id="df-180" onclick="setDateFilter(180)">6M</button>
+        <button class="df-btn"        id="df-90"  onclick="setDateFilter(90)">90D</button>
+        <button class="df-btn"        id="df-30"  onclick="setDateFilter(30)">30D</button>
       </div>
     </div>
 
@@ -237,9 +248,9 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
         <i class="ti ti-layout-dashboard"></i> Open Dashboard
       </button>
     </div>
-  </div>
+  </aside>
 
-  <div class="content">
+  <main class="content">
 
     <div class="global-stat-row" id="globalStatRow">
       <div class="global-stat">
@@ -338,7 +349,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
 
       </div>
     </div>
-  </div>
+  </main>
 </div>
 </div>
 
@@ -353,83 +364,86 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
   </div>
 </div>
 
+<div class="logout-backdrop" id="logoutBackdrop" onclick="cancelLogout()">
+  <div class="logout-modal" onclick="event.stopPropagation()">
+    <div class="logout-icon"><i class="ti ti-logout"></i></div>
+    <div class="logout-title">Sign out?</div>
+    <div class="logout-text">You'll need to sign in again to access analytics.</div>
+    <div class="logout-actions">
+      <button class="logout-btn cancel"  onclick="cancelLogout()">Cancel</button>
+      <button class="logout-btn confirm" onclick="confirmLogout()">Yes, sign out</button>
+    </div>
+  </div>
+</div>
+
 <script>
-// ── DEMO DATA ──────────────────────────────────────────────────────────────────
-// Used automatically when the API is unreachable (localhost:8000).
-// Reflects realistic patient records so the UI is fully explorable.
 const DEMO_PATIENTS = [
   {
-    id: 1, name: 'Priya Ramachandran', age: 52, gender: 'Female',
-    total_scans: 5,
-    blood_group: 'B+', phone: '+91 98400 11234', department: 'Pulmonology',
-    scans: [
-      { id: 101, scan_date:'2024-11-04', top_condition:'Pneumonia',    confidence:0.91, triage:'HIGH',   department:'Pulmonology', doctor_name:'Dr. Senthil', symptoms:[{name:'Chest pain',severity:'high'},{name:'Fever',severity:'high'},{name:'Shortness of breath',severity:'medium'}] },
-      { id: 102, scan_date:'2024-09-18', top_condition:'Pneumonia',    confidence:0.84, triage:'HIGH',   department:'Pulmonology', doctor_name:'Dr. Senthil', symptoms:[{name:'Cough',severity:'medium'},{name:'Fatigue',severity:'medium'}] },
-      { id: 103, scan_date:'2024-07-02', top_condition:'Effusion',     confidence:0.76, triage:'MEDIUM', department:'Pulmonology', doctor_name:'Dr. Kavitha',  symptoms:[{name:'Chest tightness',severity:'medium'},{name:'Breathlessness',severity:'high'}] },
-      { id: 104, scan_date:'2024-04-14', top_condition:'No Finding',   confidence:0.95, triage:'LOW',    department:'General',      doctor_name:'Dr. Anand',    symptoms:[{name:'Mild cough',severity:'low'}] },
-      { id: 105, scan_date:'2024-02-27', top_condition:'Infiltration', confidence:0.68, triage:'MEDIUM', department:'Pulmonology', doctor_name:'Dr. Senthil', symptoms:[{name:'Night sweats',severity:'medium'},{name:'Wheezing',severity:'medium'},{name:'Fever',severity:'low'}] },
+    id:1, name:'Priya Ramachandran', age:52, gender:'Female',
+    total_scans:5, blood_group:'B+', phone:'+91 98400 11234', department:'Pulmonology',
+    scans:[
+      {id:101,scan_date:'2024-11-04',top_condition:'Pneumonia',   confidence:0.91,triage:'HIGH',  department:'Pulmonology',doctor_name:'Dr. Senthil',symptoms:[{name:'Chest pain',severity:'high'},{name:'Fever',severity:'high'},{name:'Shortness of breath',severity:'medium'}]},
+      {id:102,scan_date:'2024-09-18',top_condition:'Pneumonia',   confidence:0.84,triage:'HIGH',  department:'Pulmonology',doctor_name:'Dr. Senthil',symptoms:[{name:'Cough',severity:'medium'},{name:'Fatigue',severity:'medium'}]},
+      {id:103,scan_date:'2024-07-02',top_condition:'Effusion',    confidence:0.76,triage:'MEDIUM',department:'Pulmonology',doctor_name:'Dr. Kavitha', symptoms:[{name:'Chest tightness',severity:'medium'},{name:'Breathlessness',severity:'high'}]},
+      {id:104,scan_date:'2024-04-14',top_condition:'No Finding',  confidence:0.95,triage:'LOW',   department:'General',    doctor_name:'Dr. Anand',   symptoms:[{name:'Mild cough',severity:'low'}]},
+      {id:105,scan_date:'2024-02-27',top_condition:'Infiltration',confidence:0.68,triage:'MEDIUM',department:'Pulmonology',doctor_name:'Dr. Senthil',symptoms:[{name:'Night sweats',severity:'medium'},{name:'Wheezing',severity:'medium'},{name:'Fever',severity:'low'}]},
     ]
   },
   {
-    id: 2, name: 'Arjun Krishnamurthy', age: 67, gender: 'Male',
-    total_scans: 4,
-    blood_group: 'O+', phone: '+91 94440 77890', department: 'Cardiology',
-    scans: [
-      { id: 201, scan_date:'2024-10-20', top_condition:'Cardiomegaly', confidence:0.88, triage:'HIGH',   department:'Cardiology',   doctor_name:'Dr. Meena',    symptoms:[{name:'Dyspnea',severity:'high'},{name:'Palpitations',severity:'high'},{name:'Leg swelling',severity:'medium'}] },
-      { id: 202, scan_date:'2024-08-05', top_condition:'Cardiomegaly', confidence:0.79, triage:'HIGH',   department:'Cardiology',   doctor_name:'Dr. Meena',    symptoms:[{name:'Chest pain',severity:'high'},{name:'Fatigue',severity:'medium'}] },
-      { id: 203, scan_date:'2024-05-11', top_condition:'Effusion',     confidence:0.72, triage:'MEDIUM', department:'Cardiology',   doctor_name:'Dr. Rajan',    symptoms:[{name:'Breathlessness',severity:'medium'},{name:'Cough',severity:'low'}] },
-      { id: 204, scan_date:'2024-01-30', top_condition:'No Finding',   confidence:0.93, triage:'LOW',    department:'General',      doctor_name:'Dr. Anand',    symptoms:[{name:'Routine check',severity:'low'}] },
+    id:2, name:'Arjun Krishnamurthy', age:67, gender:'Male',
+    total_scans:4, blood_group:'O+', phone:'+91 94440 77890', department:'Cardiology',
+    scans:[
+      {id:201,scan_date:'2024-10-20',top_condition:'Cardiomegaly',confidence:0.88,triage:'HIGH',  department:'Cardiology',doctor_name:'Dr. Meena', symptoms:[{name:'Dyspnea',severity:'high'},{name:'Palpitations',severity:'high'},{name:'Leg swelling',severity:'medium'}]},
+      {id:202,scan_date:'2024-08-05',top_condition:'Cardiomegaly',confidence:0.79,triage:'HIGH',  department:'Cardiology',doctor_name:'Dr. Meena', symptoms:[{name:'Chest pain',severity:'high'},{name:'Fatigue',severity:'medium'}]},
+      {id:203,scan_date:'2024-05-11',top_condition:'Effusion',    confidence:0.72,triage:'MEDIUM',department:'Cardiology',doctor_name:'Dr. Rajan', symptoms:[{name:'Breathlessness',severity:'medium'},{name:'Cough',severity:'low'}]},
+      {id:204,scan_date:'2024-01-30',top_condition:'No Finding',  confidence:0.93,triage:'LOW',   department:'General',   doctor_name:'Dr. Anand', symptoms:[{name:'Routine check',severity:'low'}]},
     ]
   },
   {
-    id: 3, name: 'Meenakshi Sundaram', age: 41, gender: 'Female',
-    total_scans: 3,
-    blood_group: 'A+', phone: '+91 87540 32100', department: 'General',
-    scans: [
-      { id: 301, scan_date:'2024-10-01', top_condition:'No Finding',   confidence:0.97, triage:'LOW',    department:'General',      doctor_name:'Dr. Pradeep',  symptoms:[{name:'Mild fatigue',severity:'low'}] },
-      { id: 302, scan_date:'2024-06-14', top_condition:'Infiltration', confidence:0.61, triage:'MEDIUM', department:'Pulmonology', doctor_name:'Dr. Kavitha',  symptoms:[{name:'Cough',severity:'medium'},{name:'Low-grade fever',severity:'medium'},{name:'Fatigue',severity:'low'}] },
-      { id: 303, scan_date:'2024-03-08', top_condition:'Pneumonia',    confidence:0.83, triage:'HIGH',   department:'Emergency',    doctor_name:'Dr. Senthil', symptoms:[{name:'High fever',severity:'high'},{name:'Chest pain',severity:'high'},{name:'Shortness of breath',severity:'high'}] },
+    id:3, name:'Meenakshi Sundaram', age:41, gender:'Female',
+    total_scans:3, blood_group:'A+', phone:'+91 87540 32100', department:'General',
+    scans:[
+      {id:301,scan_date:'2024-10-01',top_condition:'No Finding',  confidence:0.97,triage:'LOW',   department:'General',    doctor_name:'Dr. Pradeep',symptoms:[{name:'Mild fatigue',severity:'low'}]},
+      {id:302,scan_date:'2024-06-14',top_condition:'Infiltration',confidence:0.61,triage:'MEDIUM',department:'Pulmonology',doctor_name:'Dr. Kavitha', symptoms:[{name:'Cough',severity:'medium'},{name:'Low-grade fever',severity:'medium'},{name:'Fatigue',severity:'low'}]},
+      {id:303,scan_date:'2024-03-08',top_condition:'Pneumonia',   confidence:0.83,triage:'HIGH',  department:'Emergency',  doctor_name:'Dr. Senthil', symptoms:[{name:'High fever',severity:'high'},{name:'Chest pain',severity:'high'},{name:'Shortness of breath',severity:'high'}]},
     ]
   },
   {
-    id: 4, name: 'Ravi Subramaniam', age: 58, gender: 'Male',
-    total_scans: 6,
-    blood_group: 'AB-', phone: '+91 99001 55432', department: 'Pulmonology',
-    scans: [
-      { id: 401, scan_date:'2024-11-10', top_condition:'Effusion',     confidence:0.85, triage:'HIGH',   department:'Pulmonology', doctor_name:'Dr. Kavitha',  symptoms:[{name:'Pleuritic pain',severity:'high'},{name:'Dyspnea',severity:'high'}] },
-      { id: 402, scan_date:'2024-09-22', top_condition:'Effusion',     confidence:0.78, triage:'MEDIUM', department:'Pulmonology', doctor_name:'Dr. Kavitha',  symptoms:[{name:'Breathlessness',severity:'medium'},{name:'Cough',severity:'low'}] },
-      { id: 403, scan_date:'2024-07-18', top_condition:'Pneumonia',    confidence:0.71, triage:'MEDIUM', department:'Pulmonology', doctor_name:'Dr. Senthil', symptoms:[{name:'Fever',severity:'medium'},{name:'Productive cough',severity:'medium'}] },
-      { id: 404, scan_date:'2024-05-03', top_condition:'No Finding',   confidence:0.92, triage:'LOW',    department:'General',      doctor_name:'Dr. Anand',    symptoms:[{name:'Follow-up',severity:'low'}] },
-      { id: 405, scan_date:'2024-02-19', top_condition:'Infiltration', confidence:0.65, triage:'MEDIUM', department:'Pulmonology', doctor_name:'Dr. Kavitha',  symptoms:[{name:'Night sweats',severity:'medium'},{name:'Weight loss',severity:'high'},{name:'Cough',severity:'medium'}] },
-      { id: 406, scan_date:'2023-11-30', top_condition:'Effusion',     confidence:0.80, triage:'HIGH',   department:'Emergency',    doctor_name:'Dr. Rajan',    symptoms:[{name:'Acute chest pain',severity:'high'},{name:'Fever',severity:'high'},{name:'Dyspnea',severity:'high'}] },
+    id:4, name:'Ravi Subramaniam', age:58, gender:'Male',
+    total_scans:6, blood_group:'AB-', phone:'+91 99001 55432', department:'Pulmonology',
+    scans:[
+      {id:401,scan_date:'2024-11-10',top_condition:'Effusion',    confidence:0.85,triage:'HIGH',  department:'Pulmonology',doctor_name:'Dr. Kavitha',symptoms:[{name:'Pleuritic pain',severity:'high'},{name:'Dyspnea',severity:'high'}]},
+      {id:402,scan_date:'2024-09-22',top_condition:'Effusion',    confidence:0.78,triage:'MEDIUM',department:'Pulmonology',doctor_name:'Dr. Kavitha',symptoms:[{name:'Breathlessness',severity:'medium'},{name:'Cough',severity:'low'}]},
+      {id:403,scan_date:'2024-07-18',top_condition:'Pneumonia',   confidence:0.71,triage:'MEDIUM',department:'Pulmonology',doctor_name:'Dr. Senthil',symptoms:[{name:'Fever',severity:'medium'},{name:'Productive cough',severity:'medium'}]},
+      {id:404,scan_date:'2024-05-03',top_condition:'No Finding',  confidence:0.92,triage:'LOW',   department:'General',    doctor_name:'Dr. Anand',   symptoms:[{name:'Follow-up',severity:'low'}]},
+      {id:405,scan_date:'2024-02-19',top_condition:'Infiltration',confidence:0.65,triage:'MEDIUM',department:'Pulmonology',doctor_name:'Dr. Kavitha',symptoms:[{name:'Night sweats',severity:'medium'},{name:'Weight loss',severity:'high'},{name:'Cough',severity:'medium'}]},
+      {id:406,scan_date:'2023-11-30',top_condition:'Effusion',    confidence:0.80,triage:'HIGH',  department:'Emergency',  doctor_name:'Dr. Rajan',   symptoms:[{name:'Acute chest pain',severity:'high'},{name:'Fever',severity:'high'},{name:'Dyspnea',severity:'high'}]},
     ]
   },
   {
-    id: 5, name: 'Lakshmi Venkataraman', age: 34, gender: 'Female',
-    total_scans: 2,
-    blood_group: 'O-', phone: '+91 81480 98765', department: 'General',
-    scans: [
-      { id: 501, scan_date:'2024-10-15', top_condition:'No Finding',   confidence:0.98, triage:'LOW',    department:'General',      doctor_name:'Dr. Pradeep',  symptoms:[{name:'Routine check',severity:'low'}] },
-      { id: 502, scan_date:'2024-04-22', top_condition:'No Finding',   confidence:0.96, triage:'LOW',    department:'General',      doctor_name:'Dr. Pradeep',  symptoms:[{name:'Mild cough',severity:'low'}] },
+    id:5, name:'Lakshmi Venkataraman', age:34, gender:'Female',
+    total_scans:2, blood_group:'O-', phone:'+91 81480 98765', department:'General',
+    scans:[
+      {id:501,scan_date:'2024-10-15',top_condition:'No Finding',confidence:0.98,triage:'LOW',department:'General',doctor_name:'Dr. Pradeep',symptoms:[{name:'Routine check',severity:'low'}]},
+      {id:502,scan_date:'2024-04-22',top_condition:'No Finding',confidence:0.96,triage:'LOW',department:'General',doctor_name:'Dr. Pradeep',symptoms:[{name:'Mild cough',severity:'low'}]},
     ]
   },
 ];
 
-// ── CONFIG ──────────────────────────────────────────────────────────────────────
-const API   = 'http://localhost:8000';
-const token = () => localStorage.getItem('token') || localStorage.getItem('pneumoscan_token') || '';
-let usingDemo = false;
+const API      = 'http://localhost:8000';
+const getToken = () => localStorage.getItem('token') || localStorage.getItem('pneumoscan_token') || '';
+let usingDemo  = false;
 
 Chart.defaults.font.family = "'Inter', sans-serif";
 const tickColor = '#4A6080';
-const ttBg  = '#0F1F34';
-const ttBdr = 'rgba(96,165,250,0.30)';
+const ttBg      = '#0F1F34';
+const ttBdr     = 'rgba(96,165,250,0.30)';
 
 let currentPatient = null;
 let allScans       = [];
 let filteredScans  = [];
 let dateFilter     = 'all';
-let charts = {};
+let charts         = {};
 
 const COND_COLORS = {
   Pneumonia:    { line:'#F87171' },
@@ -441,16 +455,63 @@ const COND_COLORS = {
 const TRIAGE_COLOR = { HIGH:'#F87171', MEDIUM:'#FBBF24', LOW:'#34D399' };
 const TRIAGE_BG    = { HIGH:'rgba(248,113,113,0.15)', MEDIUM:'rgba(251,191,36,0.12)', LOW:'rgba(52,211,153,0.12)' };
 
-// ── PROFILE ─────────────────────────────────────────────────────────────────────
+// ── FIX: merge symptoms saved by the dashboard into localStorage ──
+// Dashboard saves: localStorage['medsight_symptoms_' + patientId] = JSON array of
+// the symptoms recorded for the MOST RECENT scan only (it's per-patient, not per-scan,
+// since the API doesn't store symptoms at all). We attach that array onto the latest
+// scan in the list so the symptom log card shows it.
+function mergeLocalSymptoms(patient, scans) {
+  if (!patient || !scans.length) return scans;
+  let saved;
+  try {
+    saved = JSON.parse(localStorage.getItem('medsight_symptoms_' + patient.id) || 'null');
+  } catch(e) { saved = null; }
+  if (!Array.isArray(saved) || !saved.length) return scans;
+
+  // Attach to whichever scan is most recent (assumes scans sorted newest-first already,
+  // or sorted right after this call — see selectPatient()).
+  const sorted = [...scans].sort((a,b) => new Date(b.scan_date) - new Date(a.scan_date));
+  if (!sorted[0].symptoms || !sorted[0].symptoms.length) {
+    sorted[0] = { ...sorted[0], symptoms: saved };
+  }
+  return sorted;
+}
+
+// ── Profile ───────────────────────────────────────────────────
 (function(){
   try {
-    const u = JSON.parse(localStorage.getItem('pneumoscan_user')||'{}');
-    if (u.full_name) document.getElementById('navAvatar').textContent =
-      u.full_name.replace(/^Dr\.?\s*/i,'').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
-  } catch(e){}
+    const u = JSON.parse(localStorage.getItem('pneumoscan_user') || '{}');
+    if (u.full_name) {
+      document.getElementById('navAvatar').textContent =
+        u.full_name.replace(/^Dr\.?\s*/i,'').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+    }
+    if (u.email || u.full_name)
+      document.getElementById('dropdownEmail').textContent = u.email || u.full_name;
+  } catch {}
 })();
 
-// ── DEMO HELPERS ─────────────────────────────────────────────────────────────────
+function toggleProfileMenu(e) {
+  if (e) e.stopPropagation();
+  const dd = document.getElementById('profileDropdown');
+  dd.style.display = dd.style.display === 'block' ? 'none' : 'block';
+}
+document.addEventListener('click', e => {
+  const wrap = document.getElementById('profileMenuWrap');
+  const dd   = document.getElementById('profileDropdown');
+  if (!wrap.contains(e.target) && !dd.contains(e.target))
+    dd.style.display = 'none';
+});
+
+function requestLogout() {
+  document.getElementById('profileDropdown').style.display = 'none';
+  document.getElementById('logoutBackdrop').style.display  = 'block';
+}
+function cancelLogout()  { document.getElementById('logoutBackdrop').style.display = 'none'; }
+function confirmLogout() {
+  ['token','pneumoscan_token','pneumoscan_user'].forEach(k => { try{localStorage.removeItem(k);}catch{} });
+  window.location.href = 'login.html';
+}
+
 function setDemoMode(on) {
   usingDemo = on;
   document.getElementById('demoBanner').style.display = on ? 'flex' : 'none';
@@ -458,18 +519,16 @@ function setDemoMode(on) {
 
 function demoSearch(q) {
   q = q.toLowerCase();
-  return DEMO_PATIENTS.filter(p =>
-    p.name.toLowerCase().includes(q) || String(p.id).includes(q)
-  );
+  return DEMO_PATIENTS.filter(p => p.name.toLowerCase().includes(q) || String(p.id).includes(q));
 }
 
 function demoGlobalStats() {
-  const totalScans = DEMO_PATIENTS.reduce((s,p)=>s+(p.total_scans||0),0);
-  const allScansFlat = DEMO_PATIENTS.flatMap(p=>p.scans||[]);
-  const highCount = allScansFlat.filter(s=>s.triage==='HIGH').length;
-  const condCounts = {};
-  allScansFlat.forEach(s=>{ condCounts[s.top_condition]=(condCounts[s.top_condition]||0)+1; });
-  const topCond = Object.entries(condCounts).sort((a,b)=>b[1]-a[1])[0];
+  const totalScans   = DEMO_PATIENTS.reduce((s,p) => s + (p.total_scans||0), 0);
+  const allScansFlat = DEMO_PATIENTS.flatMap(p => p.scans || []);
+  const highCount    = allScansFlat.filter(s => s.triage === 'HIGH').length;
+  const condCounts   = {};
+  allScansFlat.forEach(s => { condCounts[s.top_condition] = (condCounts[s.top_condition]||0) + 1; });
+  const topCond = Object.entries(condCounts).sort((a,b) => b[1]-a[1])[0];
   document.getElementById('gStatPatients').textContent = DEMO_PATIENTS.length;
   document.getElementById('gStatScans').textContent    = totalScans;
   document.getElementById('gStatHigh').textContent     = highCount;
@@ -477,29 +536,26 @@ function demoGlobalStats() {
   document.getElementById('gStatCondSub').textContent  = `${topCond[1]} of ${totalScans} scans`;
 }
 
-// ── GLOBAL STATS ─────────────────────────────────────────────────────────────────
 async function loadGlobalStats() {
   try {
     const r = await fetch(`${API}/patients/search?name=`, {
-      headers:{'Authorization':'Bearer '+token()},
+      headers: {'Authorization':'Bearer '+getToken()},
       signal: AbortSignal.timeout(3000)
     });
     const patients = await r.json();
-    if (!Array.isArray(patients)) throw new Error('bad response');
-    const totalScans = patients.reduce((s,p)=>s+(p.total_scans||0),0);
+    if (!Array.isArray(patients)) throw new Error();
+    const totalScans = patients.reduce((s,p) => s + (p.total_scans||0), 0);
     document.getElementById('gStatPatients').textContent = patients.length;
     document.getElementById('gStatScans').textContent    = totalScans;
-    document.getElementById('gStatHigh').textContent = '—';
-    document.getElementById('gStatCond').textContent  = '—';
+    document.getElementById('gStatHigh').textContent     = '—';
+    document.getElementById('gStatCond').textContent     = '—';
     setDemoMode(false);
-  } catch(e) {
+  } catch {
     setDemoMode(true);
     demoGlobalStats();
   }
 }
-loadGlobalStats();
 
-// ── PATIENT SEARCH ────────────────────────────────────────────────────────────────
 let searchTimer;
 function onPatientSearch(q) {
   clearTimeout(searchTimer);
@@ -512,49 +568,39 @@ async function fetchPatients(q) {
   const dd = document.getElementById('patientDropdown');
   dd.innerHTML = '<div class="dropdown-empty">Searching…</div>';
   dd.classList.add('show');
-
-  if (usingDemo) {
-    renderDropdown(demoSearch(q), dd);
-    return;
-  }
-
+  if (usingDemo) { renderDropdown(demoSearch(q), dd); return; }
   try {
     const r = await fetch(`${API}/patients/search?name=${encodeURIComponent(q)}`, {
-      headers: {'Authorization':'Bearer '+token()},
+      headers: {'Authorization':'Bearer '+getToken()},
       signal: AbortSignal.timeout(3000)
     });
-    if (!r.ok) throw new Error('API error');
+    if (!r.ok) throw new Error();
     const data = await r.json();
-    if (!Array.isArray(data)) throw new Error('bad data');
+    if (!Array.isArray(data)) throw new Error();
     renderDropdown(data, dd);
-  } catch(e) {
+  } catch {
     setDemoMode(true);
     renderDropdown(demoSearch(q), dd);
   }
 }
 
 function renderDropdown(data, dd) {
-  if (!data.length) {
-    dd.innerHTML = '<div class="dropdown-empty">No patients found</div>';
-    return;
-  }
-  const allScansFlat = data.flatMap ? data : [];
+  if (!data.length) { dd.innerHTML = '<div class="dropdown-empty">No patients found</div>'; return; }
   dd.innerHTML = data.map(p => {
-    const triage = p.scans?.[0]?.triage || '';
-    const tColor = TRIAGE_COLOR[triage] || '';
-    const tbg    = TRIAGE_BG[triage] || '';
+    const triage  = p.scans?.[0]?.triage || '';
+    const tColor  = TRIAGE_COLOR[triage] || '';
+    const tbg     = TRIAGE_BG[triage] || '';
     const pillHtml = triage
       ? `<span class="pdi-badge" style="background:${tbg};color:${tColor};border:1px solid ${tColor+'44'}">${triage}</span>`
       : '';
-    return `
-      <div class="patient-dropdown-item" onclick="selectPatient(${p.id})">
-        <div class="pdi-avatar">${p.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase()}</div>
-        <div style="flex:1;min-width:0;">
-          <div class="pdi-name">${p.name}</div>
-          <div class="pdi-meta">${p.age||'—'}y · ${p.gender||'—'} · ${p.total_scans} scan${p.total_scans!==1?'s':''}</div>
-        </div>
-        ${pillHtml}
-      </div>`;
+    return `<div class="patient-dropdown-item" onclick="selectPatient(${p.id})">
+      <div class="pdi-avatar">${p.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase()}</div>
+      <div style="flex:1;min-width:0;">
+        <div class="pdi-name">${p.name}</div>
+        <div class="pdi-meta">${p.age||'—'}y · ${p.gender||'—'} · ${p.total_scans} scan${p.total_scans!==1?'s':''}</div>
+      </div>
+      ${pillHtml}
+    </div>`;
   }).join('');
 }
 
@@ -563,7 +609,6 @@ document.addEventListener('click', e => {
     document.getElementById('patientDropdown').classList.remove('show');
 });
 
-// ── SELECT PATIENT ─────────────────────────────────────────────────────────────────
 async function selectPatient(id) {
   document.getElementById('patientDropdown').classList.remove('show');
   document.getElementById('patientSearchInput').value = '';
@@ -571,18 +616,18 @@ async function selectPatient(id) {
 
   let data;
   if (usingDemo) {
-    await new Promise(r => setTimeout(r, 320)); // simulate load
+    await new Promise(r => setTimeout(r, 320));
     data = DEMO_PATIENTS.find(p => p.id === id);
     if (!data) { showEmpty(); return; }
   } else {
     try {
       const r = await fetch(`${API}/patients/${id}`, {
-        headers:{'Authorization':'Bearer '+token()},
+        headers: {'Authorization':'Bearer '+getToken()},
         signal: AbortSignal.timeout(4000)
       });
-      if (!r.ok) throw new Error('not found');
+      if (!r.ok) throw new Error();
       data = await r.json();
-    } catch(e) {
+    } catch {
       setDemoMode(true);
       data = DEMO_PATIENTS.find(p => p.id === id);
       if (!data) { showEmpty(); return; }
@@ -590,14 +635,14 @@ async function selectPatient(id) {
   }
 
   currentPatient = data;
-  // scans newest-first
-  allScans = (data.scans || []).slice().sort((a,b)=>new Date(b.scan_date)-new Date(a.scan_date));
+  let sorted = (data.scans || []).slice().sort((a,b) => new Date(b.scan_date) - new Date(a.scan_date));
+  // FIX: merge in symptoms the dashboard saved to localStorage for this patient
+  allScans = mergeLocalSymptoms(data, sorted);
   applyDateFilter();
   renderSidebar(data);
   document.getElementById('exportBtn').style.display = 'flex';
 }
 
-// ── DATE FILTER ────────────────────────────────────────────────────────────────────
 function setDateFilter(val) {
   dateFilter = val;
   document.querySelectorAll('.df-btn').forEach(b => b.classList.remove('active'));
@@ -617,10 +662,9 @@ function applyDateFilter() {
   renderAnalytics(currentPatient, filteredScans);
 }
 
-// ── SIDEBAR ────────────────────────────────────────────────────────────────────────
 function renderSidebar(p) {
-  const scans  = p.scans || [];
-  const latest = scans[0] || {};
+  const scans  = p.scans || allScans;
+  const latest = allScans[0] || {};
   const tc     = TRIAGE_COLOR[latest.triage] || '#4A6080';
   const tbg    = TRIAGE_BG[latest.triage]    || 'var(--surface-soft)';
 
@@ -635,28 +679,22 @@ function renderSidebar(p) {
           <div class="patient-meta">DB #${p.id}</div>
         </div>
       </div>
-
       <div class="prow-full"><span>Age</span><span>${p.age||'—'} years</span></div>
       <div class="prow-full"><span>Gender</span><span>${p.gender||'—'}</span></div>
-      ${p.blood_group ? `<div class="prow-full"><span>Blood Group</span><span>${p.blood_group}</span></div>` : ''}
-      ${p.phone ? `<div class="prow-full"><span>Phone</span><span>${p.phone}</span></div>` : ''}
-      ${p.department ? `<div class="prow-full"><span>Department</span><span>${p.department}</span></div>` : ''}
-
+      ${p.blood_group?`<div class="prow-full"><span>Blood Group</span><span>${p.blood_group}</span></div>`:''}
+      ${p.phone?`<div class="prow-full"><span>Phone</span><span>${p.phone}</span></div>`:''}
+      ${p.department?`<div class="prow-full"><span>Department</span><span>${p.department}</span></div>`:''}
       <hr class="patient-divider"/>
-
-      <div class="prow-full"><span>Total scans</span><span>${scans.length}</span></div>
+      <div class="prow-full"><span>Total scans</span><span>${allScans.length}</span></div>
       <div class="prow-full"><span>Last scan</span><span>${formatDate(latest.scan_date||'')}</span></div>
       <div class="prow-full"><span>Latest finding</span><span style="color:${COND_COLORS[latest.top_condition]?.line||'var(--muted-strong)'}">${latest.top_condition||'—'}</span></div>
-      ${latest.triage ? `
-      <div class="prow-full"><span>Current triage</span>
-        <span class="patient-triage-pill" style="background:${tbg};color:${tc};border:1px solid ${tc+'44'}">
-          ${latest.triage}
-        </span>
-      </div>` : ''}
-      ${latest.doctor_name ? `<div class="prow-full"><span>Physician</span><span>${latest.doctor_name}</span></div>` : ''}
+      ${latest.triage?`<div class="prow-full"><span>Current triage</span>
+        <span class="patient-triage-pill" style="background:${tbg};color:${tc};border:1px solid ${tc+'44'}">${latest.triage}</span>
+      </div>`:''}
+      ${latest.doctor_name?`<div class="prow-full"><span>Physician</span><span>${latest.doctor_name}</span></div>`:''}
     </div>`;
 
-  document.getElementById('scanList').innerHTML = scans.slice(0,8).map((s,i) => `
+  document.getElementById('scanList').innerHTML = allScans.slice(0,8).map((s,i) => `
     <div class="scan-item ${i===0?'active':''}" onclick="highlightScan(this)">
       <div class="scan-thumb">${String(s.id).slice(-3)}</div>
       <div class="scan-info">
@@ -670,44 +708,39 @@ function renderSidebar(p) {
 }
 
 function highlightScan(el) {
-  document.querySelectorAll('.scan-item').forEach(i=>i.classList.remove('active'));
+  document.querySelectorAll('.scan-item').forEach(i => i.classList.remove('active'));
   el.classList.add('active');
 }
 
-// ── ANALYTICS RENDER ───────────────────────────────────────────────────────────────
 function renderAnalytics(p, scans) {
-  Object.values(charts).forEach(c => { try{c.destroy();}catch(e){} });
+  Object.values(charts).forEach(c => { try{c.destroy();}catch{} });
   charts = {};
 
-  // newest scan (scans are sorted newest-first)
-  const latest = scans[0];
-  const oldest = scans[scans.length - 1];
+  const latest   = scans[0];
+  const oldest   = scans[scans.length - 1];
   const confColor = TRIAGE_COLOR[latest.triage] || '#60A5FA';
 
-  document.getElementById('statConf').textContent = Math.round((latest.confidence||0)*100) + '%';
-  document.getElementById('statConf').style.color = confColor;
-  document.getElementById('statConfSub').textContent = `Latest · ${formatDate(latest.scan_date)}`;
-  document.getElementById('statTotal').textContent = scans.length;
-  document.getElementById('statTotalSub').textContent = `${formatDate(oldest.scan_date)} – ${formatDate(latest.scan_date)}`;
-  document.getElementById('statTriage').textContent = latest.triage;
-  document.getElementById('statTriage').style.color = confColor;
+  document.getElementById('statConf').textContent      = Math.round((latest.confidence||0)*100) + '%';
+  document.getElementById('statConf').style.color      = confColor;
+  document.getElementById('statConfSub').textContent   = `Latest · ${formatDate(latest.scan_date)}`;
+  document.getElementById('statTotal').textContent     = scans.length;
+  document.getElementById('statTotalSub').textContent  = `${formatDate(oldest.scan_date)} – ${formatDate(latest.scan_date)}`;
+  document.getElementById('statTriage').textContent    = latest.triage;
+  document.getElementById('statTriage').style.color    = confColor;
   document.getElementById('statTriageSub').textContent = latest.department || '—';
 
   const condCounts = {};
-  scans.forEach(s => { condCounts[s.top_condition] = (condCounts[s.top_condition]||0)+1; });
-  const topCond = Object.entries(condCounts).sort((a,b)=>b[1]-a[1])[0];
-  document.getElementById('statFinding').textContent = topCond[0];
-  document.getElementById('statFinding').style.color = COND_COLORS[topCond[0]]?.line || '#FBBF24';
-  document.getElementById('statFindingSub').textContent = `${topCond[1]} of ${scans.length} scans`;
+  scans.forEach(s => { condCounts[s.top_condition] = (condCounts[s.top_condition]||0) + 1; });
+  const topCond = Object.entries(condCounts).sort((a,b) => b[1]-a[1])[0];
+  document.getElementById('statFinding').textContent     = topCond[0];
+  document.getElementById('statFinding').style.color     = COND_COLORS[topCond[0]]?.line || '#FBBF24';
+  document.getElementById('statFindingSub').textContent  = `${topCond[1]} of ${scans.length} scans`;
+  document.getElementById('gStatHigh').textContent       = scans.filter(s=>s.triage==='HIGH').length;
+  document.getElementById('gStatCond').textContent       = topCond[0];
+  document.getElementById('gStatCondSub').textContent    = `${topCond[1]}/${scans.length} scans · ${p.name}`;
 
-  const highCount = scans.filter(s=>s.triage==='HIGH').length;
-  document.getElementById('gStatHigh').textContent = highCount;
-  document.getElementById('gStatCond').textContent = topCond[0];
-  document.getElementById('gStatCondSub').textContent = `${topCond[1]}/${scans.length} scans · ${p.name}`;
-
-  // ── Symptom log (newest first = scans are already newest-first)
   const allSxNames = new Set();
-  document.getElementById('symptomBody').innerHTML = scans.map((s) => {
+  document.getElementById('symptomBody').innerHTML = scans.map(s => {
     const symptoms = Array.isArray(s.symptoms) && s.symptoms.length ? s.symptoms : [];
     symptoms.forEach(sx => allSxNames.add(sx.name));
     const dotColor = TRIAGE_COLOR[s.triage] || '#4A6080';
@@ -721,40 +754,43 @@ function renderAnalytics(p, scans) {
     </div>`;
   }).join('');
 
-  document.getElementById('symptomSub').textContent = `${p.name} · ${scans.length} visits`;
+  document.getElementById('symptomSub').textContent   = `${p.name} · ${scans.length} visits`;
   document.getElementById('symptomBadge').textContent = `${allSxNames.size} unique symptom${allSxNames.size!==1?'s':''}`;
 
-  // ── Doughnut ──
   const condLabels = Object.keys(condCounts);
-  const condVals   = condLabels.map(c=>condCounts[c]);
-  const condColors = condLabels.map(c=>COND_COLORS[c]?.line||'#60A5FA');
+  const condVals   = condLabels.map(c => condCounts[c]);
+  const condColors = condLabels.map(c => COND_COLORS[c]?.line || '#60A5FA');
 
   charts.distChart = new Chart(document.getElementById('distChart'), {
-    type:'doughnut',
-    data:{ labels:condLabels, datasets:[{
-      data:condVals,
-      backgroundColor: condColors.map(c=>c+'22'),
-      borderColor: condColors,
-      borderWidth:2,
-      hoverBackgroundColor: condColors.map(c=>c+'44'),
-    }]},
-    options:{
-      responsive:true, maintainAspectRatio:false, cutout:'66%',
-      plugins:{
-        legend:{position:'bottom',labels:{boxWidth:8,boxHeight:8,padding:8,font:{size:9},color:tickColor}},
-        tooltip:{backgroundColor:ttBg,borderColor:ttBdr,borderWidth:1,titleColor:'#94A3B8',bodyColor:'#64748b',padding:10,
-          callbacks:{label:ctx=>` ${ctx.label}: ${ctx.parsed} scan${ctx.parsed!==1?'s':''}`}},
+    type: 'doughnut',
+    data: {
+      labels: condLabels,
+      datasets: [{
+        data: condVals,
+        backgroundColor: condColors.map(c => c + '22'),
+        borderColor:     condColors,
+        borderWidth: 2,
+        hoverBackgroundColor: condColors.map(c => c + '44'),
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false, cutout: '66%',
+      plugins: {
+        legend: { position:'bottom', labels:{boxWidth:8,boxHeight:8,padding:8,font:{size:9},color:tickColor} },
+        tooltip: { backgroundColor:ttBg, borderColor:ttBdr, borderWidth:1,
+          titleColor:'#94A3B8', bodyColor:'#64748b', padding:10,
+          callbacks: { label: ctx => ` ${ctx.label}: ${ctx.parsed} scan${ctx.parsed!==1?'s':''}` }
+        },
       },
     },
   });
 
-  // ── Dot timeline (oldest → newest, left to right)
-  const displayScans = [...scans].reverse(); // oldest first
+  const displayScans = [...scans].reverse();
   document.getElementById('timelineSub').textContent = `${displayScans.length} scans · oldest → newest`;
   document.getElementById('timelineBody').innerHTML = `<div class="tl-track">${
     displayScans.map(s => {
-      const cls  = s.triage==='HIGH'?'danger':s.triage==='MEDIUM'?'warning':'ok';
-      const icon = s.triage==='HIGH'?'ti-alert-circle':s.triage==='MEDIUM'?'ti-alert-triangle':'ti-check';
+      const cls  = s.triage==='HIGH' ? 'danger' : s.triage==='MEDIUM' ? 'warning' : 'ok';
+      const icon = s.triage==='HIGH' ? 'ti-alert-circle' : s.triage==='MEDIUM' ? 'ti-alert-triangle' : 'ti-check';
       return `<div class="tl-item" title="${s.top_condition} · ${s.department||''}">
         <div class="tl-dot ${cls}"><i class="ti ${icon}"></i></div>
         <div class="tl-date">${formatDateShort(s.scan_date)}</div>
@@ -767,11 +803,10 @@ function renderAnalytics(p, scans) {
   showAnalytics();
 }
 
-// ── EXPAND MODAL ────────────────────────────────────────────────────────────────────
 function expandChart(cardId) {
   const card   = document.getElementById(cardId);
   const title  = card.querySelector('.chart-title')?.textContent || '';
-  const sub    = card.querySelector('.chart-sub')?.textContent || '';
+  const sub    = card.querySelector('.chart-sub')?.textContent   || '';
   const canvas = card.querySelector('canvas');
 
   document.getElementById('modalTitle').textContent = title;
@@ -786,11 +821,12 @@ function expandChart(cardId) {
     body.appendChild(mc);
     const orig = charts[canvas.id];
     setTimeout(() => {
-      if (window.modalChart) { try{window.modalChart.destroy();}catch(e){} }
+      if (window.modalChart) { try{window.modalChart.destroy();}catch{} }
       if (orig) {
         window.modalChart = new Chart(mc, {
-          type:orig.config.type, data:orig.data,
-          options:{...orig.options,responsive:true,maintainAspectRatio:false}
+          type: orig.config.type,
+          data: orig.data,
+          options: { ...orig.options, responsive:true, maintainAspectRatio:false }
         });
       }
     }, 40);
@@ -801,40 +837,31 @@ function expandChart(cardId) {
 
 function closeModal() {
   document.getElementById('chartModal').classList.remove('active');
-  if (window.modalChart) { try{window.modalChart.destroy();}catch(e){} window.modalChart=null; }
+  if (window.modalChart) { try{window.modalChart.destroy();}catch{} window.modalChart = null; }
   document.getElementById('modalBody').innerHTML = '';
 }
 
 document.getElementById('chartModal').addEventListener('click', e => {
-  if (e.target.id==='chartModal') closeModal();
+  if (e.target.id === 'chartModal') closeModal();
 });
-document.addEventListener('keydown', e => { if(e.key==='Escape') closeModal(); });
 
-// ── EXPORT CSV ──────────────────────────────────────────────────────────────────────
 function exportCSV() {
   if (!filteredScans.length || !currentPatient) return;
   const p = currentPatient;
   const rows = [['Patient','Age','Gender','Scan Date','Department','Top Condition','Confidence %','Triage','Doctor','Symptoms']];
   [...filteredScans].reverse().forEach(s => {
-    const sxList = (s.symptoms||[]).map(sx=>`${sx.name}(${sx.severity})`).join('; ');
-    rows.push([
-      p.name, p.age||'', p.gender||'',
-      s.scan_date, s.department||'',
-      s.top_condition,
-      Math.round((s.confidence||0)*100),
-      s.triage, s.doctor_name||'—',
-      sxList
-    ]);
+    const sxList = (s.symptoms||[]).map(sx => `${sx.name}(${sx.severity})`).join('; ');
+    rows.push([p.name, p.age||'', p.gender||'', s.scan_date, s.department||'',
+      s.top_condition, Math.round((s.confidence||0)*100), s.triage, s.doctor_name||'—', sxList]);
   });
-  const csv = rows.map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const csv  = rows.map(r => r.map(v => `"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
   const blob = new Blob([csv], {type:'text/csv'});
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = `medsight_${p.name.replace(/\s+/g,'_')}_${new Date().toISOString().split('T')[0]}.csv`;
+  const a    = document.createElement('a');
+  a.href     = URL.createObjectURL(blob);
+  a.download = `pneumoscan_${p.name.replace(/\s+/g,'_')}_${new Date().toISOString().split('T')[0]}.csv`;
   a.click();
 }
 
-// ── UI STATES ────────────────────────────────────────────────────────────────────────
 function showLoading() {
   document.getElementById('contentEmpty').style.display     = 'none';
   document.getElementById('contentLoading').style.display   = 'flex';
@@ -851,7 +878,6 @@ function showAnalytics() {
   document.getElementById('analyticsContent').style.display = 'flex';
 }
 
-// ── DATE HELPERS ──────────────────────────────────────────────────────────────────────
 function formatDate(d) {
   if (!d) return '—';
   return new Date(d+'T00:00:00').toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
@@ -860,6 +886,38 @@ function formatDateShort(d) {
   if (!d) return '—';
   return new Date(d+'T00:00:00').toLocaleDateString('en-GB',{day:'2-digit',month:'short'});
 }
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { closeModal(); cancelLogout(); }
+});
+
+loadGlobalStats();
 </script>
+
+<div id="profileDropdown" style="
+  display:none;
+  position:fixed;
+  top:58px;
+  right:24px;
+  width:220px;
+  background:#0f1f34;
+  border:1px solid rgba(96,165,250,0.5);
+  border-radius:12px;
+  box-shadow:0 20px 60px rgba(0,0,0,0.9);
+  padding:6px;
+  z-index:999999;
+">
+  <div id="dropdownEmail" style="padding:10px 12px 8px;font-size:11px;color:#94a3b8;font-family:'Inter',sans-serif;">—</div>
+  <div style="height:1px;background:rgba(96,165,250,0.2);margin:4px 0;"></div>
+  <button onmousedown="requestLogout()" style="
+    width:100%;display:flex;align-items:center;gap:8px;
+    padding:10px 12px;background:none;border:none;border-radius:8px;
+    color:#e2efff;font-family:'Inter',sans-serif;font-size:13px;
+    cursor:pointer;text-align:left;
+  " onmouseover="this.style.background='rgba(248,113,113,0.15)'" onmouseout="this.style.background='none'">
+    <i class="ti ti-logout" style="font-size:16px;color:#f87171;"></i>
+    <span style="color:#e2efff;">Log out</span>
+  </button>
+</div>
 </body>
 </html>
