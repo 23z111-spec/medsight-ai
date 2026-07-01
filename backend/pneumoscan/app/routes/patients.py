@@ -27,6 +27,7 @@ class PatientCreateRequest(BaseModel):
     gender: Optional[str] = None
 
 
+
 class PatientSummary(BaseModel):
     id: int
     name: str
@@ -34,6 +35,12 @@ class PatientSummary(BaseModel):
     gender: Optional[str]
     total_scans: int
     last_scan_date: Optional[str] = None
+    # ── new fields ──
+    department: Optional[str] = None
+    top_condition: Optional[str] = None
+    confidence: Optional[float] = None
+    triage: Optional[str] = None
+    doctor_name: Optional[str] = None
 
 
 class ScanSummary(BaseModel):
@@ -55,14 +62,12 @@ class PatientDetailResponse(BaseModel):
     scans: List[ScanSummary]
 
 
-# ── Routes ────────────────────────────────────────────────────────
 @router.get("/search", response_model=List[PatientSummary])
 def search_patients(
     name: str = "",
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    """Search existing patients by partial name match (case-insensitive)."""
     query = db.query(Patient)
     if name:
         query = query.filter(Patient.name.ilike(f"%{name}%"))
@@ -71,14 +76,21 @@ def search_patients(
 
     results = []
     for p in patients:
-        last_scan = p.scans[0] if p.scans else None
+        # scans are already loaded via relationship — most recent first
+        latest = p.scans[0] if p.scans else None
         results.append(PatientSummary(
             id=p.id,
             name=p.name,
             age=p.age,
             gender=p.gender,
             total_scans=len(p.scans),
-            last_scan_date=last_scan.scan_date.isoformat() if last_scan else None,
+            last_scan_date=latest.scan_date.isoformat() if latest else None,
+            # ── from latest scan ──
+            department=latest.department if latest else None,
+            top_condition=latest.top_condition if latest else None,
+            confidence=latest.confidence if latest else None,
+            triage=latest.triage if latest else None,
+            doctor_name=latest.doctor.full_name if (latest and latest.doctor) else None,
         ))
     return results
 
