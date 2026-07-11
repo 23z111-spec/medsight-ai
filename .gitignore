@@ -1,6 +1,4 @@
 # Model files
-backend/models/*.pth
-backend/pneumoscan/models/*.pth
 
 # Virtual environments
 venv/
