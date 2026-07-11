@@ -681,9 +681,13 @@ async function sendPasswordReset() {
   const email = document.getElementById('inputEmail').value;
   if (!email) { showToast('Load your profile first.', false); return; }
   try {
-    await fetch(`${API}/auth/forgot-password`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({email}) });
-    showToast('Reset link sent to ' + email);
-  } catch(e) { showToast('Could not send reset email.', false); }
+    await fetch(`${API}/auth/forgot-password`, {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ email })
+    });
+  } catch(e) {}
+  // Always navigate to reset page regardless of API result
+  window.location.href = '/reset-password.html';
 }
 
 function confirmDanger(action) {

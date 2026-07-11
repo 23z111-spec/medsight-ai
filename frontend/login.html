@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>PneumoScan AI · Login</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<style>
+  :root{
+    --page-bg:#061528;--surface:#0f1f34;--surface-soft:#132942;
+    --border:rgba(96,165,250,.18);--text:#e2efff;--muted:#94a3b8;
+    --muted-strong:#cbd5e6;--accent:#60a5fa;--accent-soft:rgba(96,165,250,.16);
+    --accent-strong:#3b82f6;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{height:100%;background:var(--page-bg);color:var(--text);font-family:'DM Sans',sans-serif;overflow:hidden;}
+  .bg{position:fixed;inset:0;background:var(--page-bg);overflow:hidden;}
+  .bg-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(96,165,250,0.12) 1px,transparent 1px),linear-gradient(90deg,rgba(96,165,250,0.12) 1px,transparent 1px);background-size:40px 40px;mask-image:radial-gradient(ellipse at 50% 50%,black 30%,transparent 80%);}
+  .bg-glow{position:absolute;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(96,165,250,0.16) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);}
+  .page{position:relative;z-index:1;height:100vh;display:grid;grid-template-columns:0.95fr 1.05fr;overflow:hidden;}
+  .left{position:relative;overflow:hidden;background:var(--surface);}
+  .left-video{position:absolute;inset:0;z-index:0;}
+  .left-video video{width:100%;height:100%;object-fit:cover;display:block;}
+  .left-video::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(14,23,42,.78) 0%,rgba(14,23,42,.35) 55%,rgba(14,23,42,.60) 100%);}
+  .left-content{position:relative;z-index:2;display:flex;flex-direction:column;justify-content:center;height:100%;padding:40px 36px;gap:18px;}
+  .left-title{display:block;font-size:32px;line-height:1.05;max-width:360px;font-weight:700;color:#FFFFFF;text-shadow:0 4px 18px rgba(0,0,0,.75);}
+  .left-sub{display:block;max-width:360px;color:rgba(255,255,255,.78);font-size:14px;line-height:1.7;text-shadow:0 2px 10px rgba(0,0,0,.35);}
+  .brand{display:flex;align-items:center;gap:10px;}
+  .brand-dot{width:8px;height:8px;border-radius:50%;background:#2196F3;box-shadow:0 0 0 4px rgba(96,200,245,.12);}
+  .brand-name{font-family:'Space Mono',monospace;font-size:12px;color:#1B6FC8;letter-spacing:.5px;}
+  .right{display:flex;align-items:center;justify-content:center;padding:24px 32px;background:var(--surface);overflow:hidden;}
+  .login-box{width:100%;max-width:420px;display:flex;flex-direction:column;gap:14px;}
+  .login-header{text-align:center;}
+  .login-title{font-size:18px;font-weight:600;color:var(--text);margin-bottom:4px;}
+  .login-sub{font-size:11px;color:var(--muted);}
+  .form{display:flex;flex-direction:column;gap:10px;}
+  .field{display:flex;flex-direction:column;gap:4px;}
+  .field-label{font-size:10px;color:var(--muted-strong);font-weight:500;}
+  .field-wrap{position:relative;}
+  .field-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:14px;color:var(--muted);pointer-events:none;}
+  .field-input{width:100%;background:var(--surface-soft);border:1px solid var(--border);border-radius:7px;padding:8px 10px 8px 32px;font-size:11px;color:var(--text);outline:none;font-family:'DM Sans',sans-serif;transition:all .2s;}
+  .field-input::placeholder{color:var(--muted);}
+  .field-input:focus{border-color:var(--accent);background:rgba(96,165,250,.1);}
+  .field-input.error{border-color:#FECACA;background:rgba(254,226,226,0.08);}
+  .password-wrap{position:relative;}
+  .show-pw{position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:14px;color:#475569;cursor:pointer;transition:color .15s;}
+  .show-pw:hover{color:#64748b;}
+  .field-row{display:flex;align-items:center;justify-content:space-between;}
+  .remember{display:flex;align-items:center;gap:5px;cursor:pointer;}
+  .remember input{accent-color:#2563eb;width:12px;height:12px;}
+  .remember span{font-size:10px;color:var(--muted);}
+  .forgot{font-size:10px;color:var(--accent);cursor:pointer;text-decoration:none;transition:color .15s;}
+  .forgot:hover{opacity:.8;}
+  .login-btn{background:var(--accent-strong);border:1px solid var(--accent);border-radius:7px;padding:9px;font-size:12px;font-weight:500;color:var(--text);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:7px;}
+  .login-btn:hover{opacity:.9;}
+  .login-btn:active{transform:scale(0.99);}
+  .login-btn:disabled{opacity:.6;cursor:not-allowed;}
+  .spinner{width:12px;height:12px;border:2px solid rgba(96,200,245,0.3);border-top-color:#60c8f5;border-radius:50%;animation:spin .7s linear infinite;display:none;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .divider{display:flex;align-items:center;gap:8px;}
+  .divider-line{flex:1;height:1px;background:var(--border);}
+  .divider-text{font-size:9px;color:var(--muted);}
+  .role-btns{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+  .role-btn{background:var(--surface-soft);border:1px solid var(--border);border-radius:7px;padding:8px;font-size:10px;color:var(--muted);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;display:flex;flex-direction:column;align-items:center;gap:3px;}
+  .role-btn:hover{background:#183156;border-color:var(--accent-soft);color:var(--text);}
+  .role-btn i{font-size:15px;margin-bottom:1px;}
+  .error-msg{background:rgba(254,226,226,0.08);border:1px solid rgba(248,113,113,0.4);border-radius:6px;padding:7px 10px;font-size:10px;color:#f87171;display:none;align-items:center;gap:6px;}
+  .error-msg.show{display:flex;}
+  .disclaimer{font-size:9px;color:var(--muted);text-align:center;line-height:1.5;border-top:1px solid var(--border);padding-top:10px;}
+  .demo-box{background:var(--surface-soft);border:1px solid var(--border);border-radius:7px;padding:8px 12px;}
+  .demo-title{font-size:9px;color:var(--muted);letter-spacing:.8px;text-transform:uppercase;margin-bottom:6px;}
+  .demo-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;}
+  .demo-row:last-child{margin-bottom:0;}
+  .demo-label{font-size:10px;color:var(--muted);}
+  .demo-val{font-size:10px;font-family:'Space Mono',monospace;color:var(--accent);}
+  .demo-copy{font-size:9px;color:var(--accent);cursor:pointer;background:transparent;border:none;font-family:'DM Sans',sans-serif;}
+  .demo-copy:hover{text-decoration:underline;}
+
+  /* FORGOT PASSWORD MODAL */
+  .fp-modal{position:fixed;inset:0;z-index:999;background:rgba(6,21,40,.85);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:24px;}
+  .fp-modal.show{display:flex;}
+  .fp-box{background:#0f1f34;border:1px solid rgba(96,165,250,.25);border-radius:14px;padding:28px;width:100%;max-width:380px;display:flex;flex-direction:column;gap:16px;box-shadow:0 24px 60px rgba(0,0,0,.6);}
+  .fp-header{display:flex;justify-content:space-between;align-items:center;}
+  .fp-title{font-size:16px;font-weight:600;color:#e2efff;}
+  .fp-close{background:transparent;border:none;color:#94a3b8;font-size:18px;cursor:pointer;padding:4px;border-radius:4px;line-height:1;}
+  .fp-close:hover{color:#e2efff;}
+  .fp-desc{font-size:12px;color:#94a3b8;line-height:1.7;}
+  .fp-input-wrap{position:relative;}
+  .fp-input-wrap i{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:14px;color:#94a3b8;pointer-events:none;}
+  .fp-input{width:100%;background:#132942;border:1px solid rgba(96,165,250,.18);border-radius:7px;padding:9px 10px 9px 32px;font-size:12px;color:#e2efff;outline:none;font-family:'DM Sans',sans-serif;transition:border .15s;}
+  .fp-input:focus{border-color:#60a5fa;}
+  .fp-input::placeholder{color:#4A6080;}
+  .fp-msg{display:none;border-radius:6px;padding:8px 12px;font-size:11px;align-items:center;gap:6px;}
+  .fp-msg.show{display:flex;}
+  .fp-msg.error{background:rgba(254,226,226,.08);border:1px solid rgba(248,113,113,.4);color:#f87171;}
+  .fp-btn{background:#3b82f6;border:1px solid #60a5fa;border-radius:7px;padding:10px;font-size:12px;font-weight:500;color:#fff;cursor:pointer;font-family:'DM Sans',sans-serif;display:flex;align-items:center;justify-content:center;gap:7px;transition:opacity .2s;}
+  .fp-btn:hover{opacity:.9;}
+  .fp-btn:disabled{opacity:.6;cursor:not-allowed;}
+  .fp-spinner{width:12px;height:12px;border:2px solid rgba(96,200,245,.3);border-top-color:#60c8f5;border-radius:50%;animation:spin .7s linear infinite;display:none;}
+</style>
+</head>
+<body>
+
+<div class="bg"><div class="bg-grid"></div><div class="bg-glow"></div></div>
+
+<div class="page">
+  <!-- LEFT -->
+  <div class="left">
+    <div class="left-video" aria-hidden="true">
+      <video autoplay muted loop playsinline>
+        <source src="my-video.mp4" type="video/mp4"/>
+      </video>
+    </div>
+    <div class="left-content">
+      <div class="brand"><span class="brand-dot"></span><span class="brand-name">MEDSIGHT AI</span></div>
+      <h1 class="left-title">Advanced lung screening with explainable AI</h1>
+      <p class="left-sub">Streamline chest X-ray review with fast, secure results and confidence maps that doctors trust.</p>
+    </div>
+  </div>
+
+  <!-- RIGHT -->
+  <div class="right">
+    <div class="login-box">
+
+      <div class="login-header">
+        <div class="login-title">Welcome back</div>
+        <div class="login-sub">Sign in to access the screening dashboard</div>
+      </div>
+
+      <div class="error-msg" id="errorMsg">
+        <i class="ti ti-alert-circle" style="font-size:15px;flex-shrink:0;"></i>
+        <span id="errorText">Invalid credentials. Please try again.</span>
+      </div>
+
+      <div class="form">
+        <div class="field">
+          <div class="field-label">Email address</div>
+          <div class="field-wrap">
+            <i class="ti ti-mail field-icon"></i>
+            <input class="field-input" type="email" id="emailInput" placeholder="doctor@hospital.in" autocomplete="email"/>
+          </div>
+        </div>
+        <div class="field">
+          <div class="field-label">Password</div>
+          <div class="field-wrap password-wrap">
+            <i class="ti ti-lock field-icon"></i>
+            <input class="field-input" type="password" id="pwInput" placeholder="Enter your password" autocomplete="current-password" style="padding-right:36px;"/>
+            <i class="ti ti-eye show-pw" id="eyeIcon" onclick="togglePw()"></i>
+          </div>
+        </div>
+        <div class="field-row">
+          <label class="remember"><input type="checkbox" id="rememberMe" checked/><span>Remember me</span></label>
+          <a class="forgot" onclick="openForgot()">Forgot password?</a>
+        </div>
+        <button class="login-btn" id="loginBtn" onclick="handleLogin()">
+          <div class="spinner" id="spinner"></div>
+          <span id="loginBtnText"><i class="ti ti-login" style="font-size:15px;"></i> Sign in</span>
+        </button>
+      </div>
+
+      <div class="divider">
+        <div class="divider-line"></div>
+        <div class="divider-text">or sign in as</div>
+        <div class="divider-line"></div>
+      </div>
+
+      <div class="role-btns">
+        <button class="role-btn" onclick="quickLogin('radiologist')"><i class="ti ti-stethoscope" style="color:#60c8f5;"></i>Radiologist</button>
+        <button class="role-btn" onclick="quickLogin('admin')"><i class="ti ti-shield" style="color:#a78bfa;"></i>Admin</button>
+      </div>
+
+      <div class="demo-box">
+        <div class="demo-title">Demo credentials</div>
+        <div class="demo-row">
+          <span class="demo-label">Email</span>
+          <span class="demo-val">doctor@pneumoscan.ai</span>
+          <button class="demo-copy" onclick="fillDemo()">Fill</button>
+        </div>
+        <div class="demo-row">
+          <span class="demo-label">Password</span>
+          <span class="demo-val">demo1234</span>
+        </div>
+      </div>
+
+      <div class="disclaimer">
+        For authorized medical personnel only. All patient data is confidential and protected. This AI system is a screening aid — not a diagnostic tool.
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- FORGOT PASSWORD MODAL -->
+<div class="fp-modal" id="fpModal">
+  <div class="fp-box">
+    <div class="fp-header">
+      <span class="fp-title">Reset your password</span>
+      <button class="fp-close" onclick="closeForgot()"><i class="ti ti-x"></i></button>
+    </div>
+    <p class="fp-desc">Enter the email linked to your MedSight account. We'll send you a reset link valid for <strong style="color:#60a5fa;">30 minutes</strong>.</p>
+    <div class="fp-input-wrap">
+      <i class="ti ti-mail"></i>
+      <input class="fp-input" type="email" id="fpEmail" placeholder="doctor@hospital.in"
+             onkeydown="if(event.key==='Enter') sendReset()"/>
+    </div>
+    <div class="fp-msg" id="fpMsg"></div>
+    <button class="fp-btn" id="fpBtn" onclick="sendReset()">
+      <div class="fp-spinner" id="fpSpinner"></div>
+      <span id="fpBtnText"><i class="ti ti-send" style="font-size:14px;"></i> Send reset link</span>
+    </button>
+  </div>
+</div>
+
+<script>
+const API_BASE = 'http://127.0.0.1:8000';
+
+/* ── DEMO FILL ── */
+function fillDemo() {
+  document.getElementById('emailInput').value = 'doctor@pneumoscan.ai';
+  document.getElementById('pwInput').value    = 'demo1234';
+}
+
+/* ── QUICK LOGIN ── */
+function quickLogin(role) {
+  document.getElementById('emailInput').value = role === 'radiologist' ? 'doctor@pneumoscan.ai' : 'admin@pneumoscan.ai';
+  document.getElementById('pwInput').value    = role === 'radiologist' ? 'demo1234' : 'admin1234';
+  handleLogin();
+}
+
+/* ── TOGGLE PASSWORD ── */
+function togglePw() {
+  const input = document.getElementById('pwInput');
+  const icon  = document.getElementById('eyeIcon');
+  if (input.type === 'password') { input.type = 'text';     icon.classList.replace('ti-eye','ti-eye-off'); }
+  else                           { input.type = 'password'; icon.classList.replace('ti-eye-off','ti-eye'); }
+}
+
+/* ── LOGIN ── */
+async function handleLogin() {
+  const email   = document.getElementById('emailInput').value.trim();
+  const pw      = document.getElementById('pwInput').value;
+  const btn     = document.getElementById('loginBtn');
+  const spinner = document.getElementById('spinner');
+  const btnText = document.getElementById('loginBtnText');
+  const errMsg  = document.getElementById('errorMsg');
+
+  errMsg.classList.remove('show');
+  document.getElementById('emailInput').classList.remove('error');
+  document.getElementById('pwInput').classList.remove('error');
+
+  if (!email) { document.getElementById('emailInput').classList.add('error'); showError('Please enter your email address.'); return; }
+  if (!pw)    { document.getElementById('pwInput').classList.add('error');    showError('Please enter your password.');      return; }
+
+  btn.disabled = true; spinner.style.display = 'block'; btnText.style.display = 'none';
+
+  try {
+    const res  = await fetch(`${API_BASE}/auth/login`, {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ email, password: pw }),
+    });
+    let data = {}; try { data = await res.json(); } catch(e) {}
+    if (!res.ok) throw new Error(data.detail || 'Invalid email or password.');
+    if (!data.access_token) throw new Error('No token received. Check your backend response.');
+
+    localStorage.setItem('token', data.access_token);
+    localStorage.setItem('pneumoscan_token', data.access_token);
+    localStorage.setItem('pneumoscan_user', JSON.stringify({
+      full_name: data.full_name || 'Doctor',
+      email:     data.email    || email,
+      role:      data.role     || 'doctor',
+    }));
+
+    btnText.innerHTML     = '<i class="ti ti-check" style="font-size:15px;color:#4ade80;"></i> Redirecting…';
+    btnText.style.display = 'flex'; spinner.style.display = 'none';
+    btn.style.borderColor = '#22c55e';
+    setTimeout(() => { window.location.href = '/dashbord.html'; }, 600);
+
+  } catch(err) {
+    document.getElementById('emailInput').classList.add('error');
+    document.getElementById('pwInput').classList.add('error');
+    showError(err.message || 'Could not reach the server. Is the backend running?');
+    btn.disabled = false; spinner.style.display = 'none'; btnText.style.display = 'flex';
+  }
+}
+
+function showError(msg) {
+  document.getElementById('errorText').textContent = msg;
+  document.getElementById('errorMsg').classList.add('show');
+}
+
+/* ── FORGOT PASSWORD ── */
+function openForgot() {
+  // pre-fill email if already typed on login form
+  document.getElementById('fpEmail').value = document.getElementById('emailInput').value || '';
+  document.getElementById('fpMsg').classList.remove('show');
+  document.getElementById('fpBtn').disabled = false;
+  document.getElementById('fpSpinner').style.display = 'none';
+  document.getElementById('fpBtnText').style.display = 'flex';
+  document.getElementById('fpModal').classList.add('show');
+  setTimeout(() => document.getElementById('fpEmail').focus(), 100);
+}
+
+function closeForgot() {
+  document.getElementById('fpModal').classList.remove('show');
+}
+
+async function sendReset() {
+  const email = document.getElementById('fpEmail').value.trim();
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    const msg = document.getElementById('fpMsg');
+    msg.className = 'fp-msg error show';
+    msg.textContent = 'Please enter a valid email address.';
+    return;
+  }
+
+  const btn     = document.getElementById('fpBtn');
+  const spinner = document.getElementById('fpSpinner');
+  const btnText = document.getElementById('fpBtnText');
+  btn.disabled = true; spinner.style.display = 'block'; btnText.style.display = 'none';
+
+  try {
+    await fetch(`${API_BASE}/auth/forgot-password`, {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ email }),
+    });
+  } catch(e) {}
+
+  // Always navigate to reset page regardless of API result
+  window.location.href = '/reset-password.html';
+}
+
+// Close modal on backdrop click
+document.getElementById('fpModal').addEventListener('click', function(e) {
+  if (e.target === this) closeForgot();
+});
+
+/* ── SESSION CHECK ── */
+async function checkSession() {
+  const token = localStorage.getItem('token') || localStorage.getItem('pneumoscan_token');
+  if (!token) return;
+  try {
+    const res = await fetch(`${API_BASE}/auth/me`, { headers: {'Authorization':`Bearer ${token}`} });
+    if (res.ok) window.location.href = '/dashbord.html';
+    else { localStorage.removeItem('token'); localStorage.removeItem('pneumoscan_token'); }
+  } catch(e) {}
+}
+window.addEventListener('load', checkSession);
+
+/* ── KEYBOARD ── */
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeForgot();
+  if (e.key === 'Enter' && !document.getElementById('fpModal').classList.contains('show')) handleLogin();
+});
+</script>
+</body>
+</html>
