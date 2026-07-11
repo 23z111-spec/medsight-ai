@@ -19,8 +19,11 @@ from app.model_loader import load_models
 from app.database import engine, Base
 from app import models_db
 from app.routes.auth_password_reset import router as password_router
+from pathlib import Path
 
 print("MAIN FILE:", os.path.abspath(__file__))
+FRONTEND_DIR = Path(__file__).resolve().parent.parent.parent / "frontend"
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -61,4 +64,5 @@ app.include_router(chat.router,     prefix="/chat",     tags=["Chat"])
 app.include_router(password_router)
 
 # Must be LAST
-app.mount("/", StaticFiles(directory="../../frontend", html=True), name="static")
+
+app.mount("/", StaticFiles(directory=str(FRONTEND_DIR), html=True), name="static")

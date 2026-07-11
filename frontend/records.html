@@ -305,7 +305,7 @@ async function loadPatients() {
       top_condition: p.top_condition || p.latest_condition || '—',
       confidence:    p.confidence    || p.latest_confidence || 0,
       triage:        p.triage        || p.latest_triage     || '—',
-      scan_date:     p.scan_date     || p.latest_scan_date  || '',
+      scan_date: p.last_scan_date || p.scan_date || '',
       department:    p.department    || '—',
       doctor_name:   p.doctor_name   || '—',
     }));
