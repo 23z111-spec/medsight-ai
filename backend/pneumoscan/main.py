@@ -2,7 +2,7 @@
 PneumoScan AI — FastAPI Backend
 ================================
 Run with:  uvicorn main:app --reload --port 8000
-Docs at:   http://localhost:8000/docs
+Docs at:   https://medsight-ai-production.up.railway.app/docs
 """
 import os
 from dotenv import load_dotenv

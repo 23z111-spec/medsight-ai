@@ -40,7 +40,7 @@ pip install -r requirements.txt
 uvicorn main:app --reload --port 8000
 ```
 
-API docs auto-generated at → http://localhost:8000/docs
+API docs auto-generated at → https://medsight-ai-production.up.railway.app/docs
 
 ---
 
@@ -78,7 +78,7 @@ async function handleUpload(event) {
   const formData = new FormData();
   formData.append('file', file);
 
-  const res = await fetch('http://localhost:8000/predict', {
+  const res = await fetch('https://medsight-ai-production.up.railway.app/predict', {
     method: 'POST',
     body: formData,
   });

@@ -689,7 +689,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
 </div>
 
 <script>
-const API_BASE = 'http://127.0.0.1:8000';
+const API_BASE = 'https://medsight-ai-production.up.railway.app';
 const token    = () => localStorage.getItem('token') || localStorage.getItem('pneumoscan_token') || '';
 const authHdr  = () => ({ 'Authorization': 'Bearer ' + token() });
 

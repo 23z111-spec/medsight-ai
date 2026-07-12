@@ -395,7 +395,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
         <div class="card-body">
           <div class="setting-row">
             <div><div class="setting-label">API base URL</div></div>
-            <div class="setting-control"><input class="setting-input" id="apiUrl" type="text" value="http://localhost:8000" style="width:210px;"/></div>
+            <div class="setting-control"><input class="setting-input" id="apiUrl" type="text" value="https://medsight-ai-production.up.railway.app" style="width:210px;"/></div>
           </div>
           <div class="setting-row">
             <div><div class="setting-label">Request timeout</div></div>
@@ -544,7 +544,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
 <div class="toast" id="toast"></div>
 
 <script>
-const API   = 'http://127.0.0.1:8000';
+const API   = 'https://medsight-ai-production.up.railway.app';
 const token = () => localStorage.getItem('token') || localStorage.getItem('pneumoscan_token') || '';
 
 // ── PROFILE DROPDOWN & LOGOUT ────────────────────────────────────

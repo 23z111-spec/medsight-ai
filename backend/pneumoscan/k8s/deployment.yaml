@@ -36,7 +36,7 @@ spec:
                   name: medsight-mail-secrets
                   key: GMAIL_APP_PASSWORD
             - name: FRONTEND_URL
-              value: "http://localhost:8000"
+              value: "https://medsight-ai-production.up.railway.app"
           volumeMounts:
             - name: data
               mountPath: /app/backend/pneumoscan/storage
