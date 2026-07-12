@@ -45,7 +45,7 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["https://medsight-ai-production.up.railway.app","http://127.0.0.1:5500",],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -65,4 +65,19 @@ app.include_router(password_router)
 
 # Must be LAST
 
-app.mount("/", StaticFiles(directory=str(FRONTEND_DIR), html=True), name="static")
+import os
+
+_base = os.path.dirname(os.path.abspath(__file__))
+_frontend_candidates = [
+    os.path.join(_base, "../../frontend"),
+    os.path.join(_base, "../frontend"),
+    os.path.join(_base, "frontend"),
+    "/app/frontend",
+]
+_frontend_path = next((p for p in _frontend_candidates if os.path.exists(p)), None)
+
+if _frontend_path:
+    print(f"Serving frontend from: {_frontend_path}")
+    app.mount("/", StaticFiles(directory=_frontend_path, html=True), name="static")
+else:
+    print("WARNING: frontend folder not found — API-only mode")
