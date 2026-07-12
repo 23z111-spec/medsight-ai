@@ -9,6 +9,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 COPY backend/pneumoscan/requirements.txt ./backend/pneumoscan/requirements.txt
+
 RUN pip install --no-cache-dir -r backend/pneumoscan/requirements.txt
 
 COPY backend/pneumoscan/ ./backend/pneumoscan/
@@ -18,4 +19,4 @@ WORKDIR /app/backend/pneumoscan
 
 EXPOSE 8000
 
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["sh", "-c", "uvicorn main:app --host 0.0.0.0 --port ${PORT:-8000}"]
