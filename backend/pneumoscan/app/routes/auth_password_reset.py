@@ -3,7 +3,7 @@ Password Reset — MedSight AI
 Fixed version: uses port 465 SSL with a 10s timeout so it fails fast
 instead of hanging. Falls back gracefully with a clear error log.
 """
-
+import resend
 import os, smtplib, ssl, secrets
 from datetime import datetime, timedelta
 from email.mime.text import MIMEText
@@ -61,14 +61,11 @@ def verify_reset_token(token: str) -> str:
 
 
 # ── Email sender ──────────────────────────────────────────────
-def send_reset_email(to_email: str, reset_link: str):
-    if not GMAIL_USER or not GMAIL_APP_PASSWORD:
-        raise Exception("GMAIL_USER or GMAIL_APP_PASSWORD not set in environment variables.")
+resend.api_key = os.getenv("RESEND_API_KEY")
 
-    msg = MIMEMultipart("alternative")
-    msg["Subject"] = "MedSight AI — Password Reset"
-    msg["From"]    = f"MedSight AI <{GMAIL_USER}>"
-    msg["To"]      = to_email
+def send_reset_email(to_email: str, reset_link: str):
+    if not resend.api_key:
+        raise Exception("RESEND_API_KEY not set in environment variables.")
 
     html = f"""
     <div style="font-family:DM Sans,sans-serif;max-width:520px;margin:0 auto;background:#0f1f34;color:#e2efff;border-radius:12px;overflow:hidden;">
@@ -101,22 +98,16 @@ def send_reset_email(to_email: str, reset_link: str):
     </div>
     """
 
-    msg.attach(MIMEText(html, "html"))
-
-    # Use explicit SSL context with a 10-second timeout
-    # so the request fails fast instead of hanging indefinitely
-    context = ssl.create_default_context()
     try:
-        with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context, timeout=10) as server:
-            server.login(GMAIL_USER, GMAIL_APP_PASSWORD)
-            server.sendmail(GMAIL_USER, to_email, msg.as_string())
-            print(f"[EMAIL OK] Reset email sent to {to_email}")
-    except smtplib.SMTPAuthenticationError:
-        raise Exception("Gmail authentication failed. Check GMAIL_USER and GMAIL_APP_PASSWORD.")
-    except TimeoutError:
-        raise Exception("SMTP connection timed out. Railway may be blocking port 465.")
-    except OSError as e:
-        raise Exception(f"Network error reaching Gmail SMTP: {e}")
+        resend.Emails.send({
+            "from": "MedSight AI <onboarding@resend.dev>",
+            "to": [to_email],
+            "subject": "MedSight AI — Password Reset",
+            "html": html,
+        })
+        print(f"[EMAIL OK] Reset email sent to {to_email}")
+    except Exception as e:
+        raise Exception(f"Failed to send via Resend: {e}")
 
 
 # ── Endpoints ─────────────────────────────────────────────────
